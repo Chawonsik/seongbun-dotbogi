@@ -1,0 +1,16 @@
+# OS
+.DS_Store
+
+# Raw crawled data (contains full ingredient lists; never commit)
+data/raw/
+
+# Generated outputs
+ads/out/
+
+# Tooling
+.superpowers/
+.vercel/
+__pycache__/
+*.pyc
+.venv/
+node_modules/

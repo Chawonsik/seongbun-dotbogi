@@ -1,0 +1,235 @@
+{
+ "version": "2026-09-23-pilot",
+ "source": "화해(hwahae.co.kr) 등록 전성분 표기 순서 기준 파생 지표. 원문 미수록. 함량 수치는 추정하지 않음.",
+ "ingredients": [
+  {
+   "key": "PDRN",
+   "label": "PDRN",
+   "aliases": [
+    "소듐디엔에이",
+    "폴리데옥시리보뉴클레오타이드"
+   ],
+   "category": "세럼·앰플",
+   "n_products": 6,
+   "common": [
+    "1,2-헥산다이올",
+    "글리세린",
+    "나이아신아마이드",
+    "소듐디엔에이",
+    "아데노신",
+    "정제수"
+   ],
+   "note": "2026-09-18 실측 파일럿. 이름에 PDRN을 단 세럼·앰플 중 6개. 이름 성분이 전성분에 보이지 않은 1개는 확인 전이라 제외."
+  }
+ ],
+ "products": [
+  {
+   "id": 2140532,
+   "brand": "비플레인",
+   "name": "시카 PDRN 스킨 부스터 세럼",
+   "chip": "PDRN",
+   "total": 48,
+   "pos": 10,
+   "boundary": 37,
+   "families": [
+    {
+     "name": "PDRN 계열",
+     "pos": 10,
+     "top": true
+    },
+    {
+     "name": "나이아신아마이드",
+     "pos": 5,
+     "top": true
+    },
+    {
+     "name": "시카 계열",
+     "pos": 9,
+     "top": true
+    },
+    {
+     "name": "히알루론산 계열",
+     "pos": 24,
+     "top": true
+    },
+    {
+     "name": "세라마이드",
+     "pos": 30,
+     "top": true
+    },
+    {
+     "name": "판테놀",
+     "pos": 42,
+     "top": false
+    }
+   ],
+   "price_per_ml": 1267,
+   "registered": "2025-04"
+  },
+  {
+   "id": 2136983,
+   "brand": "리더스",
+   "name": "PDRN 5% 액티브 앰플",
+   "chip": "PDRN",
+   "total": 22,
+   "pos": 6,
+   "boundary": 11,
+   "families": [
+    {
+     "name": "PDRN 계열",
+     "pos": 6,
+     "top": true
+    },
+    {
+     "name": "나이아신아마이드",
+     "pos": 8,
+     "top": true
+    },
+    {
+     "name": "펩타이드",
+     "pos": 17,
+     "top": false
+    }
+   ],
+   "price_per_ml": 400,
+   "registered": "2025-04"
+  },
+  {
+   "id": 2117282,
+   "brand": "더마팩토리",
+   "name": "PDRN 4% 앰플",
+   "chip": "PDRN",
+   "total": 18,
+   "pos": 5,
+   "boundary": 12,
+   "families": [
+    {
+     "name": "PDRN 계열",
+     "pos": 5,
+     "top": true
+    },
+    {
+     "name": "나이아신아마이드",
+     "pos": 8,
+     "top": true
+    },
+    {
+     "name": "판테놀",
+     "pos": 10,
+     "top": true
+    }
+   ],
+   "price_per_ml": 400,
+   "registered": "2024-09"
+  },
+  {
+   "id": 2113285,
+   "brand": "아누아",
+   "name": "PDRN 히알루론산 캡슐 100 세럼",
+   "chip": "PDRN",
+   "total": 34,
+   "pos": 18,
+   "boundary": null,
+   "families": [
+    {
+     "name": "PDRN 계열",
+     "pos": 18,
+     "top": true
+    },
+    {
+     "name": "나이아신아마이드",
+     "pos": 7,
+     "top": true
+    },
+    {
+     "name": "히알루론산 계열",
+     "pos": 5,
+     "top": true
+    },
+    {
+     "name": "콜라겐",
+     "pos": 14,
+     "top": true
+    }
+   ],
+   "price_per_ml": 1300,
+   "registered": "2024-08"
+  },
+  {
+   "id": 2148589,
+   "brand": "메디힐",
+   "name": "피디알엔 모공 탄력 세럼",
+   "chip": "PDRN",
+   "total": 43,
+   "pos": 36,
+   "boundary": 26,
+   "families": [
+    {
+     "name": "PDRN 계열",
+     "pos": 36,
+     "top": false
+    },
+    {
+     "name": "나이아신아마이드",
+     "pos": 7,
+     "top": true
+    },
+    {
+     "name": "히알루론산 계열",
+     "pos": 13,
+     "top": true
+    },
+    {
+     "name": "세라마이드",
+     "pos": 39,
+     "top": false
+    },
+    {
+     "name": "펩타이드",
+     "pos": 40,
+     "top": false
+    },
+    {
+     "name": "판테놀",
+     "pos": 19,
+     "top": true
+    }
+   ],
+   "price_per_ml": 550,
+   "registered": "2025-07"
+  },
+  {
+   "id": 2115233,
+   "brand": "브이티코스메틱",
+   "name": "피디알엔 에센스 100",
+   "chip": "PDRN",
+   "total": 31,
+   "pos": 31,
+   "boundary": 12,
+   "families": [
+    {
+     "name": "PDRN 계열",
+     "pos": 31,
+     "top": false
+    },
+    {
+     "name": "나이아신아마이드",
+     "pos": 7,
+     "top": true
+    },
+    {
+     "name": "세라마이드",
+     "pos": 18,
+     "top": false
+    },
+    {
+     "name": "판테놀",
+     "pos": 24,
+     "top": false
+    }
+   ],
+   "price_per_ml": 1500,
+   "registered": "2024-09"
+  }
+ ]
+}
