@@ -70,3 +70,26 @@ def test_fetch_page_waf_challenge_202_raises_blocked(monkeypatch):
     monkeypatch.setattr(hwahae_api.time, "sleep", lambda s: None)
     with pytest.raises(hwahae_api.BlockedError):
         hwahae_api.SearchClient(session=session, sleep_s=0).fetch_page("PDRN", 0)
+
+
+def test_fetch_page_retries_on_connection_error_then_raises(monkeypatch):
+    session = MagicMock()
+    session.get.side_effect = hwahae_api.requests.ConnectionError("connection failed")
+    monkeypatch.setattr(hwahae_api.time, "sleep", lambda s: None)
+    client = hwahae_api.SearchClient(session=session, sleep_s=0, retries=2)
+    with pytest.raises(hwahae_api.SearchError):
+        client.fetch_page("PDRN", 0)
+    assert session.get.call_count == 3
+
+
+def test_fetch_page_retries_on_connection_error_then_succeeds(monkeypatch):
+    session = MagicMock()
+    session.get.side_effect = [
+        hwahae_api.requests.ConnectionError("connection failed"),
+        _resp(),
+    ]
+    monkeypatch.setattr(hwahae_api.time, "sleep", lambda s: None)
+    client = hwahae_api.SearchClient(session=session, sleep_s=0, retries=2)
+    page = client.fetch_page("PDRN", 1)
+    assert page.total_count == 45
+    assert session.get.call_count == 2
