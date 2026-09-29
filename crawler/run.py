@@ -109,11 +109,15 @@ def main(argv=None) -> int:
         old = load_baseline()
         pdrn = next((i["inci_patterns"] for i in all_ings if i["key"] == "PDRN"), ["디엔에이"])
         verify_rows = derive.verify_table(raws, old, markers, pdrn)
+        search_top6 = {p["id"]: [x["name"] for x in p.get("product_ingredients") or []]
+                       for ing in all_ings for p in search.read_products(ing["key"], config.RAW_DIR)}
+        top6_rows = derive.top6_check_table(raws, search_top6)
+        print(f"top6 순서 일치 {sum(1 for r in top6_rows if r['same_order'])}/{len(top6_rows)}")
         if not data["ingredients"]:
-            print("selected: true 인 성분이 없어 data.json 은 만들지 않습니다. verify 와 family 표만 씁니다")
-            derive.write_outputs(data, unmatched, family_rows, verify_rows, config.LANDING_DIR, config.DERIVED_DIR, write_landing=False)
+            print("selected: true 인 성분이 없어 landing/data.json 은 쓰지 않습니다. 성분이 빈 data/derived/data.json 과 검증용 표만 씁니다")
+            derive.write_outputs(data, unmatched, family_rows, verify_rows, top6_rows, config.LANDING_DIR, config.DERIVED_DIR, write_landing=False)
             return 0
-        derive.write_outputs(data, unmatched, family_rows, verify_rows, config.LANDING_DIR, config.DERIVED_DIR, write_landing=a.publish)
+        derive.write_outputs(data, unmatched, family_rows, verify_rows, top6_rows, config.LANDING_DIR, config.DERIVED_DIR, write_landing=a.publish)
         if not a.publish:
             print("landing/data.json 은 건드리지 않았습니다. 배포용으로 쓰려면 --publish")
     return 0

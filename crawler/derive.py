@@ -186,7 +186,24 @@ def verify_table(raws: list[dict], old_data: dict, markers: list[str], pdrn_patt
     return rows
 
 
-def write_outputs(data: dict, unmatched: list[dict], family_rows: list[dict], verify_rows: list[dict], landing_dir: Path, derived_dir: Path, write_landing: bool = False) -> None:
+TOP6 = 6
+
+
+def top6_check_table(raws: list[dict], search_top6: dict[int, list[str]]) -> list[dict]:
+    """검색 API 의 product_ingredients(앞 6개)가 실제 전성분 표기의 앞 6개와 같은지 본다. top6_rate 의 근거 확인용."""
+    rows = []
+    for r in raws:
+        search = search_top6.get(int(r["id"]))
+        if search is None:
+            continue
+        page = _names(r)[:TOP6]
+        rows.append({"id": r["id"], "key": r["key"], "name": r["candidate"].get("name"),
+                     "search_top6": " | ".join(search), "page_top6": " | ".join(page),
+                     "same_order": list(search) == page, "same_set": sorted(search) == sorted(page)})
+    return rows
+
+
+def write_outputs(data: dict, unmatched: list[dict], family_rows: list[dict], verify_rows: list[dict], top6_rows: list[dict], landing_dir: Path, derived_dir: Path, write_landing: bool = False) -> None:
     """data.json 은 항상 derived_dir 에 쓴다. 운영 파일 landing_dir/data.json 은 write_landing 일 때만 덮어쓴다."""
     derived_dir.mkdir(parents=True, exist_ok=True)
     (derived_dir / "data.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -203,4 +220,5 @@ def write_outputs(data: dict, unmatched: list[dict], family_rows: list[dict], ve
     _csv("unmatched.csv", ["key", "id", "name", "brand"], unmatched)
     _csv("family_matches.csv", ["family", "ingredient_id", "ingredient", "products"], family_rows)
     _csv("verify.csv", ["id", "name", "old_pos", "new_pos", "old_total", "new_total", "old_boundary", "new_boundary", "same"], verify_rows)
+    _csv("top6-check.csv", ["id", "key", "name", "search_top6", "page_top6", "same_order", "same_set"], top6_rows)
     print(f"[derive] ingredients={len(data['ingredients'])} products={len(data['products'])} unmatched={len(unmatched)} family_rows={len(family_rows)} verify={len(verify_rows)}")

@@ -97,19 +97,20 @@ def test_write_outputs_writes_four_files(tmp_path):
     data = {"version": "v", "source": "s", "family_dict": [], "one_percent_markers": [], "ingredients": [], "products": []}
     fam = [{"family": "PDRN", "ingredient_id": 20, "ingredient": "소듐디엔에이", "products": 3}]
     ver = [{"id": 4, "name": "n", "old_pos": 2, "new_pos": 2, "old_total": 2, "new_total": 2, "old_boundary": None, "new_boundary": None, "same": True}]
-    derive.write_outputs(data, [], fam, ver, tmp_path / "landing", tmp_path / "derived", write_landing=True)
+    top6 = [{"id": 4, "key": "PDRN", "name": "n", "search_top6": "a | b", "page_top6": "a | b", "same_order": True, "same_set": True}]
+    derive.write_outputs(data, [], fam, ver, top6, tmp_path / "landing", tmp_path / "derived", write_landing=True)
     assert (tmp_path / "landing" / "data.json").exists() and (tmp_path / "derived" / "data.json").exists()
-    for name in ("unmatched.csv", "family_matches.csv", "verify.csv"):
+    for name in ("unmatched.csv", "family_matches.csv", "verify.csv", "top6-check.csv"):
         assert (tmp_path / "derived" / name).exists()
     assert "소듐디엔에이" in (tmp_path / "derived" / "family_matches.csv").read_text(encoding="utf-8")
 
 
 def test_write_outputs_can_skip_landing(tmp_path):
     data = {"version": "v", "source": "s", "family_dict": [], "one_percent_markers": [], "ingredients": [], "products": []}
-    derive.write_outputs(data, [], [], [], tmp_path / "landing", tmp_path / "derived", write_landing=False)
+    derive.write_outputs(data, [], [], [], [], tmp_path / "landing", tmp_path / "derived", write_landing=False)
     assert not (tmp_path / "landing" / "data.json").exists()
     assert json.loads((tmp_path / "derived" / "data.json").read_text(encoding="utf-8"))["version"] == "v"
-    for name in ("unmatched.csv", "family_matches.csv", "verify.csv"):
+    for name in ("unmatched.csv", "family_matches.csv", "verify.csv", "top6-check.csv"):
         assert (tmp_path / "derived" / name).exists()
 
 
@@ -118,5 +119,26 @@ def test_write_outputs_does_not_touch_landing_by_default(tmp_path):
     landing.mkdir()
     (landing / "data.json").write_text("LIVE", encoding="utf-8")
     data = {"version": "v", "source": "s", "family_dict": [], "one_percent_markers": [], "ingredients": [], "products": []}
-    derive.write_outputs(data, [], [], [], landing, tmp_path / "derived")
+    derive.write_outputs(data, [], [], [], [], landing, tmp_path / "derived")
     assert (landing / "data.json").read_text(encoding="utf-8") == "LIVE"
+
+
+def test_top6_check_table_order_set_and_exclusion():
+    names = ["정제수", "글리세린", "부틸렌글라이콜", "소듐디엔에이", "나이아신아마이드", "판테놀", "향료"]
+    same = _rec(1, names)
+    swapped = _rec(2, names, key="verify")
+    absent = _rec(3, names)
+    search = {1: names[:6], 2: [names[1], names[0]] + names[2:6], 99: ["x"]}
+    rows = derive.top6_check_table([same, swapped, absent], search)
+    assert [r["id"] for r in rows] == [1, 2]                                # 검색 목록에 없는 3 은 제외, verify 는 포함
+    assert rows[0] == {"id": 1, "key": "PDRN", "name": "제품1", "search_top6": " | ".join(names[:6]), "page_top6": " | ".join(names[:6]),
+                       "same_order": True, "same_set": True}
+    assert rows[1]["key"] == "verify" and rows[1]["same_order"] is False and rows[1]["same_set"] is True
+    assert rows[1]["page_top6"] == " | ".join(names[:6])
+
+
+def test_top6_check_table_uses_first_name_of_page_and_flags_different_set():
+    rec = _rec(1, ["정제수", "글리세린"])
+    rec["ingredients"][0]["korean"] = "정제수, 물"
+    rows = derive.top6_check_table([rec], {1: ["정제수", "다른성분"]})
+    assert rows[0]["page_top6"] == "정제수 | 글리세린" and rows[0]["same_order"] is False and rows[0]["same_set"] is False
