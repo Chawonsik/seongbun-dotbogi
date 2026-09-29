@@ -1,0 +1,8 @@
+{"exported_at": "2026-09-29T06:30:00.000Z", "count": 3, "records": {
+  "2113285": {"product_id": 2113285, "goods_id": 69360, "url": "https://www.hwahae.co.kr/goods/69360?goods_tab=review_ingredients", "title": "t1", "collected_at": "2026-09-29T15:20:11+09:00",
+              "ingredients": [{"id": 5321, "korean": "정제수, 증류수, 물", "english": "Water", "ewg": "1", "purposes": []}, {"id": 2, "korean": "소듐디엔에이", "english": "Sodium DNA", "ewg": "1", "purposes": []}]},
+  "goods_70406": {"product_id": null, "goods_id": 70406, "url": "https://www.hwahae.co.kr/goods/70406", "title": "t2", "collected_at": "2026-09-29T15:21:00+09:00",
+              "ingredients": [{"id": 5321, "korean": "정제수", "english": "Water", "ewg": "1", "purposes": []}]},
+  "999": {"product_id": 999, "goods_id": null, "url": "https://www.hwahae.co.kr/products/999", "title": "t3", "collected_at": "2026-09-29T15:22:00+09:00",
+              "ingredients": []}
+}}
