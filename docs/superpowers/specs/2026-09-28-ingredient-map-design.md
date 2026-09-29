@@ -1,6 +1,6 @@
 # 성분돋보기 2차 설계 스펙 (유행 성분 지도)
 
-작성 2026-09-28. 1판(2026-09-28 오전)에 원식 차 님 검토 댓글 10건, 같은 날 결정, 그리고 "크롤링 전 결정(2026-09-28)" 댓글을 반영해 다시 쓴 판이다.
+작성 2026-09-28, 2026-09-29 3판. 1판에 원식 차 님 검토 댓글 10건과 "크롤링 전 결정" 댓글을 반영한 2판에서, 상세 수집 방식을 Playwright 자동화에서 **사람이 여는 반자동(북마클릿)** 으로 바꿨다(3판, 2026-09-29 결정).
 원 기획: 노션 "성분 이름 마케팅은 실제로 통하는가 (피드백 요청)" (2026-09-23). 설계와 결정의 기준은 노션 결정 로그다.
 
 ## 1. 기준선: 이미 운영 중인 것
@@ -19,20 +19,23 @@
 
 ## 2. 이번 범위
 
-1. 크롤러: 후보 성분 18개의 검색 결과에서 전체 결과 수와 등록 시점을 모으고, 성분당 랭킹 상위 15개(부족하면 실제 개수)의 전성분을 파일럿 수집. 최대 18 x 15 = 270개
-2. 유행 성분 확정: 선정 기준(등록 증가율 또는 이름 단 제품 수)은 수집 뒤 계산해서 정함. 최종 목록은 사용자 확인
-3. 파생 데이터: 기존 `data.json` 스키마를 유지하며 채움. 위치 지표는 상대 위치 기준
-4. 랜딩 갱신: 실험 노트 톤 + 로고 팔레트로 재스타일, 칩 확장, 초성 자동완성, 문구 중립화. 계측과 privacy 유지
-5. 광고 소재: 성분을 특정하지 않는 공통 이미지 3규격. 문장은 Meta 본문에 넣으므로 이미지에는 넣지 않음. 제작은 수집이 끝나 숫자가 확정된 뒤
+1. 검색 수집(자동): 후보 성분 18개의 검색 결과 전체. 제품 수, 등록 시점, 앞 6개 성분이 들어 있어 성분 확정과 "이름 성분이 앞 6개 안에 있나" 계산에 쓴다. 상세 페이지 불필요
+2. 유행 성분 확정: 기준은 숫자를 보기 전에 고정. 제품명에 성분 이름을 단 제품 수(단종 제외) 상위 9개 + 히알루론산(비교 기준). 이름 단 제품이 15개 미만인 성분은 제외. 등록 증가율은 설명용
+3. 전성분 수집(반자동): 확정 성분 10개 x 성분당 20~50개(총 200~500개)를 팀원 둘이 나눠 브라우저에서 연다. 북마클릿이 페이지의 전성분을 브라우저에 모았다가 마지막에 한 번 JSON 으로 내보내고, 스크립트가 그 파일을 raw 형식으로 들여온다. 북마클릿 점검은 PDRN 3개로 먼저
+4. 파생 데이터: 기존 `data.json` 스키마를 유지하며 채움. 위치 지표는 상대 위치 기준. 지금 랜딩의 PDRN 6개도 새 방식으로 다시 확인
+5. 랜딩 갱신: 실험 노트 톤 + 로고 팔레트로 재스타일, 칩 확장, 초성 자동완성, 문구 중립화. 계측과 privacy 유지
+6. 광고 소재: 성분을 특정하지 않는 공통 이미지 3규격. 문장은 Meta 본문에 넣으므로 이미지에는 넣지 않음. 제작은 수집이 끝나 숫자가 확정된 뒤
 
-범위 밖: 광고 집행, 도메인 구매, 본 수집(성분당 200~300개, 같은 크롤러로 `--top-n` 만 바꿔 실행), 리뷰 태그 수집.
+범위 밖: 광고 집행, 도메인 구매, 리뷰 태그 수집. 화해 데이터 제공 요청은 병행해서 보내되 결과를 기다리지 않는다.
 
 ## 3. 확정된 결정
 
 | 항목 | 결정 | 근거 |
 |------|------|------|
-| 제품 선정 | 성분별 검색 결과의 **기본 정렬(랭킹) 상위** 15개 | 리뷰 수 상위는 오래된 인기 제품에 치우침. 요청 수도 적음 |
-| 수집 규모 | 파일럿 성분당 15개. 이름 필터 뒤 15개가 안 되면 실제 개수 그대로 | 본 수집은 같은 스크립트 |
+| 제품 선정 | 성분별 검색 결과의 **기본 정렬(랭킹) 상위**. 전성분 수집은 확정 성분당 20~50개 | 리뷰 수 상위는 오래된 인기 제품에 치우침 |
+| 수집 규모 | 검색은 18개 전체. 전성분은 확정 10개 x 20~50개. 북마클릿 점검은 PDRN 3개 | 사람이 여는 규모 |
+| 상세 수집 방식 | **사람이 브라우저에서 열고 북마클릿으로 모음.** Playwright 등 자동 조작과 봇 감지 우회는 쓰지 않음 | 화해 WAF 가 자동 접근을 막고 있고, 위장해서 넘는 것은 하지 않기로 결정(2026-09-29) |
+| 성분 확정 기준 | 이름 단 제품 수(단종 제외) 상위 9개 + 히알루론산. 15개 미만 제외. 증가율은 설명용 | 숫자 보기 전에 고정(2026-09-29) |
 | 수집 날짜 | 검색과 상세 모두 수집 시각을 기록 | 랭킹은 날마다 바뀜 |
 | 단종 기록 | `obsolete` 표시 제품 제외 | 옛 기록은 성분이 절반쯤 비어 있음 |
 | 후보 성분 | 아래 4.1 의 18개. 알로에와 녹차는 제외 | 선정 기준은 수집 뒤 결정 |
@@ -101,19 +104,24 @@
 
 ### 4.3 유행 성분 확정 `crawler/trend.py`
 
-선정 기준은 **수집 뒤에** 정한다. 스크립트는 판단 재료만 만든다.
+기준은 숫자를 보기 전에 고정했다(2026-09-29). 스크립트는 표와 제안을 만들고 사용자가 `config/ingredients.json` 의 `selected` 로 확정한다.
 
-- 성분마다 `name_patterns` 에 맞고 `obsolete` 가 아닌 제품을 센다: `named_total`(이름 단 제품 수), `recent_24m`(최근 24개월 등록), `prior_24m`(그 이전 24개월), `growth = recent_24m / max(prior_24m, 5)`, `capped` 여부
-- 결과는 `data/derived/trend.csv` 와 콘솔 표. 히알루론산은 비교 기준 행으로 함께 표시
-- 사용자가 표를 보고 기준(증가율 또는 이름 단 제품 수)과 목록을 정해 `config/ingredients.json` 의 `selected: true` 로 표시한다. 정의로 빠지는 성분을 남기려면 근거를 결정 로그에 적는다
+- 성분마다 검색 결과에서 `name_patterns` 에 맞고 `obsolete` 가 아닌 제품을 센다: `named_total`, `recent_24m`, `prior_24m`, `growth = recent_24m / max(prior_24m, 5)`, `capped`, `incomplete`
+- 검색 응답의 `product_ingredients`(앞 6개 성분, 표기 순서)로 `top6_hit` = 이름 성분의 `inci_patterns` 이 앞 6개 안에 있는 제품 수, `top6_rate = top6_hit / named_total`. 상세 페이지 없이 수천 개 전체에서 잰다
+- 제안 규칙 `propose_selection`: `named_total >= 15` 인 성분을 `named_total` 내림차순으로 9개 + `ha`(히알루론산, 비교 기준). 잘린(`capped`) 성분은 `named_total` 이 상한 안에서 센 값이라 표에 `*` 로 표시
+- 출력 `data/derived/trend.csv` 와 콘솔 표. `proposed` 열에 제안 여부
 
-### 4.4 상세 수집 `crawler/product.py`
+### 4.4 전성분 수집(반자동): 링크 페이지, 북마클릿, 들여오기
 
-- 대상: 후보 18개 모두(선정 전이므로), 성분마다 검색 결과에서 `name_patterns` 일치, `obsolete` 아님, 랭킹 순서 상위 15개. 15개가 안 되면 있는 만큼. 각질 산 묶음은 제품명에서 어느 산인지 `acid_in_name` 으로 기록
-- Playwright(Chromium headless)로 `/products/{id}` 를 열고 `#__NEXT_DATA__` 의 `props.pageProps` 를 읽는다. `/products/*`, `/goods/*`, `/_next/data/*` 모두 WAF 챌린지(202 빈 응답)라 curl 로는 안 되고 실제 브라우저에서만 통과된다(2026-09-28 확인). 쇼핑 상품이 있으면 `/goods/{goods_id}` 로 리다이렉트되지만 `productIngredientInfoData` 는 같은 자리에 있다
-- 추출: `productIngredientInfoData.ingredients`(순서 배열, 각 항목 `korean`, `english`, `ewg`, `purposes`). 제품명, 브랜드, 용량, 가격, 등록 시점은 검색 결과에서 가져오므로 상세 페이지에서는 전성분만 읽는다
-- 간격 3초, 실패 시 5초 후 재시도 2회, 그래도 실패면 `data/raw/errors.log`
-- 멱등: `data/raw/products/{id}.json` 있으면 건너뜀
+Playwright 로 제품 페이지를 여는 방식은 쓰지 않는다. 화해 WAF 가 자동 조작 브라우저를 막고, 그것을 위장해서 넘는 것은 하지 않는다.
+
+- `python crawler/run.py links --top-n 30`: 확정 성분마다 검색 결과에서 `select_candidates` 로 상위 N 개를 고르고 `data/derived/candidates.json`(key 별 후보 목록)과 `data/derived/collect-links.html` 을 만든다. HTML 에는 (1) 북마클릿 두 개를 북마크바로 끌어다 놓는 설치 칸, (2) 성분별 제품 링크(새 탭, 브랜드와 제품명, 랭킹 순번), (3) "검증" 묶음으로 지금 랜딩 `data.json` 의 제품 6개. `--only PDRN --top-n 3` 이면 점검용 3개만
+- 북마클릿 "성분 수집" (`tools/bookmarklet/collect.js`): 제품 페이지에서 `#__NEXT_DATA__` 를 읽어 `productIngredientInfoData.ingredients` (id, korean, english, ewg, purposes) 와 제품 번호(`productReviewSummaryData.productMetaData.productIndex`, 없으면 JSON 안의 `productIndex` 또는 `product_id`, 그리고 URL 의 goods 번호)를 뽑아 그 사이트의 `localStorage["sd_collect"]` 에 제품 번호를 키로 모은다. 화면 구석에 "저장 n개" 를 띄우고 **다음 페이지로 이동하지 않는다**. 같은 제품을 다시 누르면 덮어쓴다
+- 북마클릿 "수집 내보내기" (`tools/bookmarklet/export.js`): `localStorage["sd_collect"]` 전체를 `sd-collect-YYYYMMDD-HHMM.json` 으로 내려받는다. 내려받은 뒤 비울지 묻는다
+- `python crawler/run.py ingest 파일.json`: 내보낸 JSON 을 읽어 각 레코드를 `data/derived/candidates.json` 과 대조해 `key` 와 `candidate` 를 붙이고 `data/raw/products/{key}__{id}.json` 으로 저장한다(형식은 아래). 제품 번호가 없으면 goods 번호를 검색 결과의 `goods[].id` 로 맞춘다. 후보 목록에 없는 제품은 `key: "verify"` 로 저장(랜딩 검증용). 같은 제품이 두 성분의 후보이면 각각 저장
+- raw 형식: `{"id", "key", "candidate", "ingredients": [{"id","korean","english","ewg","purposes"}], "final_url", "collected_at"}`. 전성분 원문은 여기에만
+
+작업 분담: 링크 페이지의 성분별 묶음을 둘이 나눠 연다. 성분당 20~30개면 한 명당 100~150 페이지, 페이지당 10초 안팎.
 
 ### 4.5 파생 계산 `crawler/derive.py`
 
@@ -125,22 +133,25 @@
 - `families`: 모든 후보 성분 사전으로 찾은 `{name, pos, top}`. `top` 은 `boundary` 앞이면 true
 - `price_per_ml`: 가격 / 용량(ml). 용량이 ml 나 g 가 아니면 null
 - `registered`: `updateTime` 을 YYYY-MM-DD 로
-- `collected_at`: 상세 수집 시각(YYYY-MM-DD)
+- `collected_at`: 북마클릿이 기록한 수집 시각(YYYY-MM-DD)
 
-성분마다: `key, label, category, n_products, common`(전부에 든 성분, 기존과 같음), `note`(수집일과 규칙), 추가로 `median_rel`(상대 위치 중앙값), `back_half`(뒤쪽 절반 개수), `low_zone`(1% 추정 구간 개수). 큰 숫자는 클라이언트가 지금처럼 계산해도 되지만 값이 파일에 있으면 광고 문구 숫자를 같은 곳에서 가져온다.
+성분마다: `key, label, category, n_products, common`(전부에 든 성분, 화해 성분 번호로 교집합), `note`, `median_rel`, `back_half`, `low_zone`. `top6_rate` 는 검색 전체 기준으로 `trend.csv` 에서 가져와 함께 싣는다.
 
-전체: `version`(수집일-pilot), `source`, `family_dict`(계열 사전, 기존 FAM), `one_percent_markers`(기존 ONE).
+전체: `version`, `source`, `family_dict`(계열 사전), `one_percent_markers`.
 
-출력: `landing/data.json`. 리뷰 수, 평점, 전성분 원문은 넣지 않는다.
+출력: `landing/data.json`, `data/derived/unmatched.csv`, `data/derived/family_matches.csv`(계열별 실제 걸린 성분 번호와 이름). 리뷰 수, 평점, 전성분 원문은 넣지 않는다. `key: "verify"` 레코드는 공개 파일에 넣지 않고 `data/derived/verify.csv` 로 지금 랜딩 값과 비교표만 만든다.
 
-### 4.6 실행
+### 4.6 실행 순서
 
 ```bash
-python crawler/run.py search            # 후보 18개 검색 전체 수집 (길다)
-python crawler/run.py products          # 후보 18개 x 최대 15개 상세
-python crawler/run.py trend             # 판단 재료 표 출력 → 사용자가 selected 표시
-python crawler/run.py derive            # selected 성분만으로 landing/data.json 생성
-python crawler/run.py products --top-n 300   # 본 수집
+python crawler/run.py search                 # 후보 18개 검색 전체 (약 2시간, 1회, 05:00 KST 회피)
+python crawler/run.py trend                  # trend.csv + 제안 → 사용자가 selected 표시
+python crawler/run.py links --only PDRN --top-n 3   # 북마클릿 점검용 3개
+#   사람이 열고 북마클릿으로 모아 내보낸 뒤
+python crawler/run.py ingest sd-collect-....json
+python crawler/run.py derive                 # 매칭 점검. 이상 없으면
+python crawler/run.py links --top-n 30       # 확정 10개 x 30개 링크 페이지 → 둘이 나눠 수집
+python crawler/run.py ingest ...; python crawler/run.py derive
 ```
 
 ## 5. 랜딩 변경
@@ -203,12 +214,14 @@ seongbun-dotbogi/
   config/ingredients.json          후보 18개, selected 표시
   config/one-percent-markers.json  기존 ONE 목록
   crawler/
-    search.py  trend.py  product.py  derive.py  run.py
+    config.py  schedule.py  match.py  hwahae_api.py  search.py  select.py
+    trend.py  links.py  ingest.py  derive.py  run.py
     requirements.txt  tests/
+  tools/bookmarklet/collect.js  export.js   북마클릿 원본(읽기 쉬운 형태)
   data/raw/search/{key}.jsonl      git 제외
-  data/raw/products/{id}.json      git 제외
+  data/raw/products/{key}__{id}.json  git 제외 (북마클릿 내보내기를 ingest 로 변환)
   data/raw/errors.log              git 제외
-  data/derived/trend.csv  unmatched.csv
+  data/derived/trend.csv  candidates.json  collect-links.html  unmatched.csv  family_matches.csv  verify.csv
   landing/index.html  privacy.html  data.json  vercel.json  README.md
   ads/template.html  copy.json  render.py  out/(git 제외)
   assets/logo.webp
@@ -221,14 +234,15 @@ seongbun-dotbogi/
 ## 8. 오류 처리
 
 - 검색 수집: 응답 가로채기가 60초 동안 새 페이지를 못 받으면 그 성분을 끝난 것으로 보고 다음으로. 페이지 수와 마지막 상태를 로그
-- 상세 수집: 4.4 의 재시도 후 `errors.log`. 끝에 성공/실패 개수 출력
+- 들여오기: 레코드에 전성분이 없거나 제품 번호를 못 맞추면 건너뛰고 `data/derived/ingest-skipped.csv` 에 남김. 끝에 저장/건너뜀 개수 출력
+- 북마클릿: 제품 페이지가 아니거나 전성분이 없으면 화면에 이유를 띄우고 저장하지 않음
 - derive: 필수 키가 없는 raw 파일은 건너뛰고 경고. `unmatched.csv` 개수 출력
 - 랜딩: 기존 실패 문구 유지("데이터를 불러오지 못했습니다")
 - 광고 렌더: 데이터 주입 실패 시 중단
 
 ## 9. 테스트
 
-- `crawler/tests/`: 이름 패턴 필터, 단종 제외, 위치 매칭, 1% 경계, 상대 위치와 중앙값, 증가율 계산, 검색 응답 파싱(저장한 응답 픽스처)
+- `crawler/tests/`: 이름 패턴 필터, 단종 제외, 위치 매칭, 1% 경계, 상대 위치와 중앙값, 증가율과 top6 계산, 선정 제안 규칙, 검색 응답 파싱(저장한 응답 픽스처), 링크 페이지 생성, 내보내기 JSON 들여오기(픽스처)
 - 랜딩: 초성 변환과 자동완성 매칭을 순수 함수로 두고 Node 로 실행하는 `landing/tests/`. 화면은 Playwright 로 칩 선택, 검색, 붙여넣기 시나리오 1개씩과 콘솔 오류 0
 - 광고: 3장 파일 존재와 크기
 
@@ -237,13 +251,14 @@ seongbun-dotbogi/
 - 전성분 원문은 `data/raw/` 에만. git, 랜딩, 광고 어디에도 없음
 - 공개 파일에는 파생값과 검색용 제품명, 브랜드만. 리뷰 수와 평점 없음
 - 광고 이미지에 브랜드, 제품명, 성분명, "화해" 없음. 랜딩 본문에도 "화해" 없음. 출처는 푸터
-- 요청 간격 3초 이상. 검색 약 2,500회(1회성), 상세 최대 270회
+- 요청 간격 3초 이상. 검색 약 2,500회(1회성). 제품 페이지는 사람이 연다. 자동 조작 브라우저와 봇 감지 우회는 쓰지 않는다
 - 결과 카드 문장은 관찰만("몇 번째에 있다"). 효능과 품질 판단 없음
 
 ## 11. 사용자 확인이 필요한 것(구현 중)
 
-1. 판단 재료 표(이름 단 제품 수, 등록 증가율)를 본 뒤 선정 기준과 확정 성분 8~10개
+1. trend 표의 제안(이름 단 제품 수 상위 9 + 히알루론산)을 보고 확정 성분 10개 승인
 2. 중립 제목 문구
 3. B 문구에 숫자를 넣을지
 4. C 문구와 리뷰 태그 수집 여부
 5. 배포 방식(자동 배포인지)
+6. 성분당 전성분 수집 개수(20~50 사이)

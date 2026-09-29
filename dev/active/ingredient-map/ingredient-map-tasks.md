@@ -7,16 +7,17 @@
 - [x] 크롤러 구현 계획 작성
 
 ## 크롤러 (docs/superpowers/plans/2026-09-28-crawler.md, 브랜치 feat/crawler)
-- [ ] Task 1 브랜치, 환경, config 18개
-- [ ] Task 2 match.py
-- [ ] Task 3 hwahae_api.py
-- [ ] Task 4 search.py
-- [ ] Task 5 select.py
-- [ ] Task 6 product.py (Playwright)
-- [ ] Task 7 trend.py
-- [ ] Task 8 derive.py
-- [ ] Task 9 run.py, README, 소규모 파일럿, PR
-- [ ] Task 10 파일럿 본 실행 (search 약 2시간, products 약 20분)
+- [x] Task 1 브랜치, 환경, config 18개
+- [x] Task 2 match.py
+- [x] Task 3 hwahae_api.py
+- [x] Task 4 search.py
+- [x] Task 5 select.py
+- [ ] Task 6 (3판) Playwright 삭제, 북마클릿 2개
+- [ ] Task 7 (3판) trend.py: 고정 기준 제안, top6_rate
+- [ ] Task 8 (3판) links.py, ingest.py
+- [ ] Task 9 (3판) derive.py (verify 표 포함)
+- [ ] Task 10 (3판) run.py, README, PDRN 3개 사람 점검, PR
+- [ ] Task 11 (3판) 본 실행: search 2시간, 성분 확정, 둘이 나눠 200~500 페이지 수집, derive
 
 ## 성분 선정
 - [ ] trend.csv 검토, 기준과 8~10개 확정, selected 표시, derive
