@@ -12,6 +12,8 @@ from crawler import match
 
 SOURCE_NOTE = "화해(hwahae.co.kr) 등록 전성분 표기 순서 기준 파생 지표. 원문 미수록. 함량 수치는 추정하지 않음. 1% 경계는 추정."
 VERIFY_KEY = "verify"
+# 매칭 제품이 이보다 적으면 공통 성분이 한 제품의 전성분과 거의 같아지므로 공개하지 않는다.
+MIN_COMMON_PRODUCTS = 5
 
 
 def price_per_ml(price, capacity: str | None) -> int | None:
@@ -67,7 +69,7 @@ def derive_product(rec: dict, ing: dict, all_cfg: list[dict], markers: list[str]
 
 def common_ingredients(product_recs: list[dict]) -> list[str]:
     """전부에 든 성분. 화해 성분 번호(id)로 교집합을 구하고, 표시 이름은 가장 긴 korean 첫 이름."""
-    if not product_recs:
+    if len(product_recs) < MIN_COMMON_PRODUCTS:
         return []
     id_sets = []
     names: dict = {}

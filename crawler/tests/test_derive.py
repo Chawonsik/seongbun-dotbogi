@@ -40,9 +40,19 @@ def test_derive_product_returns_none_when_unmatched():
 
 def test_common_ingredients_by_hwahae_id_not_name():
     recs = [_rec(1, [(5321, "정제수, 물"), (2, "1,2-헥산다이올"), (9, "소듐디엔에이")]),
-            _rec(2, [(2, "1"), (5321, "정제수, 물"), (77, "향료")])]
+            _rec(2, [(2, "1"), (5321, "정제수, 물"), (77, "향료")]),
+            _rec(3, [(5321, "정제수"), (2, "1,2-헥산다이올"), (78, "글리세린")]),
+            _rec(4, [(2, "1,2-헥산다이올"), (5321, "정제수, 물"), (79, "카보머")]),
+            _rec(5, [(5321, "정제수, 물"), (2, "1,2-헥산다이올"), (80, "병풀추출물")])]
     assert derive.common_ingredients(recs) == ["1,2-헥산다이올", "정제수"]
-    assert derive.common_ingredients([_rec(1, [(1, "글리세린")]), _rec(2, [(2, "글리세린")])]) == []
+    diff = [_rec(i, [(i, "글리세린")]) for i in range(1, 6)]
+    assert derive.common_ingredients(diff) == []
+
+
+def test_common_ingredients_hidden_when_too_few_products():
+    recs = [_rec(i, [(5321, "정제수"), (2, "1,2-헥산다이올")]) for i in range(1, 5)]
+    assert derive.common_ingredients(recs[:1]) == []
+    assert derive.common_ingredients(recs) == []
 
 
 def test_family_match_table_lists_hit_ingredient_and_id():
@@ -70,7 +80,7 @@ def test_build_data_only_selected_skips_verify_and_records_unmatched(tmp_path):
     assert [i["key"] for i in data["ingredients"]] == ["PDRN"]
     assert [p["id"] for p in data["products"]] == [1]
     ing = data["ingredients"][0]
-    assert ing["n_products"] == 1 and ing["median_rel"] == 0.5 and ing["back_half"] == 1 and ing["low_zone"] == 0 and ing["top6_rate"] == 0.42
+    assert ing["n_products"] == 1 and ing["median_rel"] == 0.5 and ing["back_half"] == 1 and ing["low_zone"] == 0 and ing["top6_rate"] == 0.42 and ing["common"] == []
     assert unmatched == [{"key": "PDRN", "id": 2, "name": "제품2", "brand": "브랜드"}]
     assert data["family_dict"][0]["name"] == "PDRN" and "카보머" in data["one_percent_markers"]
 
