@@ -4,5 +4,5 @@
 - [x] Local check with debug panel: 7 events and props
 - [x] Code review (7 findings fixed: pixel autoConfig off, double-tap lock, focus moves, visible-time survey timer, store on show, UTM space handling, Amplitude onerror)
 - [x] Commit on `feat/concept-landing`, open PR
-- [ ] Ask user before deploying
+- [x] Deployed 2026-09-29 (dpl_FkH5eca1fA1iXSHJkJ6V4QHuXX76), live file SHA matches local; index/privacy/data unchanged
 - [ ] 2026-09-30: paste Amplitude key, verify events in Amplitude
