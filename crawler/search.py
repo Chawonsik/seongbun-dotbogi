@@ -46,6 +46,7 @@ def collect_term(client: SearchClient, term: str, out_jsonl: Path, max_pages: in
         "term": term,
         "total_count": total or 0,
         "pages": pages,
+        "max_pages": max_pages,
         "capped": capped,
         "incomplete": incomplete,
         "started_at": started,
@@ -59,8 +60,10 @@ def collect_ingredient(client: SearchClient, ing: dict, raw_dir: Path = RAW_DIR,
     meta_path = sdir / f"{ing['key']}.meta.json"
     if meta_path.exists() and not force:
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
-        meta["skipped"] = True
-        return meta
+        # 낮은 상한(스모크 실행)으로 잘린 결과는 더 큰 상한 요청 때 다시 받는다.
+        if not (meta.get("capped") and meta.get("max_pages", 0) < max_pages):
+            meta["skipped"] = True
+            return meta
     if jsonl.exists():
         jsonl.unlink()
     started = _now()
@@ -70,6 +73,7 @@ def collect_ingredient(client: SearchClient, ing: dict, raw_dir: Path = RAW_DIR,
         "terms": list(ing["search_terms"]),
         "total_count": {m["term"]: m["total_count"] for m in per_term},
         "pages": {m["term"]: m["pages"] for m in per_term},
+        "max_pages": max_pages,
         "capped": any(m["capped"] for m in per_term),
         "capped_terms": [m["term"] for m in per_term if m["capped"]],
         "incomplete": any(m["incomplete"] for m in per_term),
@@ -84,26 +88,41 @@ def collect_ingredient(client: SearchClient, ing: dict, raw_dir: Path = RAW_DIR,
 
 
 def read_products(key: str, raw_dir: Path = RAW_DIR) -> list[dict]:
-    """jsonl 을 읽어 제품 목록으로. 같은 id 는 첫 등장만 남기고 _term, _page, _rank_index 를 붙인다."""
+    """jsonl 을 읽어 제품 목록으로. 검색어별 랭킹을 번갈아 합쳐(t1[0], t2[0], t1[1], ...) 순위를 매긴다.
+
+    같은 id 는 먼저 나온 것만 남기고 _term, _page, _rank_index 를 붙인다.
+    """
     jsonl = raw_dir / "search" / f"{key}.jsonl"
-    seen: set[int] = set()
-    out: list[dict] = []
     if not jsonl.exists():
-        return out
+        return []
+    per_term: dict[str, list[dict]] = {}
+    seen_in_term: dict[str, set] = {}
     for line in jsonl.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
         rec = json.loads(line)
+        term = rec["term"]
+        seen = seen_in_term.setdefault(term, set())
+        items = per_term.setdefault(term, [])
         for p in rec["response"].get("products", []):
             pid = p.get("id")
             if pid in seen:
                 continue
             seen.add(pid)
             q = dict(p)
-            q["_term"] = rec["term"]
+            q["_term"] = term
             q["_page"] = rec["page"]
-            q["_rank_index"] = len(out)
-            out.append(q)
+            items.append(q)
+    out: list[dict] = []
+    seen_ids: set = set()
+    lists = list(per_term.values())
+    for i in range(max((len(x) for x in lists), default=0)):
+        for items in lists:
+            if i < len(items) and items[i].get("id") not in seen_ids:
+                q = items[i]
+                seen_ids.add(q.get("id"))
+                q["_rank_index"] = len(out)
+                out.append(q)
     return out
 
 

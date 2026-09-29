@@ -78,3 +78,33 @@ def test_write_trend_csv(tmp_path):
     with open(path, encoding="utf-8", newline="") as f:
         got = list(csv.DictReader(f))
     assert got[0]["key"] == "PDRN" and got[0]["top6_rate"] == "0.1" and got[0]["proposed"] == "True"
+
+
+def test_capped_note_uses_meta_max_pages(tmp_path):
+    assert trend.CAPPED_NOTE == trend.capped_note(250) and "상한 250페이지" in trend.CAPPED_NOTE
+    _write_search(tmp_path, "PDRN", [_p(i, "PDRN x", _ts(2026, 1, 1)) for i in range(30)], capped=True)
+    meta_path = tmp_path / "search" / "PDRN.meta.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    meta["max_pages"] = 2
+    meta_path.write_text(json.dumps(meta), encoding="utf-8")
+    rows = trend.build_trend(tmp_path, [ING], TODAY)
+    assert rows[0]["note"] == trend.capped_note(2) and "상한 2페이지" in rows[0]["note"]
+
+
+def test_build_trend_marks_missing_meta_incomplete_and_unproposed(tmp_path):
+    sdir = tmp_path / "search"
+    sdir.mkdir()
+    (sdir / "PDRN.jsonl").write_text(json.dumps({"term": "t", "page": 0, "fetched_at": "x", "response": {
+        "products": [_p(i, "PDRN x", _ts(2026, 1, 1)) for i in range(30)]}}, ensure_ascii=False) + chr(10), encoding="utf-8")
+    rows = trend.build_trend(tmp_path, [ING], TODAY)
+    assert rows[0]["incomplete"] is True and rows[0]["proposed"] is False and rows[0]["note"] == "meta 없음(중단된 수집)"
+    assert trend.propose_selection([{"key": "ha", "named_total": 99, "incomplete": True}, {"key": "a", "named_total": 20, "incomplete": True},
+                                    {"key": "b", "named_total": 20, "incomplete": False}]) == {"b"}
+
+
+def test_print_trend_marks_incomplete(capsys):
+    row = {"key": "PDRN", "label": "PDRN", "total_count": 1, "capped": False, "incomplete": True, "named_total": 1, "recent_24m": 0,
+           "prior_24m": 0, "growth": 0.0, "top6_hit": 0, "top6_rate": 0.0, "proposed": False, "note": ""}
+    trend.print_trend([row])
+    out = capsys.readouterr().out
+    assert "! PDRN" in out.splitlines()[1] and "제안에서 제외" in out

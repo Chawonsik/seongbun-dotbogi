@@ -29,6 +29,6 @@ python crawler/run.py derive --publish       # landing/data.json 에도 쓴다
 --only PDRN  한 성분만 (links 에서는 selected 여부와 무관하게 지정) / --top-n 30 성분당 링크 수 / --force 검색 다시 받기 / --max-pages N 검색 성분당 페이지 상한(기본 250)
 
 ## 규칙
-요청 간격 3초. 검색 상한 250페이지(잘린 성분은 meta 의 capped 와 trend 표의 * 로 표시). 단종(obsolete) 제외.
+요청 간격 3초. 검색 상한 250페이지(잘린 성분은 meta 의 capped 와 trend 표의 * 로 표시). 낮은 상한으로 잘린 meta(스모크 실행)는 더 큰 상한으로 다시 돌리면 다시 받는다. meta 없이 중단된 성분은 trend 표에 ! 로 나오고 제안에서 빠진다. 검색어가 여러 개면 검색어별 랭킹을 번갈아 합쳐 후보 순위를 정한다. 단종(obsolete) 제외.
 401, 403, 429, WAF 202 가 오면 즉시 멈춘다. 검색 jsonl 과 전성분 원문은 data/raw/ 아래(git 제외).
 전성분 원문, 리뷰 수, 평점은 공개 파일에 넣지 않는다.

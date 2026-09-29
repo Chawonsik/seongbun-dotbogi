@@ -14,7 +14,15 @@ from crawler.search import read_products
 
 FIELDS = ["key", "label", "total_count", "capped", "incomplete", "named_total", "recent_24m", "prior_24m", "growth",
           "top6_hit", "top6_rate", "proposed", "note"]
-CAPPED_NOTE = "상한 250페이지에 잘림. 뒤쪽 제품이 빠져 named_total 과 증가율이 앞쪽(랭킹 상위)으로 치우침"
+DEFAULT_MAX_PAGES = 250
+NO_META_NOTE = "meta 없음(중단된 수집)"
+
+
+def capped_note(max_pages: int) -> str:
+    return f"상한 {max_pages}페이지에 잘림. 뒤쪽 제품이 빠져 named_total 과 증가율이 앞쪽(랭킹 상위)으로 치우침"
+
+
+CAPPED_NOTE = capped_note(DEFAULT_MAX_PAGES)
 TOO_FEW_NOTE = "이름 단 제품 15개 미만이라 제외"
 TOP_N = 9
 MIN_NAMED = 15
@@ -45,6 +53,7 @@ def count_registrations(products: list[dict], ing: dict, today: date) -> dict:
 
 
 def propose_selection(rows: list[dict], top_n: int = TOP_N, min_named: int = MIN_NAMED, always: tuple = ALWAYS) -> set[str]:
+    rows = [r for r in rows if not r.get("incomplete")]
     eligible = [r for r in rows if r["named_total"] >= min_named and r["key"] not in always]
     eligible.sort(key=lambda r: -r["named_total"])
     chosen = {r["key"] for r in eligible[:top_n]}
@@ -58,12 +67,16 @@ def build_trend(raw_dir: Path, ingredients: list[dict], today: date | None = Non
     for ing in ingredients:
         meta_path = raw_dir / "search" / f"{ing['key']}.meta.json"
         meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
+        no_meta = not meta_path.exists() and (raw_dir / "search" / f"{ing['key']}.jsonl").exists()
         tc = meta.get("total_count")
         total = sum(tc.values()) if isinstance(tc, dict) else 0
         c = count_registrations(read_products(ing["key"], raw_dir), ing, today)
         capped = bool(meta.get("capped"))
+        note = capped_note(meta.get("max_pages", DEFAULT_MAX_PAGES)) if capped else ""
+        if no_meta:
+            note = NO_META_NOTE
         rows.append({"key": ing["key"], "label": ing["label"], "total_count": total, "capped": capped,
-                     "incomplete": bool(meta.get("incomplete")), "proposed": False, "note": CAPPED_NOTE if capped else "", **c})
+                     "incomplete": bool(meta.get("incomplete")) or no_meta, "proposed": False, "note": note, **c})
     chosen = propose_selection(rows)
     for r in rows:
         r["proposed"] = r["key"] in chosen
@@ -86,6 +99,7 @@ def print_trend(rows: list[dict]) -> None:
     print(f"{'sel':3s} {'key':12s} {'label':10s} {'total':>6s} {'named':>6s} {'top6%':>6s} {'recent':>6s} {'prior':>6s} {'growth':>7s}")
     for r in rows:
         mark = "*" if r["capped"] else " "
+        bang = "!" if r["incomplete"] else " "
         sel = "V" if r["proposed"] else " "
-        print(f"{sel:3s} {r['key']:12s} {r['label'][:10]:10s} {r['total_count']:6d} {r['named_total']:6d} {r['top6_rate']*100:5.0f}% {r['recent_24m']:6d} {r['prior_24m']:6d} {mark}{r['growth']:6.2f}")
-    print("V = 제안(이름 단 제품 수 상위 9 + 히알루론산, 15개 미만 제외). * = 250페이지 상한에 잘림(다른 성분과 직접 비교 금지)")
+        print(f"{sel:2s}{bang} {r['key']:12s} {r['label'][:10]:10s} {r['total_count']:6d} {r['named_total']:6d} {r['top6_rate']*100:5.0f}% {r['recent_24m']:6d} {r['prior_24m']:6d} {mark}{r['growth']:6.2f}")
+    print("V = 제안(이름 단 제품 수 상위 9 + 히알루론산, 15개 미만 제외). * = 페이지 상한에 잘림(다른 성분과 직접 비교 금지). ! = 수집이 덜 끝남(meta 없음 또는 incomplete, 제안에서 제외)")
