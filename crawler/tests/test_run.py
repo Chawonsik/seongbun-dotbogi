@@ -21,3 +21,29 @@ def test_links_only_forces_selected():
     ings = [{"key": "PDRN", "selected": False}]
     out = run.force_selected(ings)
     assert out[0]["selected"] is True and ings[0]["selected"] is False   # 원본은 그대로
+
+
+def test_verify_products_reads_given_baseline(tmp_path):
+    import json
+    base = tmp_path / "baseline-data.json"
+    base.write_text(json.dumps({"products": [{"id": 1, "brand": "b", "name": "n", "pos": 2}, {"id": 2}]}, ensure_ascii=False), encoding="utf-8")
+    assert run._verify_products(base) == [{"id": 1, "brand": "b", "name": "n"}, {"id": 2, "brand": "", "name": ""}]
+    assert run._verify_products(tmp_path / "missing.json") == []
+
+
+def test_parse_args_publish_flag():
+    assert run.parse_args(["derive"]).publish is False
+    assert run.parse_args(["derive", "--publish"]).publish is True
+
+
+def test_baseline_path_prefers_derived_copy(tmp_path, monkeypatch):
+    monkeypatch.setattr(run.config, "DERIVED_DIR", tmp_path)
+    monkeypatch.setattr(run.config, "LANDING_DIR", tmp_path / "landing")
+    assert run.baseline_path() == tmp_path / "landing" / "data.json"
+    (tmp_path / "baseline-data.json").write_text("{}", encoding="utf-8")
+    assert run.baseline_path() == tmp_path / "baseline-data.json"
+
+
+def test_is_under(tmp_path):
+    assert run._is_under(tmp_path / "exports" / "a.json", tmp_path)
+    assert not run._is_under(tmp_path.parent / "a.json", tmp_path)

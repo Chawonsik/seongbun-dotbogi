@@ -97,8 +97,8 @@ def test_write_outputs_writes_four_files(tmp_path):
     data = {"version": "v", "source": "s", "family_dict": [], "one_percent_markers": [], "ingredients": [], "products": []}
     fam = [{"family": "PDRN", "ingredient_id": 20, "ingredient": "소듐디엔에이", "products": 3}]
     ver = [{"id": 4, "name": "n", "old_pos": 2, "new_pos": 2, "old_total": 2, "new_total": 2, "old_boundary": None, "new_boundary": None, "same": True}]
-    derive.write_outputs(data, [], fam, ver, tmp_path / "landing", tmp_path / "derived")
-    assert (tmp_path / "landing" / "data.json").exists()
+    derive.write_outputs(data, [], fam, ver, tmp_path / "landing", tmp_path / "derived", write_landing=True)
+    assert (tmp_path / "landing" / "data.json").exists() and (tmp_path / "derived" / "data.json").exists()
     for name in ("unmatched.csv", "family_matches.csv", "verify.csv"):
         assert (tmp_path / "derived" / name).exists()
     assert "소듐디엔에이" in (tmp_path / "derived" / "family_matches.csv").read_text(encoding="utf-8")
@@ -108,5 +108,15 @@ def test_write_outputs_can_skip_landing(tmp_path):
     data = {"version": "v", "source": "s", "family_dict": [], "one_percent_markers": [], "ingredients": [], "products": []}
     derive.write_outputs(data, [], [], [], tmp_path / "landing", tmp_path / "derived", write_landing=False)
     assert not (tmp_path / "landing" / "data.json").exists()
+    assert json.loads((tmp_path / "derived" / "data.json").read_text(encoding="utf-8"))["version"] == "v"
     for name in ("unmatched.csv", "family_matches.csv", "verify.csv"):
         assert (tmp_path / "derived" / name).exists()
+
+
+def test_write_outputs_does_not_touch_landing_by_default(tmp_path):
+    landing = tmp_path / "landing"
+    landing.mkdir()
+    (landing / "data.json").write_text("LIVE", encoding="utf-8")
+    data = {"version": "v", "source": "s", "family_dict": [], "one_percent_markers": [], "ingredients": [], "products": []}
+    derive.write_outputs(data, [], [], [], landing, tmp_path / "derived")
+    assert (landing / "data.json").read_text(encoding="utf-8") == "LIVE"

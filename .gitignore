@@ -3,6 +3,10 @@
 
 # Raw crawled data (contains full ingredient lists; never commit)
 data/raw/
+data/raw/exports/
+# Bookmarklet export (full ingredient lists; never commit)
+sd-collect-*.json
+!crawler/tests/fixtures/sd-collect-sample.json
 
 # Generated outputs
 ads/out/
