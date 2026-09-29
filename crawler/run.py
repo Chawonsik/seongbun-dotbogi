@@ -7,11 +7,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-_HERE = Path(__file__).resolve().parent
-# `python crawler/run.py` puts crawler/ first on sys.path, where crawler/select.py would shadow the stdlib
-# `select` module that urllib3 needs. Drop that entry and use the repo root instead.
-sys.path[:] = [p for p in sys.path if Path(p or ".").resolve() != _HERE]
-sys.path.insert(0, str(_HERE.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from crawler import config, derive, ingest, links, schedule, search, trend  # noqa: E402
 from crawler.hwahae_api import BlockedError, SearchClient  # noqa: E402
@@ -76,6 +72,9 @@ def main(argv=None) -> int:
         if not a.file:
             print("ingest 에는 내보낸 JSON 파일 경로가 필요합니다")
             return 2
+        if not Path(a.file).exists():
+            print(f"파일을 찾을 수 없습니다: {a.file}")
+            return 2
         ingest.ingest_export(Path(a.file), config.RAW_DIR, config.DERIVED_DIR, all_ings)
     elif a.step == "derive":
         version = f"{date.today().isoformat()}-pilot"
@@ -90,7 +89,7 @@ def main(argv=None) -> int:
         verify_rows = derive.verify_table(raws, old, markers, pdrn)
         if not data["ingredients"]:
             print("selected: true 인 성분이 없어 data.json 은 만들지 않습니다. verify 와 family 표만 씁니다")
-            derive.write_outputs(old or data, unmatched, family_rows, verify_rows, config.LANDING_DIR, config.DERIVED_DIR)
+            derive.write_outputs(data, unmatched, family_rows, verify_rows, config.LANDING_DIR, config.DERIVED_DIR, write_landing=False)
             return 0
         derive.write_outputs(data, unmatched, family_rows, verify_rows, config.LANDING_DIR, config.DERIVED_DIR)
     return 0

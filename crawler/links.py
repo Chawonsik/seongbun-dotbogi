@@ -6,7 +6,7 @@ import json
 import re
 from pathlib import Path
 
-from crawler import select
+from crawler import pick
 from crawler.search import read_products
 
 PRODUCT_URL = "https://www.hwahae.co.kr/products/{id}"
@@ -25,7 +25,7 @@ def build_candidates(raw_dir: Path, ingredients: list[dict], top_n: int) -> dict
         if not products:
             print(f"[links] {ing['key']}: 검색 결과가 없습니다. 먼저 search 를 실행하세요")
             continue
-        out[ing["key"]] = select.select_candidates(products, ing, top_n=top_n)
+        out[ing["key"]] = pick.select_candidates(products, ing, top_n=top_n)
     return out
 
 

@@ -12,11 +12,11 @@ python crawler/run.py trend                  # data/derived/trend.csv + 제안 �
 python crawler/run.py links --only PDRN --top-n 3    # 북마클릿 점검용 3개 (data/derived/collect-links.html)
 #   사람이 열고 북마클릿으로 모아 내보낸 뒤 (tools/bookmarklet/README.md)
 python crawler/run.py ingest sd-collect-YYYYMMDD-HHMM.json
-python crawler/run.py derive                 # landing/data.json, unmatched.csv, family_matches.csv, verify.csv
+python crawler/run.py derive                 # selected 가 있으면 landing/data.json 과 unmatched.csv, family_matches.csv, verify.csv. selected 가 없으면 verify.csv 와 family_matches.csv 만 쓰고 landing/data.json 은 건드리지 않는다
 python crawler/run.py links --top-n 30       # 확정 성분 x 30개 링크 페이지 (둘이 나눠 수집)
 
 ## 옵션
---only PDRN  한 성분만 (links 에서는 selected 여부와 무관하게 지정) / --top-n 30 성분당 링크 수 / --force 검색 다시 받기
+--only PDRN  한 성분만 (links 에서는 selected 여부와 무관하게 지정) / --top-n 30 성분당 링크 수 / --force 검색 다시 받기 / --max-pages N 검색 성분당 페이지 상한(기본 250)
 
 ## 규칙
 요청 간격 3초. 검색 상한 250페이지(잘린 성분은 meta 의 capped 와 trend 표의 * 로 표시). 단종(obsolete) 제외.

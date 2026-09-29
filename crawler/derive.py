@@ -186,10 +186,11 @@ def verify_table(raws: list[dict], old_data: dict, markers: list[str], pdrn_patt
     return rows
 
 
-def write_outputs(data: dict, unmatched: list[dict], family_rows: list[dict], verify_rows: list[dict], landing_dir: Path, derived_dir: Path) -> None:
-    landing_dir.mkdir(parents=True, exist_ok=True)
+def write_outputs(data: dict, unmatched: list[dict], family_rows: list[dict], verify_rows: list[dict], landing_dir: Path, derived_dir: Path, write_landing: bool = True) -> None:
     derived_dir.mkdir(parents=True, exist_ok=True)
-    (landing_dir / "data.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    if write_landing:
+        landing_dir.mkdir(parents=True, exist_ok=True)
+        (landing_dir / "data.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
 
     def _csv(name: str, fields: list[str], rows: list[dict]) -> None:
         with open(derived_dir / name, "w", encoding="utf-8", newline="") as f:

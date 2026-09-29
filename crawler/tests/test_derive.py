@@ -102,3 +102,11 @@ def test_write_outputs_writes_four_files(tmp_path):
     for name in ("unmatched.csv", "family_matches.csv", "verify.csv"):
         assert (tmp_path / "derived" / name).exists()
     assert "소듐디엔에이" in (tmp_path / "derived" / "family_matches.csv").read_text(encoding="utf-8")
+
+
+def test_write_outputs_can_skip_landing(tmp_path):
+    data = {"version": "v", "source": "s", "family_dict": [], "one_percent_markers": [], "ingredients": [], "products": []}
+    derive.write_outputs(data, [], [], [], tmp_path / "landing", tmp_path / "derived", write_landing=False)
+    assert not (tmp_path / "landing" / "data.json").exists()
+    for name in ("unmatched.csv", "family_matches.csv", "verify.csv"):
+        assert (tmp_path / "derived" / name).exists()
