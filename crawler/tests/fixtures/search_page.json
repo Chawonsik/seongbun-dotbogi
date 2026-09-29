@@ -1,0 +1,15 @@
+{
+  "meta": {"code": 1000, "message": "성공",
+           "pagination": {"total_count": 45, "limit": 20, "offset": 20, "count": 20, "next_token": null},
+           "totalResultCount": 45},
+  "products": [
+    {"id": 2000002, "brand": "테스트브랜드 (TESTBRAND)", "brand_name": "테스트브랜드",
+     "productName": "테스트 PDRN 토너", "obsolete": false, "sale": true,
+     "updateTime": 1700000000, "reviewCount": 100, "rankOrder": 1,
+     "product_capacity": "100mL", "product_price": 10000},
+    {"id": 2000001, "brand": "테스트 (TEST)", "brand_name": "테스트",
+     "productName": "옛날 PDRN 크림", "obsolete": true, "sale": false,
+     "updateTime": 1600000000, "reviewCount": 3, "rankOrder": 9999,
+     "product_capacity": "50mL", "product_price": 10000}
+  ]
+}
