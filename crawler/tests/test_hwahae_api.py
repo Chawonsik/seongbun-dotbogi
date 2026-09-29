@@ -28,6 +28,8 @@ def test_headers_have_three_anonymous_values():
     assert h["hwahae-user-id"] == "anonymous"
     assert h["hwahae-device-id"] == "anonymous"
     assert h["Authorization"] == "Bearer "
+    assert "Mozilla" not in h["User-Agent"]
+    assert "Origin" not in h and "Referer" not in h
 
 
 def test_fetch_page_parses_pagination_and_products():

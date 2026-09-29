@@ -93,6 +93,7 @@
 - 2026-09-18 실측에서 검색 API가 브라우저 밖에서 인증 오류(code 2100)를 낸 원인은 헤더 누락이었다. 2026-09-28 확인: 사이트가 비로그인 상태에서 보내는 세 헤더를 그대로 붙이면 `requests` 로도 200 이 온다
   - `GET https://gateway.hwahae.co.kr/v14/search/products/text?orderType=ranking&pageNum={n}&query={term}`
   - 헤더 `hwahae-user-id: anonymous`, `hwahae-device-id: anonymous`, `Authorization: Bearer ` (값이 빈 Bearer). 셋 중 하나라도 빠지면 401
+  - 위 익명 헤더 세 개에 프로젝트를 밝히는 정직한 User-Agent(`seongbun-dotbogi-research/0.1 (...)`)만 보낸다. 브라우저 UA 와 Origin, Referer 는 보내지 않는다(2026-09-29 결정)
   - `pageNum` 은 0부터, 페이지당 20개, `pageNum=n` 이 `offset=20n`. 응답 `meta.pagination.total_count` 가 전체 결과 수
   - 항목 필드: `id`, `brand`(표시명), `brand_name`, `productName`, `obsolete`, `sale`, `updateTime`(epoch 초), `reviewCount`, `rankOrder`, `product_capacity`, `product_price`, `product_ingredients`(앞 6개만이라 전성분으로 쓸 수 없음)
 - 따라서 **Playwright 없이 `requests` 로 페이지를 순서대로 받는다.** 결과 순서가 랭킹이므로 목록 안의 순번을 `rank_index` 로 저장한다

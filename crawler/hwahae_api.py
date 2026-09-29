@@ -1,7 +1,7 @@
 """화해 검색 API 클라이언트. 2026-09-28 실측 기준.
 
 GET https://gateway.hwahae.co.kr/v14/search/products/text?orderType=ranking&pageNum={n}&query={term}
-헤더 세 개가 모두 있어야 200. pageNum=n 은 offset=20n. 페이지당 20개.
+익명 헤더 세 개가 모두 있어야 200. pageNum=n 은 offset=20n. 페이지당 20개.
 """
 from __future__ import annotations
 
@@ -12,13 +12,12 @@ from urllib.parse import urlencode
 import requests
 
 BASE = "https://gateway.hwahae.co.kr/v14/search/products/text"
+# 브라우저인 척하지 않는다. 사이트가 비로그인 프런트엔드에 쓰는 익명 헤더 세 개와 정직한 UA 만 보낸다.
 HEADERS = {
     "hwahae-user-id": "anonymous",
     "hwahae-device-id": "anonymous",
     "Authorization": "Bearer ",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/128.0 Safari/537.36",
-    "Origin": "https://www.hwahae.co.kr",
-    "Referer": "https://www.hwahae.co.kr/search",
+    "User-Agent": "seongbun-dotbogi-research/0.1 (personal study; +https://seongbun-dotbogi.vercel.app; wonsikcha12@gmail.com)",
 }
 PAGE_SIZE = 20
 RETRY_WAIT_S = 10.0
