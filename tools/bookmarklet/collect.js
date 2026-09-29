@@ -14,13 +14,17 @@
   var info = pp.productIngredientInfoData || {};
   var list = info.ingredients || [];
   if (!list.length) { toast('전성분이 없는 페이지입니다', false); return; }
+  var gm = location.pathname.match(/\/goods\/(?:[^\/]+\/)?(\d+)/); var gid = gm ? Number(gm[1]) : null;
+  var pm = location.pathname.match(/\/products\/(\d+)/);
+  var routeId = (data.query && data.query.id) ? String(data.query.id) : null;
+  var pathNum = gm ? gm[1] : (pm ? pm[1] : null);
+  if (routeId && pathNum && pathNum !== routeId) { toast('페이지 데이터가 다른 제품 것입니다. 이 링크를 새 탭에서 다시 열어 주세요', false); return; }
   var pid = null;
   try { pid = pp.productReviewSummaryData.productMetaData.productIndex; } catch (e) {}
-  if (!pid) { var m = JSON.stringify(pp).match(/"(?:productIndex|product_id)":\s*(\d+)/); if (m) pid = Number(m[1]); }
-  var gm = location.pathname.match(/\/goods\/(?:[^\/]+\/)?(\d+)/); var gid = gm ? Number(gm[1]) : null;
-  var pm = location.pathname.match(/\/products\/(\d+)/); if (!pid && pm) pid = Number(pm[1]);
+  if (!pid && pm) pid = Number(pm[1]);
+  if (!pid) pid = null;
   var rec = {
-    product_id: pid, goods_id: gid, url: location.href, title: document.title,
+    product_id: pid, goods_id: gid, route_id: routeId, url: location.href, title: document.title,
     collected_at: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().replace('Z', '+09:00'),
     ingredients: list.map(function (i) { return { id: i.id, korean: i.korean, english: i.english, ewg: i.ewg, purposes: i.purposes || [] }; })
   };

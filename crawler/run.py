@@ -67,7 +67,8 @@ def main(argv=None) -> int:
             return 2
         collect_js = (TOOLS / "collect.js").read_text(encoding="utf-8")
         export_js = (TOOLS / "export.js").read_text(encoding="utf-8")
-        links.write_links(config.RAW_DIR, config.DERIVED_DIR, target, a.top_n, _verify_products(), collect_js, export_js)
+        clear_js = (TOOLS / "clear.js").read_text(encoding="utf-8")
+        links.write_links(config.RAW_DIR, config.DERIVED_DIR, target, a.top_n, _verify_products(), collect_js, export_js, clear_js)
     elif a.step == "ingest":
         if not a.file:
             print("ingest 에는 내보낸 JSON 파일 경로가 필요합니다")

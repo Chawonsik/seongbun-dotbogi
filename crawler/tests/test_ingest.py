@@ -51,3 +51,21 @@ def test_ingest_export_unknown_product_goes_to_verify(tmp_path):
     assert result == {"saved": 1, "skipped": 0}
     rec = json.loads((tmp_path / "products" / "verify__5.json").read_text(encoding="utf-8"))
     assert rec["key"] == "verify" and rec["candidate"] == {"id": 5, "name": "브랜드X 제품X", "brand": ""}
+
+
+def test_ingest_export_skips_when_product_id_and_goods_id_disagree(tmp_path):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    (derived / "candidates.json").write_text("{}", encoding="utf-8")
+    sdir = tmp_path / "search"
+    sdir.mkdir()
+    (sdir / "PDRN.jsonl").write_text(json.dumps({"term": "t", "page": 0, "fetched_at": "x", "response": {"products": [
+        {"id": 7, "productName": "PDRN 7", "goods": [{"id": 9}]}]}}) + chr(10), encoding="utf-8")
+    export = tmp_path / "e.json"
+    export.write_text(json.dumps({"records": {"5": {"product_id": 5, "goods_id": 9, "url": "u", "title": "t", "collected_at": "2026-09-29T00:00:00+09:00",
+                                                     "ingredients": [{"id": 1, "korean": "정제수", "english": "", "ewg": "1", "purposes": []}]}}}, ensure_ascii=False), encoding="utf-8")
+    result = ingest.ingest_export(export, tmp_path, derived, ingredients=[{"key": "PDRN"}])
+    assert result == {"saved": 0, "skipped": 1}
+    assert ingest.ID_MISMATCH == "번호 불일치"
+    assert "번호 불일치" in (derived / "ingest-skipped.csv").read_text(encoding="utf-8")
+    assert not list((tmp_path / "products").glob("*.json"))

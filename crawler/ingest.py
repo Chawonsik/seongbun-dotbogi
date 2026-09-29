@@ -9,6 +9,7 @@ from crawler.search import read_products
 
 NO_INGREDIENTS = "전성분 없음"
 NO_PRODUCT_ID = "제품 번호를 맞추지 못함"
+ID_MISMATCH = "번호 불일치"
 
 
 def load_export(path: Path) -> list[dict]:
@@ -62,6 +63,11 @@ def ingest_export(path: Path, raw_dir: Path, derived_dir: Path, ingredients: lis
             continue
         if pid is None:
             skipped.append({"product_id": None, "goods_id": rec.get("goods_id"), "url": rec.get("url"), "reason": NO_PRODUCT_ID})
+            continue
+        gid = rec.get("goods_id")
+        mapped = goods_map.get(int(gid)) if gid and rec.get("product_id") else None
+        if mapped is not None and mapped != pid:
+            skipped.append({"product_id": pid, "goods_id": gid, "url": rec.get("url"), "reason": ID_MISMATCH})
             continue
         targets = by_id.get(pid)
         if not targets:

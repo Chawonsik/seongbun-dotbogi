@@ -8,5 +8,5 @@
   var blob = new Blob([JSON.stringify(payload, null, 1)], { type: 'application/json' });
   var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sd-collect-' + d + '.json';
   document.body.appendChild(a); a.click(); a.remove();
-  if (confirm(n + '개를 내보냈습니다. 브라우저에 모아 둔 것을 비울까요? (파일을 확인한 뒤 비우려면 취소)')) { localStorage.removeItem(KEY); }
+  if (confirm(n + '개를 내보냈습니다. 파일이 잘 받아졌으면 확인을 눌러 브라우저에 모아 둔 것을 비우세요. 아직이면 취소')) { localStorage.removeItem(KEY); }
 })();

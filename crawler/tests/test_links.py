@@ -33,9 +33,10 @@ def test_build_candidates_uses_selected_only(tmp_path):
 def test_render_html_has_bookmarklets_links_and_verify_group():
     cands = {"PDRN": [{"id": 1, "name": "PDRN 세럼", "brand": "브랜드", "rank_index": 0}]}
     verify = [{"id": 2140532, "brand": "비플레인", "name": "시카 PDRN 스킨 부스터 세럼"}]
-    html = links.render_html(cands, verify, "(function(){alert(1)})();", "(function(){alert(2)})();", labels={"PDRN": "PDRN"})
+    html = links.render_html(cands, verify, "(function(){alert(1)})();", "(function(){alert(2)})();", "(function(){alert(3)})();", labels={"PDRN": "PDRN"})
     assert 'href="javascript:(function(){alert(1)})();"' in html and 'href="javascript:(function(){alert(2)})();"' in html
     assert 'href="https://www.hwahae.co.kr/products/1"' in html and 'target="_blank"' in html
+    assert 'href="javascript:(function(){alert(3)})();"' in html and "수집 비우기" in html
     assert "검증" in html and "products/2140532" in html and "비플레인" in html
     assert "PDRN 세럼" in html and "1개" in html
 
@@ -43,6 +44,16 @@ def test_render_html_has_bookmarklets_links_and_verify_group():
 def test_write_links_writes_two_files(tmp_path):
     _write_search(tmp_path, "PDRN", [_p(i, f"PDRN {i}") for i in range(3)])
     ings = [{"key": "PDRN", "label": "PDRN", "name_patterns": ["pdrn"], "selected": True}]
-    cpath, hpath = links.write_links(tmp_path, tmp_path / "derived", ings, 2, [], "(function(){})();", "(function(){})();")
+    cpath, hpath = links.write_links(tmp_path, tmp_path / "derived", ings, 2, [], "(function(){})();", "(function(){})();", "(function(){})();")
     assert json.loads(cpath.read_text(encoding="utf-8"))["PDRN"][1]["id"] == 1
     assert hpath.name == "collect-links.html" and "products/0" in hpath.read_text(encoding="utf-8")
+
+
+def test_write_links_drops_verify_products_already_in_candidates(tmp_path, capsys):
+    _write_search(tmp_path, "PDRN", [_p(i, f"PDRN {i}") for i in range(3)])
+    ings = [{"key": "PDRN", "label": "PDRN", "name_patterns": ["pdrn"], "selected": True}]
+    verify = [{"id": 1, "brand": "b", "name": "중복 검증"}, {"id": 999, "brand": "b", "name": "따로 검증"}]
+    _, hpath = links.write_links(tmp_path, tmp_path / "derived", ings, 2, verify, "(function(){})();", "(function(){})();", "(function(){})();")
+    html = hpath.read_text(encoding="utf-8")
+    assert "따로 검증" in html and "중복 검증" not in html and "검증: 지금 랜딩의 제품 <small>1개" in html
+    assert "1개는 이미 후보에 있어 뺐습니다" in capsys.readouterr().out
