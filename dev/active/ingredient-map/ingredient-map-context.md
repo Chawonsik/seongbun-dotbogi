@@ -1,5 +1,5 @@
 # ingredient-map context
-Last Updated: 2026-09-28 22:10 KST
+Last Updated: 2026-09-29 (draft PR 생성 후)
 
 ## 핵심 파일
 - `docs/superpowers/specs/2026-09-28-ingredient-map-design.md`: 2차 설계 스펙(댓글 반영본)
@@ -28,6 +28,15 @@ Last Updated: 2026-09-28 22:10 KST
 - 매칭 테스트: "1,2-헥산다이올" 첫 이름 보존(구분자 쉼표+공백), 라틴 패턴 단어 경계, 라하와 바하 겹침, 엑소좀 세포배양액 배제. 뼈대(모두에 든 성분)는 화해 성분 번호로 교집합
 - 계열 매칭 표 `data/derived/family_matches.csv`: 계열마다 실제 걸린 성분 번호와 이름, 제품 수. 이걸 보고 계열을 번호로 고정
 - PR 본문에 PDRN 3개 검증 결과와 수집 시각
+
+## 2026-09-29 진행
+- 상세 수집을 Playwright 에서 사람이 여는 북마클릿 방식으로 전환(스펙 3판). 자동 조작과 봇 감지 우회는 쓰지 않기로 확정
+- 검색 API 는 익명 헤더 3개 + 정직한 UA(`seongbun-dotbogi-research/0.1`)로 200 확인. Origin/Referer 없음
+- 검색 응답 `product_ingredients` 는 항상 앞 6개(표기 순서). 실제 성분표와 순서가 같은지는 `top6-check.csv` 로 사람 점검 뒤 확인
+- 성분 확정 기준 고정: 이름 단 제품 수 상위 9 + 히알루론산, 15개 미만 제외, incomplete 제외. 검색어 여럿이면 round-robin 병합
+- 브랜치 feat/crawler, 테스트 82개, draft PR 생성. 사람 점검(PDRN 3 + 검증 5) 대기. 내보낸 파일은 `data/raw/exports/` 로
+- `derive` 는 `--publish` 없이는 `landing/data.json` 을 쓰지 않음. 검증 기준선 `data/derived/baseline-data.json`
+- SDD 원장: `.superpowers/sdd/2026-09-28-crawler/progress.md` (판단 기록 전부)
 
 ## 의존성
 - Vercel 프로젝트 `ingredient-lens`, 계정 wonsikcha12@gmail.com (원식 차 님). 이 PC 의 Vercel 연동 계정에는 프로젝트가 없음

@@ -12,11 +12,12 @@
 - [x] Task 3 hwahae_api.py
 - [x] Task 4 search.py
 - [x] Task 5 select.py
-- [ ] Task 6 (3판) Playwright 삭제, 북마클릿 2개
-- [ ] Task 7 (3판) trend.py: 고정 기준 제안, top6_rate
-- [ ] Task 8 (3판) links.py, ingest.py
-- [ ] Task 9 (3판) derive.py (verify 표 포함)
-- [ ] Task 10 (3판) run.py, README, PDRN 3개 사람 점검, PR
+- [x] Task 6 (3판) Playwright 삭제, 북마클릿 2개
+- [x] Task 7 (3판) trend.py: 고정 기준 제안, top6_rate
+- [x] Task 8 (3판) links.py, ingest.py
+- [x] Task 9 (3판) derive.py (verify 표 포함)
+- [x] Task 10 (3판) run.py, README, 최종 리뷰 반영, draft PR 생성 (2026-09-29)
+- [ ] Task 10 (3판) 사람 점검: PDRN 3개 + 검증 5개 북마클릿 수집 → ingest → derive → verify.csv, top6-check.csv 를 PR 에 추가
 - [ ] Task 11 (3판) 본 실행: search 2시간, 성분 확정, 둘이 나눠 200~500 페이지 수집, derive
 
 ## 성분 선정
