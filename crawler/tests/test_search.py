@@ -36,6 +36,24 @@ def test_collect_term_respects_cap(tmp_path):
     assert meta["pages"] == 2 and meta["capped"] is True
 
 
+class EmptyPageGlitchClient(FakeClient):
+    """total=45 라고 말하지만 page_num==1 에서 빈 products 를 준다 (API 글리치 흉내)."""
+    def fetch_page(self, term, page_num):
+        if page_num == 1:
+            self.calls.append((term, page_num))
+            return SearchPage(total_count=self.total, offset=page_num * 20, count=0, products=[],
+                              raw={"meta": {"pagination": {"total_count": self.total, "offset": page_num * 20, "count": 0}}, "products": []})
+        return super().fetch_page(term, page_num)
+
+
+def test_collect_term_marks_incomplete_on_early_empty_page(tmp_path):
+    client = EmptyPageGlitchClient(total=45)
+    meta = search.collect_term(client, "PDRN", tmp_path / "x.jsonl")
+    assert meta["pages"] == 2
+    assert meta["incomplete"] is True
+    assert meta["capped"] is False
+
+
 def test_collect_ingredient_merges_terms_and_is_idempotent(tmp_path):
     ing = {"key": "cica", "search_terms": ["시카", "센텔라"]}
     client = FakeClient(total=25)
@@ -43,6 +61,7 @@ def test_collect_ingredient_merges_terms_and_is_idempotent(tmp_path):
     assert (tmp_path / "search" / "cica.jsonl").exists()
     assert meta["terms"] == ["시카", "센텔라"] and meta["total_count"] == {"시카": 25, "센텔라": 25}
     assert meta["capped"] is False and meta["capped_terms"] == [] and "started_at" in meta and "finished_at" in meta
+    assert meta["incomplete"] is False and meta["incomplete_terms"] == []
     n_calls = len(client.calls)
     meta2 = search.collect_ingredient(client, ing, tmp_path)
     assert len(client.calls) == n_calls and meta2["skipped"] is True

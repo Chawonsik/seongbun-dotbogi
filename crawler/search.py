@@ -22,6 +22,7 @@ def collect_term(client: SearchClient, term: str, out_jsonl: Path, max_pages: in
     pages = 0
     total = None
     capped = False
+    incomplete = False
     with open(out_jsonl, "a", encoding="utf-8") as f:
         page_num = 0
         while True:
@@ -31,12 +32,25 @@ def collect_term(client: SearchClient, term: str, out_jsonl: Path, max_pages: in
             pages += 1
             page_num += 1
             needed = math.ceil(total / PAGE_SIZE) if total else 0
-            if page_num >= needed or page.count == 0:
+            if page_num >= needed:
+                break
+            if page.count == 0:
+                # total_count 가 아직 더 남았다고 말하는데 빈 페이지가 온 상황: API 글리치일 수 있으니
+                # 완료로 오인하지 않도록 incomplete 로 표시하고 멈춘다.
+                incomplete = True
                 break
             if page_num >= max_pages:
                 capped = True
                 break
-    return {"term": term, "total_count": total or 0, "pages": pages, "capped": capped, "started_at": started, "finished_at": _now()}
+    return {
+        "term": term,
+        "total_count": total or 0,
+        "pages": pages,
+        "capped": capped,
+        "incomplete": incomplete,
+        "started_at": started,
+        "finished_at": _now(),
+    }
 
 
 def collect_ingredient(client: SearchClient, ing: dict, raw_dir: Path = RAW_DIR, max_pages: int = MAX_PAGES, force: bool = False) -> dict:
@@ -58,6 +72,8 @@ def collect_ingredient(client: SearchClient, ing: dict, raw_dir: Path = RAW_DIR,
         "pages": {m["term"]: m["pages"] for m in per_term},
         "capped": any(m["capped"] for m in per_term),
         "capped_terms": [m["term"] for m in per_term if m["capped"]],
+        "incomplete": any(m["incomplete"] for m in per_term),
+        "incomplete_terms": [m["term"] for m in per_term if m["incomplete"]],
         "started_at": started,
         "finished_at": _now(),
         "skipped": False,
@@ -101,7 +117,14 @@ def run_search(raw_dir: Path, ingredients: list[dict], client: SearchClient, max
         except BlockedError as e:
             print(f"[search] BLOCKED at {ing['key']} {_now()}: {e}. 완료: {[m['key'] for m in metas]}")
             raise
-        status = "skip" if meta.get("skipped") else ("capped" if meta["capped"] else "ok")
+        if meta.get("skipped"):
+            status = "skip"
+        elif meta["capped"]:
+            status = "capped"
+        elif meta.get("incomplete"):
+            status = "incomplete"
+        else:
+            status = "ok"
         print(f"[search] {ing['key']:12s} {status:6s} total={meta['total_count']} pages={meta['pages']}")
         metas.append(meta)
     print(f"[search] end {_now()}")
