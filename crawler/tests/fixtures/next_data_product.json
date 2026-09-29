@@ -1,0 +1,8 @@
+{"productIngredientInfoData": {
+   "product_type": 1,
+   "ingredients": [
+     {"id": 5321, "korean": "정제수, 증류수, 물", "english": "Water, Aqua", "ewg": "1", "purposes": [{"group_code": "IPGC_01", "group_name": "피부 보습"}]},
+     {"id": 1, "korean": "글리세린", "english": "Glycerin", "ewg": "1", "purposes": []},
+     {"id": 2, "korean": "소듐디엔에이", "english": "Sodium DNA", "ewg": "1", "purposes": []}
+   ],
+   "sub_product_ingredients": []}}
