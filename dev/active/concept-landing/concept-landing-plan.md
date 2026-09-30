@@ -6,7 +6,7 @@ Design is out of scope. The partner (or a later pass) restyles it while keeping 
 Spec source: Notion "계측 설계 초안: 로그, UTM, 설문" (synced to docs/tracking-plan-draft.md).
 
 ## Scope
-1. `landing/concept.html`: hero (no product name, round 1 common page), pre-launch notice, intro and price placeholders,
+1. `landing/concept.html`: hero (no product name, round 1 common page), pre-launch notice, intro placeholder (no price: a price makes it read as a sales page),
    interest button, survey card (Q1 paid only, Q2, Q3, 1/3 progress, one per device), appendix link shown after the survey,
    footer with privacy link.
 2. Tracking adapter: common props (utm x4, round, variant, landing_page), queue until Amplitude loads,
