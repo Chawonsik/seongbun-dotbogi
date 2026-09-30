@@ -44,7 +44,7 @@ flowchart LR
 |---|---|---|
 | 관심 전환 | landing_view → interest_click | landing_view, interest_click, engaged_60s |
 | 설문 | survey_view → survey_answer(q3) | survey_view, survey_answer, survey_close |
-| 세션 (자동) | Amplitude가 기록 | [Amplitude] Start Session, [Amplitude] End Session |
+| 세션 (자동) | Amplitude가 기록 | session_start, session_end |
 | 광고 최적화 | 메타 픽셀 | PageView, InterestClick(제안) |
 
 ## 3. 이름 규칙
@@ -55,7 +55,7 @@ flowchart LR
   - 예외: 시간 기준 도달은 `engaged_{시간}` (engaged_60s)
 - 새 이벤트도 이 형식을 따르고 위 행동어를 먼저 씁니다. 새 행동어가 필요하면 이 목록에 먼저 추가합니다.
 - 이름만 보고 트리거(보임인지 누름인지)를 알 수 있어야 합니다.
-- Amplitude 자동 이벤트는 `[Amplitude] ...` 이름 그대로 두고 우리 이벤트와 섞지 않습니다.
+- Amplitude 자동 이벤트(`session_start`, `session_end`)는 Amplitude가 정한 이름 그대로 둡니다. 화면에는 "Start Session", "End Session"으로 보입니다. 우리 이벤트에 `session_`으로 시작하는 이름을 쓰지 않습니다.
 
 ### 속성
 - 영어 소문자와 밑줄. 값도 영어 소문자 코드로 보내고 화면 문구(한글)는 보내지 않습니다. 문구는 바뀌어도 코드는 그대로 둡니다.
