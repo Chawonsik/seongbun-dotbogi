@@ -19,7 +19,9 @@ UTM 운영 규칙, 설문 문구, 지표 해석은 [계측 설계 초안](../tra
 
 택소노미는 분석 도구일 뿐 그 자체가 목적이 아닙니다. 이 서비스가 데이터로 답하려는 질문은 하나입니다.
 
-> 화장품 광고에서 성분 이름(A: "PDRN 연어크림")을 앞세우면 효능(B: "피부탄력 케어 크림")을 앞세울 때보다 반응이 좋은가
+> 화장품 광고에서 성분 언어(A: "PDRN 연어크림")와 리뷰 언어(B: 실제 리뷰에 자주 나오는 사용감 표현) 중 무엇이 반응을 더 끄는가
+
+화해 비즈니스 글(2026-04-13)이 "원료사 카피 대신 리뷰 언어를 쓰라"고 권한 것을 출시 전에 시험합니다. B는 원래 효능 언어("피부탄력 케어 크림")였고 2026-09-30에 리뷰 언어로 바꿨습니다. B 문구는 화해 리뷰 태그 수집 뒤 확정합니다.
 
 - 광고 노출과 클릭(CTR)은 메타 광고 관리자 숫자를 씁니다.
 - 이 택소노미는 **랜딩에 도착한 뒤의 행동**과 **설문 응답**을 소재별로 나눠 보기 위한 것입니다.
@@ -116,8 +118,8 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 - **테스트 제외**: is_test는 테스트 방문에만 true로 붙고 일반 방문에는 아예 없습니다. 필터는 "is_test가 true인 것 제외"로 겁니다. "is_test = false인 것만"으로 걸면 일반 방문(값 없음)까지 빠집니다.
 - **기기 기준**: landing_view와 interest_click은 새로 고침하면 다시 쌓일 수 있으니 이벤트 수가 아니라 기기 수(Uniques)로 셉니다.
 - **설문 코드**: answer의 `ingredient`, `effect`, `other`는 q1과 q2에 모두 있습니다. 항상 q로 먼저 거릅니다.
-- **(none)**: SNS나 검색 유입은 round, variant가 `(none)`입니다. A/B 비교에서는 variant가 name 또는 benefit인 것만 봅니다.
-- **링크 점검**: variant와 landing_page가 어긋나면(2차에서 name 소재인데 landing_page=benefit) 광고 링크 오류입니다.
+- **(none)**: SNS나 검색 유입은 round, variant가 `(none)`입니다. A/B 비교에서는 variant가 name 또는 review인 것만 봅니다.
+- **링크 점검**: variant와 landing_page가 어긋나면(2차에서 name 소재인데 landing_page=review) 광고 링크 오류입니다.
 
 ## 6. 변경 절차 (문서와 개발을 잇는 방법)
 
@@ -165,6 +167,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 
 | 날짜 | 내용 |
 |---|---|
+| 2026-09-30 | B 소재를 효능 언어에서 리뷰 언어로 바꿈. variant와 landing_page 값 benefit → review, utm_content r1_benefit → r1_review(r2도 같음). 설문 Q1에 texture(사용감) 선택지 추가. 광고 전이라 옛 값으로 쌓인 데이터는 테스트뿐 |
 | 2026-09-30 | Amplitude 트래킹 플랜(성분돋보기)에 이벤트 7개와 속성 12개를 등록. round, variant, landing_page, trigger, q, answer, step은 허용 값 목록(enum)으로 둠. 세션 끝(session_end)은 아직 들어온 적이 없어 등록하지 않음 |
 | 2026-09-30 | 자동 점검 추가(scripts/check_taxonomy.py, GitHub Actions taxonomy, 저장소 CLAUDE.md, PR 템플릿). 6절 "개발 단계에서 붙일 것"을 "자동 점검"으로 바꿈 |
 | 2026-09-30 | 7절 결정 3건 반영. Status에 rejected 추가. InterestClick을 rejected로. 세션 자동 이벤트 이름을 session_start, session_end로 바로잡음(Amplitude MCP로 확인) |
