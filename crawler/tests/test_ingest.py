@@ -32,7 +32,7 @@ def test_ingest_export_saves_by_key_and_skips_bad(tmp_path):
     result = ingest.ingest_export(FIX, tmp_path, derived, ingredients=[{"key": "PDRN"}, {"key": "retinoid"}])
     assert result == {"saved": 3, "skipped": 1}
     saved = sorted(p.name for p in (tmp_path / "products").glob("*.json"))
-    assert saved == ["PDRN__2113285.json", "PDRN__2000002.json", "retinoid__2000002.json"]
+    assert saved == ["PDRN__2000002.json", "PDRN__2113285.json", "retinoid__2000002.json"]
     rec = json.loads((tmp_path / "products" / "PDRN__2113285.json").read_text(encoding="utf-8"))
     assert rec["key"] == "PDRN" and rec["candidate"]["name"] == "PDRN 세럼" and rec["ingredients"][1]["id"] == 2
     assert rec["final_url"].startswith("https://www.hwahae.co.kr/goods/69360") and rec["collected_at"] == "2026-09-29T15:20:11+09:00"
