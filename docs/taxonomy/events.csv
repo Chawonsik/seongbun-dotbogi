@@ -17,4 +17,4 @@ click,설문,SDK,survey_close,끝까지 답하지 않고 설문을 닫을 때,st
 auto,세션,Amplitude autocapture,session_start,Amplitude가 세션 시작을 자동 기록,,,,,,,세션 수와 재방문,active,2026-09-30,autocapture.sessions=true. 우리 코드는 보내지 않음
 auto,세션,Amplitude autocapture,session_end,Amplitude가 세션 끝을 자동 기록,,,,,,,세션 길이,active,2026-09-30,autocapture.sessions=true. 우리 코드는 보내지 않음
 view,광고 최적화,Meta Pixel,PageView,페이지가 열릴 때 메타 픽셀이 보냄,,,,,,,메타 광고 최적화용. 분석은 Amplitude로 함,active,2026-09-30,autoConfig=false로 버튼 문구 자동 수집을 끔
-click,광고 최적화,Meta Pixel,InterestClick,관심 버튼 첫 클릭 때 메타 픽셀 맞춤 이벤트,,,,,,,메타가 관심 클릭 기준으로 노출을 최적화하게 할지 결정용,proposed,,계측 설계 초안의 미결 항목. 켜면 처리방침 6절 확인 필요
+click,광고 최적화,Meta Pixel,InterestClick,관심 버튼 첫 클릭 때 메타 픽셀 맞춤 이벤트,,,,,,,메타가 관심 클릭 기준으로 노출을 최적화하게 할지 결정용,rejected,,2026-09-30 보내지 않기로 함. Amplitude에 같은 데이터가 있고 메타 최적화에 쓰기엔 수가 적으며 최적화를 켜면 A/B 노출 조건이 달라짐. 처리방침 6절도 고쳐야 함

@@ -17,7 +17,7 @@ Last Updated: 2026-09-30
 - No user properties set by our code; segment by survey answers with Amplitude cohorts
 - Rows are never deleted once data exists; use Status=deprecated
 
-## Open (README section 7)
-- Keep `{object}_{action}` present-tense names or switch to past tense before the first campaign
-- SSOT location confirmation, Notion page to link here
-- Meta InterestClick custom event
+## Decided 2026-09-30 (README section 7)
+- Keep `{object}_{action}` present-tense names
+- Repo events.csv is SSOT; Notion 계측 설계 event tables replaced with links (done)
+- Meta InterestClick: rejected

@@ -4,7 +4,7 @@
 - [x] Read reference posts and sample CSV
 - [x] Extract current events and values from landing/concept.html
 - [x] Write events.csv and README.md
-- [ ] User review, answer open decisions
+- [x] User review, answer open decisions (keep names, repo SSOT, no InterestClick)
 - [ ] Merge docs PR
 
 ## Phase 2
