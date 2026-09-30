@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>새 크림 콘셉트 | 성분돋보기</title>
+<meta name="description" content="출시 전 크림 콘셉트에 대한 의견을 모으는 개인 학습 프로젝트 페이지입니다. 실제로 판매하지 않습니다.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<link rel="preload" as="image" href="img/concept-hero.webp" type="image/webp">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='14' cy='14' r='9' fill='none' stroke='%23C74222' stroke-width='3'/%3E%3Cpath d='M21 21l7 7' stroke='%23C74222' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='14' cy='14' r='3' fill='%23C74222'/%3E%3C/svg%3E">
+<script>
+  /* 계측 설정
+     amplitude: Amplitude API 키. 비어 있으면 Amplitude를 싣지 않고 이벤트는 페이지 안 기록(?debug=1)에만 남습니다.
+     landingPage: 이 페이지가 어떤 랜딩인지. 1차 공통 랜딩은 common, 2차는 name 또는 benefit. */
+  window.SD_CONFIG = { amplitude: "", pixel: "1547670487046797", landingPage: "common" };
+</script>
+<style>
+  /* 광고 이미지와 같은 톤: 아이보리 바탕, 코랄 강조. 사진 윗부분 색(--bg)과 맞춰 사진이 바탕에 녹아들게 함 */
+  :root {
+    --bg: #F4E6DD; --paper: #FFF8F3; --ink: #3B2A25; --muted: #86706A; --line: #E6D2C6;
+    --accent: #C74222; --accent-ink: #A8391D; --tint: #FBE1D6; --on-accent: #FFFFFF;
+    --shadow: 0 14px 34px rgba(120, 60, 40, 0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
+      --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
+    --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-size: 15px; line-height: 1.65; word-break: keep-all; overflow-wrap: break-word;
+  }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 14px 16px 56px; }
+
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 14px; }
+  .brand { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+  .brand img { width: 30px; height: 24px; object-fit: contain; }
+  .notice { font-size: 12px; font-weight: 700; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 5px 11px; white-space: nowrap; }
+
+  h1 { font-weight: 800; font-size: 30px; line-height: 1.22; letter-spacing: -0.035em; margin: 0 0 4px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  h2 { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 10px; }
+
+  .hero { margin: 0 -16px; }
+  .hero img {
+    display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 62%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%);
+  }
+  @media (max-height: 740px) { .hero img { aspect-ratio: 4 / 3; } }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .hero { margin: 8px 0 12px; }
+    :root:not([data-theme="light"]) .hero img { -webkit-mask-image: none; mask-image: none; border-radius: 20px; }
+  }
+  :root[data-theme="dark"] .hero { margin: 8px 0 12px; }
+  :root[data-theme="dark"] .hero img { -webkit-mask-image: none; mask-image: none; border-radius: 20px; }
+
+  .lead { font-size: 15px; margin: 0 0 16px; }
+  .cta { margin: 0 0 20px; }
+  .btn {
+    display: block; width: 100%; min-height: 54px; border: 0; border-radius: 999px;
+    background: var(--accent); color: var(--on-accent); font: inherit; font-size: 16px; font-weight: 800; letter-spacing: -0.02em;
+    cursor: pointer; box-shadow: 0 10px 24px rgba(199, 66, 34, 0.28); transition: transform .15s ease, box-shadow .15s ease, opacity .2s ease;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 14px 28px rgba(199, 66, 34, 0.32); }
+  .btn:active { transform: translateY(1px); }
+  .btn[disabled] { opacity: 0.55; cursor: default; transform: none; box-shadow: none; }
+  .btn:focus-visible, .opt:focus-visible, .close:focus-visible, a:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 3px; }
+  .thanks { margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--tint); font-size: 14px; }
+
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; box-shadow: var(--shadow); margin: 0 0 14px; }
+  .muted { color: var(--muted); font-size: 13px; }
+
+  .spec { margin: 0; display: grid; }
+  .spec div { display: grid; grid-template-columns: 84px 1fr; gap: 10px; padding: 11px 0; border-top: 1px solid var(--line); }
+  .spec div:first-child { border-top: 0; padding-top: 2px; }
+  .spec dt { font-size: 12px; font-weight: 700; color: var(--accent-ink); padding-top: 2px; }
+  .spec dd { margin: 0; font-size: 14px; }
+  .spec-note { margin: 12px 0 0; }
+
+  .survey { position: relative; }
+  .survey .step { font-size: 12px; font-weight: 700; color: var(--accent-ink); margin: 0 0 4px; }
+  .survey .q { font-weight: 800; letter-spacing: -0.02em; margin: 0 0 12px; padding-right: 30px; }
+  .opts { display: grid; gap: 8px; }
+  .opt {
+    min-height: 46px; text-align: left; padding: 11px 14px; border: 1px solid var(--line); border-radius: 14px;
+    background: var(--bg); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; transition: background .15s ease, border-color .15s ease;
+  }
+  .opt:hover { background: var(--tint); border-color: var(--accent); }
+  .close { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; }
+  .close:hover { background: var(--tint); }
+
+  a { color: var(--accent-ink); }
+  #appendix a { font-weight: 700; }
+  footer { margin-top: 30px; font-size: 12px; color: var(--muted); display: grid; gap: 6px; }
+  footer .links { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+
+  /* 첫 화면 요소가 차례로 떠오름 */
+  .rise { opacity: 0; transform: translateY(10px); animation: rise .6s cubic-bezier(.2, .7, .2, 1) forwards; }
+  .rise.d1 { animation-delay: .05s; } .rise.d2 { animation-delay: .12s; } .rise.d3 { animation-delay: .2s; } .rise.d4 { animation-delay: .28s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .rise { animation: none; opacity: 1; transform: none; } .btn, .opt { transition: none; } }
+
+  #debug { position: fixed; left: 8px; right: 8px; bottom: 8px; max-height: 38vh; overflow: auto; background: #111; color: #9f9; font: 11px/1.4 ui-monospace, Menlo, monospace; padding: 8px; border-radius: 8px; z-index: 10; white-space: pre-wrap; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main>
+    <div class="top rise">
+      <a class="brand" href="./"><img src="img/logo-mark.webp" alt="" width="30" height="24">성분돋보기</a>
+      <span class="notice">출시 전 콘셉트, 판매하지 않아요</span>
+    </div>
+
+    <h1 class="rise d1">새 크림을<br><em>준비하고 있어요</em></h1>
+
+    <figure class="hero rise d2">
+      <img src="img/concept-hero.webp" width="960" height="960" alt="뚜껑을 연 코랄색 크림 통과, 옆에 펴 바른 크림" fetchpriority="high">
+    </figure>
+
+    <p class="lead rise d3">떠낼 때 모양이 잡히는 쫀쫀한 크림을 생각하고 있어요. 이런 크림이 나온다면 써 보고 싶은지 알려 주세요.</p>
+
+    <div class="cta rise d4">
+      <button class="btn" id="interestBtn" type="button" data-track="interest_click">출시되면 관심 있어요</button>
+      <p class="thanks" id="interestThanks" role="status" hidden>아직 판매하지 않는 콘셉트 테스트였어요. 관심 가져 주셔서 고마워요.<span id="surveyAsk" hidden> 아래 질문에 답해 주시면 큰 도움이 돼요.</span></p>
+    </div>
+
+    <section class="card survey" id="survey" aria-live="polite" hidden></section>
+
+    <section class="card" aria-labelledby="introTitle">
+      <h2 id="introTitle">어떤 크림인가요</h2>
+      <dl class="spec">
+        <div><dt>제형</dt><dd>떠낼 때 모양이 잡히는 쫀쫀한 크림</dd></div>
+        <div><dt>바르는 느낌</dt><dd>얇게 펴 발리고, 은은한 윤기가 남아요</dd></div>
+        <div><dt>쓰는 때</dt><dd>세안 뒤 스킨케어 마지막 단계, 아침과 저녁</dd></div>
+        <div><dt>용기</dt><dd>뚜껑을 돌려 여는 단지형</dd></div>
+      </dl>
+      <p class="muted spec-note">이름과 가격은 아직 정하지 않았어요.</p>
+    </section>
+
+    <section class="card" id="appendix" hidden>
+      <h2 id="appendixTitle" tabindex="-1">성분이 궁금하다면</h2>
+      <p class="muted">이름에 PDRN을 단 제품들의 성분표에서 PDRN이 실제로 몇 번째에 있는지 정리해 두었어요.</p>
+      <a href="./" id="toolLink" data-track="tool_link_click" target="_blank" rel="noopener">성분돋보기에서 확인하기 (새 창)</a>
+    </section>
+  </main>
+
+  <footer>
+    <div>이 페이지는 광고에 대한 반응을 알아보는 개인 학습 프로젝트예요. 제품을 판매하지 않으며 화해를 비롯한 어떤 회사와도 관련이 없어요.</div>
+    <div class="links"><a href="privacy">개인정보 처리방침</a><span>문의 <a href="mailto:wonsikcha12@gmail.com">wonsikcha12@gmail.com</a></span></div>
+  </footer>
+</div>
+<div id="debug" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+  var CFG = window.SD_CONFIG || {};
+  var qs = new URLSearchParams(location.search);
+  var DEBUG = qs.get('debug') === '1';
+  var SURVEY_KEY = 'sd_survey_seen_v1';
+  var SURVEY_DELAY_MS = 20000; /* 화면이 보이는 시간 기준 */
+
+  /* 공통 속성: UTM 네 값, round, variant, landing_page */
+  /* UTM 값은 영어 소문자, 숫자, 밑줄, 하이픈만 씁니다(운영 규칙). 공백은 밑줄로 바꾸고 나머지 문자는 지웁니다 */
+  function clean(v) { return (v || '').trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '').slice(0, 60) || '(none)'; }
+  var COMMON = {
+    utm_source: clean(qs.get('utm_source')),
+    utm_medium: clean(qs.get('utm_medium')),
+    utm_campaign: clean(qs.get('utm_campaign')),
+    utm_content: clean(qs.get('utm_content')),
+    landing_page: CFG.landingPage || 'common'
+  };
+  if (DEBUG) COMMON.is_test = true; /* ?debug=1 테스트 방문은 분석에서 거르도록 표시 */
+  var m = /^(r[12])_(name|benefit)$/.exec(COMMON.utm_content);
+  COMMON.round = m ? m[1] : '(none)';
+  COMMON.variant = m ? m[2] : '(none)';
+  var IS_PAID = COMMON.utm_medium === 'cpc';
+
+  /* 이벤트 전송: Amplitude가 뜨기 전 이벤트는 모아 두었다가 뜨면 보냄 */
+  var queue = [], ampReady = false;
+  var debugEl = document.getElementById('debug');
+  if (DEBUG) debugEl.hidden = false;
+  function send(name, props) {
+    if (ampReady) window.amplitude.track(name, props); else queue.push([name, props]);
+    if (DEBUG) debugEl.textContent = new Date().toLocaleTimeString() + ' ' + name + ' ' + JSON.stringify(props) + '\n' + debugEl.textContent;
+  }
+  function track(name, extra) { send(name, Object.assign({}, COMMON, extra || {})); }
+  var once = {};
+  function trackOnce(name, extra) { if (once[name]) return; once[name] = true; track(name, extra); }
+
+  /* Amplitude 로더. 2026-09-30 강사님 세션에서 프로젝트가 보여 주는 설치 코드와 주소, 옵션을 대조할 것 */
+  if (CFG.amplitude) {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://cdn.amplitude.com/script/' + encodeURIComponent(CFG.amplitude) + '.js';
+    s.onload = function () {
+      if (!window.amplitude || typeof window.amplitude.init !== 'function') return;
+      window.amplitude.init(CFG.amplitude, { autocapture: { pageViews: false, sessions: true, attribution: true, formInteractions: false, fileDownloads: false, elementInteractions: false } });
+      ampReady = true;
+      queue.splice(0).forEach(function (e) { window.amplitude.track(e[0], e[1]); });
+      if (DEBUG) debugEl.textContent = 'amplitude ready\n' + debugEl.textContent;
+    };
+    s.onerror = function () { if (DEBUG) debugEl.textContent = 'amplitude load FAILED (ad blocker?) - events stay queued\n' + debugEl.textContent; };
+    document.head.appendChild(s);
+  }
+
+  /* 메타 픽셀: 페이지 조회만 */
+  if (CFG.pixel) {
+    !function (f, b, e, v, n, t, x) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; x = b.getElementsByTagName(e)[0]; x.parentNode.insertBefore(t, x); }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    /* 자동 이벤트(버튼 클릭 문구 수집)를 꺼서 설문 선택지 문구가 Meta로 넘어가지 않게 함 */
+    window.fbq('set', 'autoConfig', false, CFG.pixel);
+    window.fbq('init', CFG.pixel); window.fbq('track', 'PageView');
+  }
+
+  trackOnce('landing_view');
+
+
+  /* 설문 */
+  var QUESTIONS = [
+    { id: 'q1', paidOnly: true, text: '광고를 누른 이유에 가장 가까운 것은?', opts: [
+      ['ingredient', '광고에 나온 성분이나 원료가 궁금해서'], ['effect', '광고에 나온 피부 효과가 궁금해서'], ['image', '이미지가 눈에 띄어서']
+    ], last: ['other', '기타 또는 잘 모르겠음'] },
+    { id: 'q2', text: '화장품을 고를 때 가장 먼저 보는 것은?', opts: [
+      ['ingredient', '성분'], ['effect', '효능과 효과'], ['review', '리뷰와 평점'], ['price', '가격과 혜택'], ['brand', '브랜드']
+    ], last: ['other', '기타'] },
+    { id: 'q3', text: '평소 화장품을 고를 때 성분표를 확인하나요?', opts: [
+      ['always', '거의 항상 확인한다'], ['sometimes', '가끔 확인한다'], ['rarely', '거의 확인하지 않는다']
+    ], ordered: true }
+  ].filter(function (q) { return !q.paidOnly || IS_PAID; });
+
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  /* 테스트(?debug=1)에서는 "설문 이미 봤다" 표시를 읽지도 저장하지도 않음 */
+  function store(get, val) { if (DEBUG) return null; try { if (get) return localStorage.getItem(SURVEY_KEY); localStorage.setItem(SURVEY_KEY, val); } catch (e) { return null; } }
+
+  var surveyEl = document.getElementById('survey');
+  var appendixEl = document.getElementById('appendix');
+  var surveyState = store(true) ? 'done' : 'idle';
+  var stepIdx = 0;
+  if (surveyState === 'done') appendixEl.hidden = false;
+
+  function finishSurvey(closedAt) {
+    surveyState = 'done';
+    if (closedAt) { track('survey_close', { step: closedAt }); surveyEl.hidden = true; }
+    else surveyEl.innerHTML = '<p class="q">응답해 주셔서 감사합니다.</p>';
+    appendixEl.hidden = false;
+    document.getElementById('appendixTitle').focus();
+  }
+
+  var lockedUntil = 0; /* 연속 탭이 새로 그린 다음 문항에 떨어지는 것을 막음 */
+  function renderStep(moveFocus) {
+    var q = QUESTIONS[stepIdx];
+    lockedUntil = Date.now() + 400;
+    var opts = (q.ordered ? q.opts : shuffle(q.opts)).concat(q.last ? [q.last] : []);
+    surveyEl.innerHTML = '';
+    var close = document.createElement('button'); close.type = 'button'; close.className = 'close'; close.setAttribute('aria-label', '설문 닫기'); close.textContent = '×';
+    close.addEventListener('click', function () { finishSurvey(q.id); });
+    var step = document.createElement('p'); step.className = 'step'; step.textContent = (stepIdx + 1) + '/' + QUESTIONS.length;
+    var title = document.createElement('p'); title.className = 'q'; title.id = 'qTitle'; title.tabIndex = -1; title.textContent = q.text;
+    var box = document.createElement('div'); box.className = 'opts'; box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', 'qTitle');
+    opts.forEach(function (o) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = o[1];
+      b.addEventListener('click', function () {
+        if (Date.now() < lockedUntil) return;
+        track('survey_answer', { q: q.id, answer: o[0] });
+        stepIdx += 1;
+        if (stepIdx < QUESTIONS.length) renderStep(true); else finishSurvey(null);
+      });
+      box.appendChild(b);
+    });
+    surveyEl.appendChild(close); surveyEl.appendChild(step); surveyEl.appendChild(title); surveyEl.appendChild(box);
+    if (moveFocus) {
+      /* 설문 카드 전체가 화면에 들어오게 내리고, 제목에 포커스 */
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      surveyEl.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+      title.focus({ preventScroll: true });
+    }
+  }
+
+  function showSurvey(trigger) {
+    if (surveyState !== 'idle' || !QUESTIONS.length) return;
+    surveyState = 'open';
+    store(false, '1'); /* 한 번 뜨면 기록: 답하지 않고 떠나도 다시 띄우지 않음 */
+    surveyEl.hidden = false;
+    renderStep(trigger === 'interest');
+    track('survey_view', { trigger: trigger });
+  }
+
+  /* 화면이 보이는 시간만 누적: 20초에 설문, 60초에 engaged_60s */
+  (function () {
+    var acc = 0, last = Date.now(), vis = document.visibilityState === 'visible';
+    function tick() {
+      var now = Date.now(); if (vis) acc += now - last; last = now; vis = document.visibilityState === 'visible';
+      if (acc >= SURVEY_DELAY_MS) showSurvey('timer');
+      if (acc >= 60000) { trackOnce('engaged_60s'); clearInterval(timer); }
+    }
+    var timer = setInterval(tick, 1000);
+    document.addEventListener('visibilitychange', tick);
+  })();
+
+  var interestBtn = document.getElementById('interestBtn');
+  interestBtn.addEventListener('click', function () {
+    trackOnce('interest_click');
+    interestBtn.disabled = true;
+    document.getElementById('interestThanks').hidden = false;
+    showSurvey('interest');
+    document.getElementById('surveyAsk').hidden = surveyState !== 'open';
+  });
+
+  document.getElementById('toolLink').addEventListener('click', function () { trackOnce('tool_link_click'); });
+})();
+</script>
+</body>
+</html>
