@@ -12,4 +12,4 @@
 - [x] GitHub Actions workflow
 - [x] Repo CLAUDE.md rule and PR template
 - [x] Apply rename if decided (not needed: names kept)
-- [ ] (optional) Amplitude Data tracking plan import
+- [x] Amplitude tracking plan synced via MCP (7 events, 12 properties, enums on closed sets)

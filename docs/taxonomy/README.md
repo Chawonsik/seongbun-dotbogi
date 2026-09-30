@@ -165,6 +165,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 
 | 날짜 | 내용 |
 |---|---|
+| 2026-09-30 | Amplitude 트래킹 플랜(성분돋보기)에 이벤트 7개와 속성 12개를 등록. round, variant, landing_page, trigger, q, answer, step은 허용 값 목록(enum)으로 둠. 세션 끝(session_end)은 아직 들어온 적이 없어 등록하지 않음 |
 | 2026-09-30 | 자동 점검 추가(scripts/check_taxonomy.py, GitHub Actions taxonomy, 저장소 CLAUDE.md, PR 템플릿). 6절 "개발 단계에서 붙일 것"을 "자동 점검"으로 바꿈 |
 | 2026-09-30 | 7절 결정 3건 반영. Status에 rejected 추가. InterestClick을 rejected로. 세션 자동 이벤트 이름을 session_start, session_end로 바로잡음(Amplitude MCP로 확인) |
 | 2026-09-30 | 1차 초안. 운영 중인 이벤트 6개, 공통 속성 8개, Amplitude 자동 이벤트 2개, 메타 픽셀 2개(1개 제안)를 코드 기준으로 정리 |
