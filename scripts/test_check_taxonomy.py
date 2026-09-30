@@ -74,6 +74,15 @@ class LoadTaxonomyTest(unittest.TestCase):
         _, errors = ct.load_taxonomy(dup)
         self.assertTrue(any("duplicate" in e for e in errors))
 
+    def test_allows_readding_a_deprecated_row(self):
+        csv_text = HEADER + row("click", "SDK", "a_click", "q", status="deprecated") + row("click", "SDK", "a_click", "q")
+        _, errors = ct.load_taxonomy(csv_text)
+        self.assertEqual(errors, [])
+
+    def test_accepts_byte_order_mark(self):
+        _, errors = ct.load_taxonomy("﻿" + HEADER + row("view", "SDK", "a_view"))
+        self.assertEqual(errors, [])
+
     def test_rejects_wrong_header(self):
         _, errors = ct.load_taxonomy("a,b,c\n1,2,3\n")
         self.assertTrue(any("header" in e for e in errors))
@@ -92,8 +101,31 @@ class ExtractCodeTest(unittest.TestCase):
         self.assertNotIn("name", code.events)
 
     def test_merges_props_across_calls(self):
-        code = ct.extract_code("track('a_view', { x: 1 }); track('a_view', { y: 2 });")
+        code = ct.extract_code("<script>track('a_view', { x: 1 }); track('a_view', { y: 2 });</script>")
         self.assertEqual(code.events, {"a_view": {"x", "y"}})
+
+    def test_ignores_commented_out_code(self):
+        src = """<script>
+          // track('old_view', { a: 1 });
+          /* trackOnce('older_view'); COMMON.foo = 1; */
+          var url = 'https://example.com/x'; track('a_view');
+        </script>
+        <!-- <script>track('html_comment_view')</script> -->"""
+        code = ct.extract_code(src)
+        self.assertEqual(set(code.events), {"a_view"})
+        self.assertEqual(code.common, set())
+
+    def test_ignores_text_outside_script_tags(self):
+        code = ct.extract_code("<p>track('prose_view')</p><script>track('a_view')</script>")
+        self.assertEqual(set(code.events), {"a_view"})
+
+    def test_reads_double_quoted_names_and_quoted_keys(self):
+        code = ct.extract_code("<script>track(\"a_view\", { 'x': 1, \"y\": 2 });</script>")
+        self.assertEqual(code.events, {"a_view": {"x", "y"}})
+
+    def test_flags_non_literal_event_names(self):
+        code = ct.extract_code("<script>function track(name, extra) {} track(eventName); trackOnce(`a_${x}`);</script>")
+        self.assertEqual(len(code.errors), 2)
 
 
 class CompareTest(unittest.TestCase):
@@ -125,6 +157,11 @@ class CompareTest(unittest.TestCase):
         errors = ct.compare(tax, code)
         self.assertTrue(any("stage" in e for e in errors))
         self.assertTrue(any("round" in e for e in errors))
+
+    def test_reports_non_literal_event_names(self):
+        tax, _ = ct.load_taxonomy(CSV_OK)
+        code = ct.extract_code(HTML_OK + "<script>track(dynamicName);</script>")
+        self.assertTrue(any("literal" in e for e in ct.compare(tax, code)))
 
     def test_reports_pixel_mismatch(self):
         tax, _ = ct.load_taxonomy(CSV_OK)

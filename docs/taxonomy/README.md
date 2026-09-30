@@ -149,6 +149,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
   - `fbq('track'/'trackCustom', ...)` 이벤트 ↔ active인 Meta Pixel 행
 - 표 자체도 검사합니다: 열 구성, Status 값, SDK 이벤트와 속성의 snake_case, active와 proposed 행의 Analysis, 같은 이벤트와 속성의 중복 행
 - 대조하지 않는 것: 속성 값(Value Example), Amplitude 자동 수집 이벤트(session_start 등). 값 목록을 바꿀 때는 사람이 표를 고칩니다.
+- 코드 쓰는 법: 이벤트는 `track('이벤트_이름', { 키: 값 })`처럼 이름은 따옴표 문자열로, 속성은 한 겹짜리 객체로 넘깁니다. 이름을 변수로 넘기거나 객체 안에 중괄호가 또 있으면 점검이 읽지 못해 실패로 표시됩니다. 주석 처리된 호출과 `<script>` 밖의 글자는 세지 않습니다.
 - 저장소 `CLAUDE.md`와 PR 템플릿에 같은 규칙을 적어 두었습니다.
 - 머지한 뒤에는 Amplitude 트래킹 플랜(성분돋보기 프로젝트)에도 반영해 새 이벤트가 "unexpected"로 뜨지 않게 합니다.
 
