@@ -114,6 +114,7 @@
     utm_content: clean(qs.get('utm_content')),
     landing_page: CFG.landingPage || 'common'
   };
+  if (DEBUG) COMMON.is_test = true; /* ?debug=1 테스트 방문은 분석에서 거르도록 표시 */
   var m = /^(r[12])_(name|benefit)$/.exec(COMMON.utm_content);
   COMMON.round = m ? m[1] : '(none)';
   COMMON.variant = m ? m[2] : '(none)';
@@ -172,7 +173,8 @@
   ].filter(function (q) { return !q.paidOnly || IS_PAID; });
 
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-  function store(get, val) { try { if (get) return localStorage.getItem(SURVEY_KEY); localStorage.setItem(SURVEY_KEY, val); } catch (e) { return null; } }
+  /* 테스트(?debug=1)에서는 "설문 이미 봤다" 표시를 읽지도 저장하지도 않음 */
+  function store(get, val) { if (DEBUG) return null; try { if (get) return localStorage.getItem(SURVEY_KEY); localStorage.setItem(SURVEY_KEY, val); } catch (e) { return null; } }
 
   var surveyEl = document.getElementById('survey');
   var appendixEl = document.getElementById('appendix');
