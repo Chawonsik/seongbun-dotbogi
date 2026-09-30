@@ -14,7 +14,7 @@
 <script>
   /* 계측 설정
      amplitude: Amplitude API 키. 비어 있으면 Amplitude를 싣지 않고 이벤트는 페이지 안 기록(?debug=1)에만 남습니다.
-     landingPage: 이 페이지가 어떤 랜딩인지. 1차 공통 랜딩은 common, 2차는 name 또는 benefit. */
+     landingPage: 이 페이지가 어떤 랜딩인지. 1차 공통 랜딩은 common, 2차는 name 또는 review. */
   window.SD_CONFIG = { amplitude: "7a7863df8d25938e6e2a54abdc0a6666", pixel: "1547670487046797", landingPage: "common" };
 </script>
 <style>
@@ -178,7 +178,7 @@
     landing_page: CFG.landingPage || 'common'
   };
   if (DEBUG) COMMON.is_test = true; /* ?debug=1 테스트 방문은 분석에서 거르도록 표시 */
-  var m = /^(r[12])_(name|benefit)$/.exec(COMMON.utm_content);
+  var m = /^(r[12])_(name|review)$/.exec(COMMON.utm_content);
   COMMON.round = m ? m[1] : '(none)';
   COMMON.variant = m ? m[2] : '(none)';
   var IS_PAID = COMMON.utm_medium === 'cpc';
@@ -226,7 +226,7 @@
   /* 설문 */
   var QUESTIONS = [
     { id: 'q1', paidOnly: true, text: '광고를 누른 이유에 가장 가까운 것은?', opts: [
-      ['ingredient', '광고에 나온 성분이나 원료가 궁금해서'], ['effect', '광고에 나온 피부 효과가 궁금해서'], ['image', '이미지가 눈에 띄어서']
+      ['ingredient', '광고에 나온 성분이나 원료가 궁금해서'], ['texture', '광고에 나온 사용감(바르는 느낌)이 궁금해서'], ['effect', '광고에 나온 피부 효과가 궁금해서'], ['image', '이미지가 눈에 띄어서']
     ], last: ['other', '기타 또는 잘 모르겠음'] },
     { id: 'q2', text: '화장품을 고를 때 가장 먼저 보는 것은?', opts: [
       ['ingredient', '성분'], ['effect', '효능과 효과'], ['review', '리뷰와 평점'], ['price', '가격과 혜택'], ['brand', '브랜드']
