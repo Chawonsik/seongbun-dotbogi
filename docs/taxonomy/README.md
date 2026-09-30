@@ -141,10 +141,16 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 4. 값에 개인을 알아볼 정보나 자유 입력이 들어가나? 들어가면 넣지 않음
 5. 처리방침의 수집 항목(1절)에 이미 포함되나? 아니면 처리방침을 같은 PR에서 고침
 
-### 개발 단계에서 붙일 것 (2단계, 이 문서 확정 뒤)
-- **자동 점검**: landing 페이지의 `track()`/`trackOnce()` 호출에서 이벤트 이름과 속성 키를 뽑아 events.csv의 active 행과 대조하는 스크립트. PR마다 GitHub Actions로 돌려서 어긋나면 PR을 실패시킴
-- **저장소 규칙**: 저장소 CLAUDE.md와 PR 템플릿에 "계측을 건드리면 events.csv를 같이 고친다" 체크 항목
-- **Amplitude 등록(선택)**: events.csv를 Amplitude Data의 트래킹 플랜에 올려 두면 문서에 없는 이벤트가 들어올 때 "Unexpected"로 표시됨. 지금 우리 이벤트가 Unexpected로 뜨는 이유가 이것
+### 자동 점검 (2026-09-30 적용)
+- `python3 scripts/check_taxonomy.py`가 `landing/*.html`의 코드와 events.csv를 대조합니다. PR에서 `landing/`, `docs/taxonomy/`, `scripts/`를 건드리면 GitHub Actions(taxonomy)가 같은 점검을 돌리고 어긋나면 PR에 실패 표시가 붙습니다.
+- 대조하는 것
+  - `track()`, `trackOnce()`로 보내는 이벤트 이름과 이벤트별 속성 키 ↔ Status가 active인 SDK 행
+  - `COMMON`에 들어가는 공통 속성 키 ↔ Event Name이 `*`인 active 행
+  - `fbq('track'/'trackCustom', ...)` 이벤트 ↔ active인 Meta Pixel 행
+- 표 자체도 검사합니다: 열 구성, Status 값, SDK 이벤트와 속성의 snake_case, active와 proposed 행의 Analysis, 같은 이벤트와 속성의 중복 행
+- 대조하지 않는 것: 속성 값(Value Example), Amplitude 자동 수집 이벤트(session_start 등). 값 목록을 바꿀 때는 사람이 표를 고칩니다.
+- 저장소 `CLAUDE.md`와 PR 템플릿에 같은 규칙을 적어 두었습니다.
+- 머지한 뒤에는 Amplitude 트래킹 플랜(성분돋보기 프로젝트)에도 반영해 새 이벤트가 "unexpected"로 뜨지 않게 합니다.
 
 ## 7. 결정 사항
 
@@ -158,5 +164,6 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 
 | 날짜 | 내용 |
 |---|---|
+| 2026-09-30 | 자동 점검 추가(scripts/check_taxonomy.py, GitHub Actions taxonomy, 저장소 CLAUDE.md, PR 템플릿). 6절 "개발 단계에서 붙일 것"을 "자동 점검"으로 바꿈 |
 | 2026-09-30 | 7절 결정 3건 반영. Status에 rejected 추가. InterestClick을 rejected로. 세션 자동 이벤트 이름을 session_start, session_end로 바로잡음(Amplitude MCP로 확인) |
 | 2026-09-30 | 1차 초안. 운영 중인 이벤트 6개, 공통 속성 8개, Amplitude 자동 이벤트 2개, 메타 픽셀 2개(1개 제안)를 코드 기준으로 정리 |
