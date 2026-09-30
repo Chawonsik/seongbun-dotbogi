@@ -15,7 +15,7 @@
   /* 계측 설정
      amplitude: Amplitude API 키. 비어 있으면 Amplitude를 싣지 않고 이벤트는 페이지 안 기록(?debug=1)에만 남습니다.
      landingPage: 이 페이지가 어떤 랜딩인지. 1차 공통 랜딩은 common, 2차는 name 또는 benefit. */
-  window.SD_CONFIG = { amplitude: "", pixel: "1547670487046797", landingPage: "common" };
+  window.SD_CONFIG = { amplitude: "7a7863df8d25938e6e2a54abdc0a6666", pixel: "1547670487046797", landingPage: "common" };
 </script>
 <style>
   /* 광고 이미지와 같은 톤: 아이보리 바탕, 코랄 강조. 사진 윗부분 색(--bg)과 맞춰 사진이 바탕에 녹아들게 함 */
@@ -195,7 +195,8 @@
   var once = {};
   function trackOnce(name, extra) { if (once[name]) return; once[name] = true; track(name, extra); }
 
-  /* Amplitude 로더. 2026-09-30 강사님 세션에서 프로젝트가 보여 주는 설치 코드와 주소, 옵션을 대조할 것 */
+  /* Amplitude 로더. 프로젝트 스크립트(cdn.amplitude.com/script/<키>.js)는 window.amplitude 대기열을 먼저 만들고 SDK를 뒤이어 싣는다.
+     init을 직접 부르므로 스크립트의 기본 init(요소 클릭 자동 수집)은 쓰이지 않고, 세션 리플레이는 녹화 비율 0으로 붙는다(2026-09-30 확인) */
   if (CFG.amplitude) {
     var s = document.createElement('script');
     s.async = true;
