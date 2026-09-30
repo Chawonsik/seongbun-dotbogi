@@ -28,7 +28,23 @@
 - 로그인이 없으므로 사용자는 Amplitude 기기 ID로만 구분합니다.
 - Amplitude 자동 수집: 페이지 조회는 끕니다(landing_view와 겹침). 세션과 유입 경로는 켭니다. 검색 유입은 유입 경로로만 구분되기 때문입니다.
 
-### 공통 속성 (모든 이벤트)
+### 이벤트 7개: 무슨 일이 일어났나
+
+아래 7개는 모두 우리 코드가 보냅니다. 어느 버튼을 눌렀는지는 Amplitude가 알 수 없어서 코드가 직접 알립니다. Amplitude가 스스로 붙이는 것은 device_id, session_id, 세션 시작과 끝, 첫 유입 경로뿐입니다.
+
+| 이벤트 | 언제 | 추가 속성 | 분석에서 쓰는 곳 |
+|---|---|---|---|
+| landing_view | 페이지가 열릴 때 1회 | 없음 | 소재별 방문 수, 클릭 대비 실제 도착 비율 |
+| interest_click | "출시되면 관심 있어요" 버튼을 누를 때 1회 | 없음 | 핵심 전환. 소재별 관심 버튼 클릭률 |
+| engaged_60s | 화면이 보이는 상태로 60초 누적 | 없음 | 소재별 체류 비율 |
+| survey_view | 설문 카드가 화면에 뜰 때 | trigger (interest 또는 timer) | 설문 응답률의 분모 |
+| survey_answer | 문항에 답할 때 | q (q1, q2, q3), answer (선택지 코드) | 정성 데이터 |
+| survey_close | 끝까지 답하지 않고 닫을 때 | step (닫은 문항: q1, q2, q3) | 응답 거부 비율, 어느 문항에서 이탈하는지 |
+| tool_link_click | 부록 성분 도구 링크를 누를 때 | 없음 | 설문 뒤 성분 정보까지 찾아보는 비율 |
+
+### 공통 속성 7개: 이벤트마다 함께 적는 정보
+
+예: interest_click(이벤트)이 일어나면 utm_content=r1_name, variant=name 같은 속성이 함께 적힙니다. 위 표의 "추가 속성"은 특정 이벤트에만 붙고, 아래 7개는 모든 이벤트에 붙습니다.
 
 | 속성 | 예시 | 출처 |
 |---|---|---|
@@ -43,20 +59,6 @@
 UTM이 없는 방문(직접 접속, 검색, 공유)은 값을 `(none)`으로 보내 광고 유입과 구분합니다.
 
 landing_page를 따로 두는 이유: 2차에는 랜딩이 두 개라서 링크를 공유받아 UTM 없이 들어오거나 링크를 잘못 넣어도 어느 페이지였는지 알 수 있어야 합니다. variant와 landing_page가 다르면 링크 오류로 보고 점검합니다.
-
-### 이벤트 7개 (콘셉트 페이지)
-
-아래 7개는 모두 우리 코드가 보냅니다. 어느 버튼을 눌렀는지는 Amplitude가 알 수 없어서 코드가 직접 알립니다. Amplitude가 스스로 붙이는 것은 device_id, session_id, 세션 시작과 끝, 첫 유입 경로뿐입니다.
-
-| 이벤트 | 언제 | 추가 속성 | 분석에서 쓰는 곳 |
-|---|---|---|---|
-| landing_view | 페이지가 열릴 때 1회 | 없음 | 소재별 방문 수, 클릭 대비 실제 도착 비율 |
-| interest_click | "출시되면 관심 있어요" 버튼을 누를 때 1회 | 없음 | 핵심 전환. 소재별 관심 버튼 클릭률 |
-| engaged_60s | 화면이 보이는 상태로 60초 누적 | 없음 | 소재별 체류 비율 |
-| survey_view | 설문 카드가 화면에 뜰 때 | trigger (interest 또는 timer) | 설문 응답률의 분모 |
-| survey_answer | 문항에 답할 때 | q (q1, q2, q3), answer (선택지 코드) | 정성 데이터 |
-| survey_close | 끝까지 답하지 않고 닫을 때 | step (닫은 문항: q1, q2, q3) | 응답 거부 비율, 어느 문항에서 이탈하는지 |
-| tool_link_click | 부록 성분 도구 링크를 누를 때 | 없음 | 설문 뒤 성분 정보까지 찾아보는 비율 |
 
 ### 메타 픽셀
 - PageView는 그대로 둡니다. 맞춤 이벤트는 ProductSelect 대신 관심 버튼(InterestClick)으로 바꾸는 안입니다. 랜딩 디자인 확정 때 정합니다.
@@ -99,7 +101,7 @@ landing_page를 따로 두는 이유: 2차에는 랜딩이 두 개라서 링크�
 
 완성 링크 예시
 ```
-https://seongbun-dotbogi.vercel.app/?utm_source=facebook&utm_medium=cpc&utm_campaign=kr_2040_skincare&utm_content=r1_name
+https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=kr_2040_skincare&utm_content=r1_name
 ```
 
 위 주소는 1차 공통 랜딩 기준입니다. 2차 소재별 랜딩 주소는 랜딩 디자인 확정 때 정하고 영어 소문자와 하이픈만 씁니다(SEO 1편 주소 규칙).
