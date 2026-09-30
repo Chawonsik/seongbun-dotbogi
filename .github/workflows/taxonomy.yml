@@ -1,0 +1,32 @@
+name: taxonomy
+
+on:
+  pull_request:
+    paths:
+      - "landing/**"
+      - "docs/taxonomy/**"
+      - "scripts/**"
+      - ".github/workflows/taxonomy.yml"
+  push:
+    branches: [main]
+    paths:
+      - "landing/**"
+      - "docs/taxonomy/**"
+      - "scripts/**"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        working-directory: scripts
+        run: python -m unittest -v test_check_taxonomy
+      - name: Tracking code matches events.csv
+        run: python scripts/check_taxonomy.py
