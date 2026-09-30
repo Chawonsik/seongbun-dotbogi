@@ -25,6 +25,10 @@ python crawler/run.py derive --publish       # landing/data.json 에도 쓴다
 ## 내보낸 파일 주의
 북마클릿이 내려받은 `sd-collect-*.json` 에는 제품별 전성분 원문이 그대로 들어 있다. 반드시 `data/raw/exports/`(git 제외)에 두고, 커밋하거나 팀 밖으로 공유하지 않는다. 저장소 다른 곳에 둔 채 `ingest` 하면 경고가 뜬다.
 
+`derive` 가 쓰는 `data/derived/top6-check.csv` 도 제품별 성분표 앞 6개를 그대로 담으므로 git 에서 제외한다. 점검 결과는 숫자로만 남긴다.
+
+- 2026-09-29 점검 (PDRN 3개 + 검증 5개 = 8개): 검색 응답의 앞 6개 성분 순서가 실제 성분표와 8/8 일치, verify 기준선과 5/5 일치
+
 ## 옵션
 --only PDRN  한 성분만 (links 에서는 selected 여부와 무관하게 지정) / --top-n 30 성분당 링크 수 / --force 검색 다시 받기 / --max-pages N 검색 성분당 페이지 상한(기본 250)
 

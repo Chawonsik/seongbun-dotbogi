@@ -7,6 +7,8 @@ data/raw/exports/
 # Bookmarklet export (full ingredient lists; never commit)
 sd-collect-*.json
 !crawler/tests/fixtures/sd-collect-sample.json
+# derive output that quotes the first six label ingredients per product (raw text; never commit)
+data/derived/top6-check.csv
 
 # Generated outputs
 ads/out/
