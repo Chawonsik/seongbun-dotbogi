@@ -1,6 +1,6 @@
 # Event taxonomy: context
 
-Last Updated: 2026-09-30 (phase 2)
+Last Updated: 2026-10-01 (after phase 2; no open tasks)
 
 ## Key files
 - `docs/taxonomy/events.csv`, `docs/taxonomy/README.md` (new, SSOT for events and properties)
@@ -16,6 +16,13 @@ Last Updated: 2026-09-30 (phase 2)
 - Only two view events: landing_view, survey_view
 - No user properties set by our code; segment by survey answers with Amplitude cohorts
 - Rows are never deleted once data exists; use Status=deprecated
+
+## Since phase 2 (2026-10-01)
+- `variant` and `landing_page` use `review` instead of `benefit`; survey Q1 gained `texture` (PR #13)
+- The concept page hero photo follows `utm_content` (PR #19). No tracking call changed, `landing_page` stays `common` in round 1
+- Production check with `&debug=1`: both ad links sent `round=r1`, `variant=name|review`, Pixel PageView. Repeat right before publishing because the headline changed after the check (PR #22)
+- Analysis uses the campaign period only and excludes `is_test`. No charts are prepared in advance
+- The ad-side metric is Ads Manager "CTR(링크 클릭률)", documented in `ads/README.md`
 
 ## Decided 2026-09-30 (README section 7)
 - Keep `{object}_{action}` present-tense names
