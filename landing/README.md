@@ -5,7 +5,7 @@
 ## 파일
 - concept.html: 광고 도착 페이지(출시 전 콘셉트). 주소는 /concept. `window.SD_CONFIG` 에 Amplitude 키와 메타 픽셀 ID를 넣는다.
 - privacy.html: 개인정보 처리방침. 주소는 /privacy
-- img/: 콘셉트 사진(광고와 같은 사진), 로고
+- img/: 첫 화면 사진과 로고. 1차 광고로 들어오면 그 광고와 같은 사진(`r1_name` → `r1-name.webp`, `r1_review` → `r1-review.webp`), 그 밖(UTM 없음, SNS, 2차)은 `concept-hero.webp`. 규칙은 concept.html 머리의 `HERO` 표
 
 루트 주소(`/`)의 예전 성분 도구 페이지는 2026-09-30 삭제했다. 가상 제품이라 성분을 보여 줄 수 없어서 부록도 함께 뺐다.
 
