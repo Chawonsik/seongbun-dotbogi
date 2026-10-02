@@ -35,17 +35,17 @@
   :root {
     --bg: #F4E6DD; --paper: #FFF8F3; --ink: #3B2A25; --muted: #86706A; --line: #E6D2C6;
     --accent: #C74222; --accent-ink: #A8391D; --tint: #FBE1D6; --on-accent: #FFFFFF;
-    --shadow: 0 14px 34px rgba(120, 60, 40, 0.10);
+    --shadow: 0 14px 34px rgba(120, 60, 40, 0.10); --footer-bg: #3B2A25; --footer-ink: #E6D2C6;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
-      --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+      --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --shadow: 0 14px 34px rgba(0, 0, 0, 0.35); --footer-bg: #140E0C; --footer-ink: #BFA79E;
     }
   }
   :root[data-theme="dark"] {
     --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
-    --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+    --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --shadow: 0 14px 34px rgba(0, 0, 0, 0.35); --footer-bg: #140E0C; --footer-ink: #BFA79E;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -54,33 +54,28 @@
     font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     font-size: 15px; line-height: 1.65; word-break: keep-all; overflow-wrap: break-word;
   }
-  .wrap { max-width: 520px; margin: 0 auto; padding: 14px 16px 56px; }
+  /* 페이지가 화면보다 짧을 때도 푸터가 맨 아래에 붙도록 세로로 쌓음 */
+  .wrap { max-width: 520px; margin: 0 auto; background: var(--paper); min-height: 100vh; display: flex; flex-direction: column; }
+  main { flex: 1; }
+  .sec { padding: 24px 16px; }
+  .sec-main { background: var(--paper); }
+  .sec-info { background: var(--bg); border-top: 1px solid var(--line); }
 
-  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 14px; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; background: var(--paper); border-bottom: 1px solid var(--line); }
   .brand { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
   .brand img { width: 30px; height: 24px; object-fit: contain; }
   .notice { font-size: 12px; font-weight: 700; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 5px 11px; white-space: nowrap; }
 
-  h1 { font-weight: 800; font-size: 30px; line-height: 1.22; letter-spacing: -0.035em; margin: 0 0 4px; }
+  h1 { font-weight: 800; font-size: 30px; line-height: 1.22; letter-spacing: -0.035em; margin: 0 0 10px; }
   h1 em { font-style: normal; color: var(--accent); }
   h2 { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 10px; }
 
-  .hero { margin: 0 -16px; }
-  .hero img {
-    display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 62%;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%);
-            mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%);
-  }
+  .hero { margin: 0; }
+  .hero img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 62%; }
   @media (max-height: 740px) { .hero img { aspect-ratio: 4 / 3; } }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .hero { margin: 8px 0 12px; }
-    :root:not([data-theme="light"]) .hero img { -webkit-mask-image: none; mask-image: none; border-radius: 20px; }
-  }
-  :root[data-theme="dark"] .hero { margin: 8px 0 12px; }
-  :root[data-theme="dark"] .hero img { -webkit-mask-image: none; mask-image: none; border-radius: 20px; }
 
   .lead { font-size: 15px; margin: 0 0 16px; }
-  .cta { margin: 0 0 20px; }
+  .cta { margin: 0; }
   .btn {
     display: block; width: 100%; min-height: 54px; border: 0; border-radius: 999px;
     background: var(--accent); color: var(--on-accent); font: inherit; font-size: 16px; font-weight: 800; letter-spacing: -0.02em;
@@ -92,7 +87,7 @@
   .btn:focus-visible, .opt:focus-visible, .close:focus-visible, a:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 3px; }
   .thanks { margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--tint); font-size: 14px; }
 
-  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; box-shadow: var(--shadow); margin: 0 0 14px; }
+  .card { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 20px 18px; margin: 20px 0 0; }
   .muted { color: var(--muted); font-size: 13px; }
 
   .spec { margin: 0; display: grid; }
@@ -108,14 +103,15 @@
   .opts { display: grid; gap: 8px; }
   .opt {
     min-height: 46px; text-align: left; padding: 11px 14px; border: 1px solid var(--line); border-radius: 14px;
-    background: var(--bg); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; transition: background .15s ease, border-color .15s ease;
+    background: var(--paper); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; transition: background .15s ease, border-color .15s ease;
   }
   .opt:hover { background: var(--tint); border-color: var(--accent); }
   .close { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; }
   .close:hover { background: var(--tint); }
 
   a { color: var(--accent-ink); }
-  footer { margin-top: 30px; font-size: 12px; color: var(--muted); display: grid; gap: 6px; }
+  footer { padding: 22px 16px 40px; font-size: 12px; display: grid; gap: 6px; background: var(--footer-bg); color: var(--footer-ink); }
+  footer a { color: var(--footer-ink); }
   footer .links { display: flex; flex-wrap: wrap; gap: 4px 12px; }
 
   /* 첫 화면 요소가 차례로 떠오름 */
@@ -136,13 +132,14 @@
       <span class="notice">출시 전 콘셉트, 판매하지 않아요</span>
     </div>
 
-    <h1 class="rise d1">이런 크림<br><em>써 보고 싶나요?</em></h1>
-
-    <figure class="hero rise d2">
+    <figure class="hero rise d1">
       <img id="heroImg" width="960" height="960" alt="" fetchpriority="high">
       <script>(function () { var i = document.getElementById('heroImg'); i.src = window.SD_HERO.src; i.alt = window.SD_HERO.alt; })();</script>
       <noscript><img src="img/concept-hero.webp" width="960" height="960" alt="뚜껑을 연 코랄색 크림 통과, 옆에 펴 바른 크림"></noscript>
     </figure>
+
+    <section class="sec sec-main">
+    <h1 class="rise d2">이런 크림<br><em>써 보고 싶나요?</em></h1>
 
     <p class="lead rise d3">떠낼 때 모양이 잡히는 쫀쫀한 크림을 생각하고 있어요. 이런 크림이 나온다면 써 보고 싶은지 알려 주세요.</p>
 
@@ -152,8 +149,9 @@
     </div>
 
     <section class="card survey" id="survey" aria-live="polite" hidden></section>
+    </section>
 
-    <section class="card" aria-labelledby="introTitle">
+    <section class="sec sec-info" aria-labelledby="introTitle">
       <h2 id="introTitle">어떤 크림인가요</h2>
       <dl class="spec">
         <div><dt>제형</dt><dd>떠낼 때 모양이 잡히는 쫀쫀한 크림</dd></div>
