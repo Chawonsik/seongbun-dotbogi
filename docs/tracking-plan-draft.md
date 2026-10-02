@@ -4,7 +4,7 @@
 
 2026-09-30 Amplitude 연결 전에 "무엇을 보낼지"를 정하려고 쓴 문서입니다.
 
-기준 문서는 노션 결정 로그의 하위 페이지 "계측 설계 초안: 로그, UTM, 설문"입니다. 검토와 수정은 노션에서 하고 이 파일은 노션에 맞춰 옮깁니다. 마지막 동기화: 2026-10-01.
+기준 문서는 노션 결정 로그의 하위 페이지 "계측 설계 초안: 로그, UTM, 설문"입니다. 검토와 수정은 노션에서 하고 이 파일은 노션에 맞춰 옮깁니다. 마지막 동기화: 2026-10-02.
 
 ## 한눈에 보기
 
@@ -12,7 +12,7 @@
 |---|---|
 | 랜딩 | 가상 제품형(출시 전 콘셉트 페이지 + 관심 버튼 + 설문). 부록 성분 도구는 2026-09-30 뺌(PR #7). 1차는 두 소재가 같은 페이지 하나를 쓰고 제품 이름 없음. 첫 화면 사진만 누른 광고와 같은 사진으로 바뀜(2026-10-01, PR #19). 2차는 소재별 랜딩 |
 | 이벤트 | 콘셉트 페이지 6개(핵심은 interest_click). 정의는 저장소 택소노미 문서(docs/taxonomy)가 기준 |
-| UTM (광고) | facebook / cpc / kr_2040_skincare / r1_name, r1_review, r2_name, r2_review |
+| UTM (광고) | facebook / cpc / 캠페인 이름 / 광고 세트 이름(utm_term) / 광고 이름. 광고 관리자의 이름과 같은 글자를 씀(2026-10-02) |
 | UTM (무료 SNS) | threads 또는 naver_blog / social / organic / 글 번호 |
 | 설문 | 3문항. Q1 광고를 누른 이유(광고 유입에만), Q2 화장품을 고를 때 가장 먼저 보는 것, Q3 성분표 확인 습관. 카드 하나에 한 문항씩 1/3, 2/3, 3/3 표시. 관심 버튼을 누르거나 20초가 지나면 한 번 뜸 |
 
@@ -23,18 +23,18 @@
 ### 원칙
 - 이벤트 이름은 영어 소문자와 밑줄로 씁니다. 가안에 있던 engaged_60s는 같은 이름과 기준을 그대로 씁니다.
 - 실험 분석에 쓰는 것만 계측합니다.
-- 모든 이벤트에 UTM 네 값을 이벤트 속성으로 붙입니다. Amplitude의 자동 유입 속성은 첫 방문 기준이라 두 번째 방문부터 섞일 수 있어서 이벤트마다 직접 붙입니다.
+- 모든 이벤트에 UTM 다섯 값(source, medium, campaign, term, content)을 이벤트 속성으로 붙입니다. Amplitude의 자동 유입 속성은 첫 방문 기준이라 두 번째 방문부터 섞일 수 있어서 이벤트마다 직접 붙입니다.
 - 개인정보는 보내지 않습니다. 이메일과 자유 입력을 받지 않고 설문은 선택지 코드만 보냅니다.
 - 로그인이 없으므로 사용자는 Amplitude 기기 ID로만 구분합니다.
 - Amplitude 자동 수집: 페이지 조회는 끕니다(landing_view와 겹침). 세션과 유입 경로는 켭니다. 검색 유입은 유입 경로로만 구분되기 때문입니다.
 
 ### 이벤트와 속성 정의: 택소노미 문서로 옮김 (2026-09-30)
 
-이벤트 6개와 공통 속성 8개의 이름, 값, 분석 용도는 저장소의 택소노미 문서가 기준입니다. 이 문서에는 더 이상 이벤트 표를 두지 않습니다. 코드를 바꾸는 PR에서 표도 같이 고치고, 나중에 코드와 표가 다르면 자동으로 걸러내기 위해서입니다.
+이벤트 6개와 공통 속성 9개의 이름, 값, 분석 용도는 저장소의 택소노미 문서가 기준입니다. 이 문서에는 더 이상 이벤트 표를 두지 않습니다. 코드를 바꾸는 PR에서 표도 같이 고치고, 나중에 코드와 표가 다르면 자동으로 걸러내기 위해서입니다.
 - 이벤트와 속성 표: [events.csv](taxonomy/events.csv)
 - 이름 규칙, 이벤트 흐름, 설계 판단, 변경 절차: [택소노미 README](taxonomy/README.md)
 
-요약: 핵심 전환은 interest_click. 모든 이벤트에 utm 네 값, round, variant, landing_page가 붙고 테스트 방문에만 is_test=true가 붙습니다.
+요약: 핵심 전환은 interest_click. 모든 이벤트에 utm 다섯 값, round, variant, landing_page가 붙고 테스트 방문에만 is_test=true가 붙습니다.
 
 **테스트 규칙 (결정 2026-09-30)**
 - 두 사람이 페이지를 확인할 때는 항상 주소 끝에 `&debug=1`을 붙여 들어갑니다. 모든 이벤트에 is_test=true가 붙고 화면 아래에 이벤트 기록이 보입니다.
@@ -72,21 +72,30 @@ landing_page를 따로 두는 이유: 2차에는 랜딩이 두 개라서 링크�
 
 ### 광고
 
-| 파라미터 | 값 | 규칙 |
-|---|---|---|
-| utm_source | facebook | 고정 |
-| utm_medium | cpc | 고정 |
-| utm_campaign | kr_2040_skincare | 타겟 이름. 국가_연령_관심사. 타겟은 하나 |
-| utm_content | {차수}_{소재} | 아래 표 |
+2026-10-02부터 광고 관리자의 이름과 UTM을 같은 글자로 씁니다(강사님 피드백). 이름만 보고 누구에게 무엇을 시험하는지 알 수 있게 하고, 다른 값이 생길 수 있는 것만 이름에 넣습니다. 낱말 뜻은 저장소 ads/README.md에 있습니다.
 
-| 차수 | A (성분 언어 소재: PDRN 연어크림) | B (리뷰 언어 소재: 바르면 쫀쫀해지고 광이 나는 크림, 2026-10-01 확정) |
+| 파라미터 | 무엇과 같은가 | 규칙 | 1차 값 |
+|---|---|---|---|
+| utm_source | | 고정 | facebook |
+| utm_medium | | 고정 | cpc |
+| utm_campaign | 캠페인 이름 | 제품_목표_실험_차수_시작일 | pdrncream_traffic_imgtest_r1_261002 |
+| utm_term | 광고 세트 이름 | 겨냥_연령_성별_고르는방법_값 | ua_2040_female_interest_skincare |
+| utm_content | 광고 이름 | img_그림_text_글_차수_버전 | 아래 표 |
+
+| 차수 | A | B |
 |---|---|---|
-| 1차 (이미지) | r1_name | r1_review |
-| 2차 (고른 이미지 + 문구) | r2_name | r2_review |
+| 1차 (그림만 다름) | img_ingredient_text_common_r1_v1 (원료를 떠올리는 그림) | img_texture_text_common_r1_v1 (사용감을 떠올리는 그림) |
+| 2차 (글만 다름) | img_(고른 그림)_text_ingredient_r2_v1 ("PDRN 연어크림") | img_(고른 그림)_text_review_r2_v1 ("바르면 쫀쫀해지고 광이 나는 크림", 2026-10-01 확정) |
+
+- 시작일은 실제 게시일(YYMMDD)입니다. 게시가 미뤄지면 캠페인 이름과 링크의 utm_campaign을 같이 바꿉니다.
+- 2차의 "(고른 그림)" 자리에는 1차에서 이긴 쪽에 따라 ingredient 또는 texture가 들어갑니다. 2차 캠페인 이름은 pdrncream_traffic_texttest_r2_(시작일)입니다.
+- 코드는 utm_content에서 차수(round)와 소재 구분(variant)을 뽑습니다. variant는 A와 B가 다른 쪽의 값입니다(1차는 그림 값, 2차는 글 값). 규칙에 맞지 않는 값이면 둘 다 (none)이 됩니다. 값은 60자까지만 저장됩니다.
+- 랜딩 첫 화면 사진은 utm_content의 그림 값으로 고릅니다. 2차 광고도 고른 그림이 그대로 나옵니다.
+- 2026-10-01까지 쓰던 값: utm_campaign kr_2040_skincare, utm_content r1_name, r1_review. 게시 전에 바꿔서 이 값으로 쌓인 것은 테스트뿐입니다.
 
 완성 링크 예시
 ```
-https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=kr_2040_skincare&utm_content=r1_name
+https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=pdrncream_traffic_imgtest_r1_261002&utm_term=ua_2040_female_interest_skincare&utm_content=img_ingredient_text_common_r1_v1
 ```
 
 위 주소는 1차 공통 랜딩 기준입니다. 2차 소재별 랜딩 주소는 랜딩 디자인 확정 때 정하고 영어 소문자와 하이픈만 씁니다(SEO 1편 주소 규칙).
@@ -101,10 +110,11 @@ https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&u
 | 네이버 블로그 | naver_blog | social | organic | 글 번호 (b01, b02 ...) |
 
 - utm_medium을 social로 두어 광고(cpc)와 한 번에 나눠 볼 수 있게 합니다.
+- utm_term은 붙이지 않습니다. (none)으로 기록됩니다.
 - 검색 결과(SEO)로 들어오는 방문에는 UTM을 붙일 수 없습니다. Amplitude의 유입 경로(referrer)로 구분합니다.
 
 ### 코드에서 바꿀 것
-- 가안은 utm_content만 읽어 `frame`이라는 이름으로 붙였습니다. 새 랜딩은 네 값을 모두 읽고 round, variant, landing_page를 붙입니다.
+- 가안은 utm_content만 읽어 `frame`이라는 이름으로 붙였습니다. 새 랜딩은 UTM 값을 모두 읽고 round, variant, landing_page를 붙입니다.
 
 ---
 
