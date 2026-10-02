@@ -111,15 +111,15 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 | device, os, country 등 | 기기와 지역. 개인을 알아볼 정보는 아님 |
 
 ### 4.5 속성을 앞 이벤트에서 물려받지 않는다
-버거킹 사례처럼 앞 단계 속성을 뒤 이벤트에 계속 쌓는 방식은 퍼널 순서를 강제합니다. 우리 퍼널은 짧고 모든 이벤트가 같은 공통 속성 8개를 들고 다니므로 물려받을 것이 없습니다. 이벤트별 속성은 그 이벤트에서 생긴 정보만 넣습니다.
+버거킹 사례처럼 앞 단계 속성을 뒤 이벤트에 계속 쌓는 방식은 퍼널 순서를 강제합니다. 우리 퍼널은 짧고 모든 이벤트가 같은 공통 속성 9개를 들고 다니므로 물려받을 것이 없습니다. 이벤트별 속성은 그 이벤트에서 생긴 정보만 넣습니다.
 
 ## 5. 분석할 때 지킬 것
 
 - **테스트 제외**: is_test는 테스트 방문에만 true로 붙고 일반 방문에는 아예 없습니다. 필터는 "is_test가 true인 것 제외"로 겁니다. "is_test = false인 것만"으로 걸면 일반 방문(값 없음)까지 빠집니다.
 - **기기 기준**: landing_view와 interest_click은 새로 고침하면 다시 쌓일 수 있으니 이벤트 수가 아니라 기기 수(Uniques)로 셉니다.
 - **설문 코드**: answer의 `ingredient`, `effect`, `other`는 q1과 q2에 모두 있습니다. 항상 q로 먼저 거릅니다.
-- **(none)**: SNS나 검색 유입은 round, variant가 `(none)`입니다. A/B 비교에서는 variant가 name 또는 review인 것만 봅니다.
-- **링크 점검**: variant와 landing_page가 어긋나면(2차에서 name 소재인데 landing_page=review) 광고 링크 오류입니다.
+- **(none)**: SNS나 검색 유입은 round, variant가 `(none)`입니다. A/B 비교에서는 variant가 `(none)`이 아닌 것만 봅니다. 1차는 ingredient와 texture, 2차는 ingredient와 review입니다.
+- **링크 점검**: variant와 landing_page가 어긋나면(2차에서 ingredient 소재인데 landing_page=review) 광고 링크 오류입니다.
 
 ## 6. 변경 절차 (문서와 개발을 잇는 방법)
 
@@ -167,6 +167,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 
 | 날짜 | 내용 |
 |---|---|
+| 2026-10-02 | 광고 이름 규칙을 바꾸고 UTM을 광고 관리자의 이름과 같은 글자로 맞춤(강사님 피드백: 이름이 실험 계획을 드러내고 그 내용이 UTM에 들어가야 함). utm_campaign은 캠페인 이름, utm_term은 광고 세트 이름, utm_content는 광고 이름. 공통 속성 utm_term 추가(8개 → 9개). utm_content는 r1_name, r1_review에서 img_ingredient_text_common_r1_v1, img_texture_text_common_r1_v1로(규칙: img_그림_text_글_차수_버전). variant 값은 name, review에서 ingredient, texture, review로(A와 B가 다른 쪽의 값: 1차는 그림 값, 2차는 글 값). landing_page 값 name → ingredient. 첫 화면 사진은 이름의 그림 값으로 고름. 게시 전이라 옛 값으로 쌓인 데이터는 테스트뿐. 규칙은 ads/README.md |
 | 2026-10-01 | B 문구 확정("바르면 쫀쫀해지고 광이 나는 크림"). 이벤트와 속성은 바뀌지 않음 |
 | 2026-09-30 | B 소재를 효능 언어에서 리뷰 언어로 바꿈. variant와 landing_page 값 benefit → review, utm_content r1_benefit → r1_review(r2도 같음). 설문 Q1에 texture(사용감) 선택지 추가. 광고 전이라 옛 값으로 쌓인 데이터는 테스트뿐 |
 | 2026-09-30 | Amplitude 트래킹 플랜(성분돋보기)에 이벤트 7개와 속성 12개를 등록. round, variant, landing_page, trigger, q, answer, step은 허용 값 목록(enum)으로 둠. 세션 끝(session_end)은 아직 들어온 적이 없어 등록하지 않음 |

@@ -1,6 +1,6 @@
 # Event taxonomy: context
 
-Last Updated: 2026-10-01 (after phase 2; no open tasks)
+Last Updated: 2026-10-02 (ad naming change; see dev/active/ad-naming)
 
 ## Key files
 - `docs/taxonomy/events.csv`, `docs/taxonomy/README.md` (new, SSOT for events and properties)
@@ -23,6 +23,13 @@ Last Updated: 2026-10-01 (after phase 2; no open tasks)
 - Production check with `&debug=1`: both ad links sent `round=r1`, `variant=name|review`, Pixel PageView. Repeat right before publishing because the headline changed after the check (PR #22)
 - Analysis uses the campaign period only and excludes `is_test`. No charts are prepared in advance
 - The ad-side metric is Ads Manager "CTR(링크 클릭률)", documented in `ads/README.md`
+
+## Naming change (2026-10-02)
+- Ad links now carry the Ads Manager names: `utm_campaign` = campaign, `utm_term` = ad set (new common property, 9 in total), `utm_content` = ad
+- `utm_content` format: `img_{image}_text_{text}_{round}_v{n}`. `round` comes from the round slot; `variant` is the value of the side that differs (image value when text is `common`, otherwise the text value)
+- `variant` values: `ingredient`, `texture`, `review` (were `name`, `review`). `landing_page` values: `common`, `ingredient`, `review`
+- The hero photo is picked from the image value, so round 2 needs no code change
+- Rules and glossary: `ads/README.md`
 
 ## Decided 2026-09-30 (README section 7)
 - Keep `{object}_{action}` present-tense names

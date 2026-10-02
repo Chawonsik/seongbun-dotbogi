@@ -17,7 +17,7 @@
 | 역할 | 2차에 쓸 이미지를 고르는 단계 | **본 실험** |
 | 비교 | 그림으로 비교. A 원료를 떠올리는 그림, B 사용감을 떠올리는 그림 | 글로 비교. 같은 그림 위에 A 성분 이름, B 리뷰 언어 |
 | 광고 글 | A, B 동일 | A, B 동일 (이미지 위 문구만 다름) |
-| UTM | `r1_name`, `r1_review` | `r2_name`, `r2_review` |
+| 광고 이름 (utm_content) | `img_ingredient_text_common_r1_v1`, `img_texture_text_common_r1_v1` | `img_(고른 그림)_text_ingredient_r2_v1`, `img_(고른 그림)_text_review_r2_v1` |
 | 기간, 예산 | 7일, 하루 1만 원 (소재당 약 5천 원) | 7일, 하루 1만 원 |
 
 - 2차 문구: A "PDRN 연어크림", B "바르면 쫀쫀해지고 광이 나는 크림"
