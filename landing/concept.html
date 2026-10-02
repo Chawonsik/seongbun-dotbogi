@@ -10,18 +10,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
 <script>
-  /* 첫 화면 사진: 광고로 들어오면 그 광고의 그림과 같은 사진, 그 밖(UTM 없음, SNS)은 기본 사진.
-     광고 이름(utm_content) 규칙은 img_그림_text_글_차수_버전. 예: img_ingredient_text_common_r1_v1
-     그림 자리의 값으로 사진을 고르므로 2차 광고도 고른 그림이 그대로 나옴.
+  /* 광고 이름 읽기와 첫 화면 사진. 광고 이름(utm_content) 규칙은 img_그림_text_글_차수_버전.
+     예: img_ingredient_text_common_r1_v1, img_texture_text_review_r2_v1 (영상이면 맨 앞이 vid)
+     여기서 한 번만 읽어 SD_AD로 넘기고 아래 계측 코드가 같은 값을 씀. 사진과 기록이 어긋나지 않게 하려는 것.
+     사진은 그림 값으로 고르므로 2차 광고도 고른 그림이 그대로 나옴. 그 밖(UTM 없음, SNS)은 기본 사진.
      페이지가 그려지기 전에 정해서 사진이 바뀌며 깜빡이지 않게 함 */
   (function () {
+    /* UTM 값은 영어 소문자, 숫자, 밑줄, 하이픈만 씁니다(운영 규칙). 공백은 밑줄로 바꾸고 나머지 문자는 지웁니다 */
+    window.SD_CLEAN = function (v) { return (v || '').trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '').slice(0, 60) || '(none)'; };
     var HERO = {
       ingredient: { src: 'img/r1-ingredient.webp', alt: '코랄색 유리 크림 통과, 옆에 놓인 작은 유리병과 유리 접시' },
       texture: { src: 'img/r1-texture.webp', alt: '뚜껑을 연 분홍색 크림 통과, 스패출러로 뜬 크림과 펴 바른 크림' }
     };
-    var c = (new URLSearchParams(location.search).get('utm_content') || '').trim().toLowerCase();
-    var h = /^img_([a-z]+)_text_[a-z]+_r[12]_v[0-9]+$/.exec(c);
-    window.SD_HERO = (h && HERO[h[1]]) || { src: 'img/concept-hero.webp', alt: '뚜껑을 연 코랄색 크림 통과, 옆에 펴 바른 크림' };
+    var c = window.SD_CLEAN(new URLSearchParams(location.search).get('utm_content'));
+    var m = /^(?:img|vid)_(ingredient|texture)_text_(common|ingredient|review)_(r[12])_v[0-9]+$/.exec(c);
+    /* variant는 A와 B가 다른 쪽의 값: 글이 common이면 그림 값(1차), 아니면 글 값(2차) */
+    window.SD_AD = m ? { round: m[3], variant: m[2] === 'common' ? m[1] : m[2], image: m[1] } : null;
+    window.SD_HERO = m ? HERO[m[1]] : { src: 'img/concept-hero.webp', alt: '뚜껑을 연 코랄색 크림 통과, 옆에 펴 바른 크림' };
     var l = document.createElement('link'); l.rel = 'preload'; l.as = 'image'; l.href = window.SD_HERO.src;
     document.head.appendChild(l);
   })();
@@ -185,8 +190,7 @@
 
   /* 공통 속성: UTM 다섯 값, round, variant, landing_page.
      광고 링크는 utm_campaign=캠페인 이름, utm_term=광고 세트 이름, utm_content=광고 이름 */
-  /* UTM 값은 영어 소문자, 숫자, 밑줄, 하이픈만 씁니다(운영 규칙). 공백은 밑줄로 바꾸고 나머지 문자는 지웁니다 */
-  function clean(v) { return (v || '').trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '').slice(0, 60) || '(none)'; }
+  var clean = window.SD_CLEAN; /* 머리 스크립트와 같은 규칙을 씀 */
   var COMMON = {
     utm_source: clean(qs.get('utm_source')),
     utm_medium: clean(qs.get('utm_medium')),
@@ -196,11 +200,10 @@
     landing_page: CFG.landingPage || 'common'
   };
   if (DEBUG) COMMON.is_test = true; /* ?debug=1 테스트 방문은 분석에서 거르도록 표시 */
-  /* 광고 이름 규칙: img_그림_text_글_차수_버전. 예: img_ingredient_text_common_r1_v1, img_texture_text_review_r2_v1
-     variant는 A와 B가 다른 쪽의 값: 글이 common이면 그림 값(1차), 아니면 글 값(2차) */
-  var m = /^(?:img|vid)_(ingredient|texture)_text_(common|ingredient|review)_(r[12])_v[0-9]+$/.exec(COMMON.utm_content);
-  COMMON.round = m ? m[3] : '(none)';
-  COMMON.variant = m ? (m[2] === 'common' ? m[1] : m[2]) : '(none)';
+  /* 차수와 소재 구분은 머리 스크립트가 광고 이름에서 읽어 둔 값. 규칙에 맞지 않으면 (none) */
+  var AD = window.SD_AD;
+  COMMON.round = AD ? AD.round : '(none)';
+  COMMON.variant = AD ? AD.variant : '(none)';
   var IS_PAID = COMMON.utm_medium === 'cpc';
 
   /* 이벤트 전송: Amplitude가 뜨기 전 이벤트는 모아 두었다가 뜨면 보냄 */
