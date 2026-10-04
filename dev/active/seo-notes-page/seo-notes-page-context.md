@@ -5,7 +5,7 @@ Last Updated: 2026-10-05 (구현과 리뷰 반영 끝, PR 전)
 ## 핵심 파일
 - 새 페이지: `landing/notes/pdrn-cream-reviews.html` (cleanUrls라 주소는 `/notes/pdrn-cream-reviews`)
 - 참고만 하는 파일: `landing/concept.html` (글꼴, 색, 계측 코드 모양). 이 PR에서 수정하지 않음
-- `landing/vercel.json`: cleanUrls true, trailingSlash false, `/` → `/concept` 리다이렉트
+- `landing/vercel.json`: cleanUrls false(2026-10-05, 소유 확인 파일 때문), rewrites로 `/concept`, `/privacy`, `/notes/:slug` 연결, trailingSlash false, `/` → `/concept` 리다이렉트
 - `scripts/check_taxonomy.py`: `PAGES_GLOB = "landing/*.html"`이라 하위 폴더를 못 봄. 여러 페이지의 코드를 합쳐서 events.csv와 대조함
 - `docs/taxonomy/events.csv`, `docs/taxonomy/README.md`(4.2 view 이벤트 원칙, 6절 5문항)
 - `landing/privacy.html` 1절 수집 항목

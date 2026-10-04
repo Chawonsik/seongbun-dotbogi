@@ -11,9 +11,9 @@
 - [x] landing/README.md 파일 목록
 - [x] 로컬 점검(check_taxonomy, 단위 테스트 26개), 브라우저로 데스크톱과 모바일 화면, debug 이벤트 확인
 - [x] 코드 리뷰 에이전트: HIGH 없음. MEDIUM 3개(본문 회색 글자 대비, 처리방침 11절 누락, 이전 페이지 주소 수집 누락)와 LOW 대부분 반영
-- [ ] PR, 미리보기 확인
-- [ ] 머지 (원식)
-- [ ] Amplitude 트래킹 플랜 동기화 (note_view, note_link_click, note, target. 값 예시 notes, owned, n01)
+- [x] PR #27, 미리보기 확인(응답 200, 글에서 콘셉트로 넘어가는 흐름, debug 전달). 리뷰 뒤 비교 막대그래프 추가(원식 요청)
+- [x] 머지 (원식, 2026-10-05). 운영에서 글은 검색 허용, /concept는 noindex 그대로 확인
+- [x] Amplitude 트래킹 플랜 동기화 (2026-10-05: note_view, note_link_click 추가와 설명, note, target(enum concept), landing_page enum에 (none), utm 설명에 notes, owned, n01)
 - [ ] 서치 콘솔, 서치어드바이저 등록(원식), 소유 확인 파일 PR
 
 ## 반영하지 않은 리뷰 의견
