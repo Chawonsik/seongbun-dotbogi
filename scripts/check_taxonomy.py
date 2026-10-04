@@ -12,7 +12,7 @@ import sys
 from dataclasses import dataclass, field
 
 TAXONOMY_PATH = pathlib.Path("docs/taxonomy/events.csv")
-PAGES_GLOB = "landing/*.html"
+PAGES_GLOB = "landing/**/*.html"  # includes landing/*.html and pages in subfolders such as landing/notes/
 
 HEADER = [
     "Trigger", "Event Category", "Integration", "Event Name", "Event Description",
@@ -190,7 +190,11 @@ def _set_diff(label, documented, sent):
 def check_repo(root):
     root = pathlib.Path(root)
     tax, errors = load_taxonomy((root / TAXONOMY_PATH).read_text(encoding="utf-8-sig"))
-    pages = sorted(root.glob(PAGES_GLOB))
+    # Skip hidden folders such as landing/.vercel/ (local build output) so stale copies cannot fail the check
+    pages = sorted(
+        p for p in root.glob(PAGES_GLOB)
+        if not any(part.startswith(".") for part in p.relative_to(root).parts)
+    )
     code = merge(extract_code(p.read_text(encoding="utf-8")) for p in pages)
     return errors + compare(tax, code)
 

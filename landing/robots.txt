@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://seongbun-dotbogi.vercel.app/sitemap.xml

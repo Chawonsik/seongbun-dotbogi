@@ -1,4 +1,5 @@
 import pathlib
+import tempfile
 import unittest
 
 import check_taxonomy as ct
@@ -171,6 +172,33 @@ class CompareTest(unittest.TestCase):
 
 
 class RepoTest(unittest.TestCase):
+    def _make_repo(self, tmp, pages):
+        root = pathlib.Path(tmp)
+        (root / ct.TAXONOMY_PATH).parent.mkdir(parents=True)
+        (root / ct.TAXONOMY_PATH).write_text(CSV_OK, encoding="utf-8")
+        for rel, html in pages.items():
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (root / rel).write_text(html, encoding="utf-8")
+        return root
+
+    def test_checks_pages_in_subfolders(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._make_repo(tmp, {
+                "landing/concept.html": HTML_OK,
+                "landing/notes/article.html": "<script>trackOnce('note_only_view');</script>",
+            })
+            errors = ct.check_repo(root)
+        # Exact match: also proves the top-level page is still read (otherwise its events would be reported missing)
+        self.assertEqual(errors, ["event 'note_only_view' is sent by the code but not in events.csv as active"])
+
+    def test_skips_pages_in_hidden_folders(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._make_repo(tmp, {
+                "landing/concept.html": HTML_OK,
+                "landing/.vercel/output/static/old.html": "<script>trackOnce('stale_build_view');</script>",
+            })
+            self.assertEqual(ct.check_repo(root), [])
+
     def test_repository_is_in_sync(self):
         root = pathlib.Path(__file__).resolve().parent.parent
         self.assertEqual(ct.check_repo(root), [])
