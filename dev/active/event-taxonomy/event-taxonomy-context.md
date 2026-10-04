@@ -1,6 +1,6 @@
 # Event taxonomy: context
 
-Last Updated: 2026-10-02 (ad naming change; see dev/active/ad-naming)
+Last Updated: 2026-10-05 (article page events; see dev/active/seo-notes-page)
 
 ## Key files
 - `docs/taxonomy/events.csv`, `docs/taxonomy/README.md` (new, SSOT for events and properties)
@@ -30,6 +30,13 @@ Last Updated: 2026-10-02 (ad naming change; see dev/active/ad-naming)
 - `variant` values: `ingredient`, `texture`, `review` (were `name`, `review`). `landing_page` values: `common`, `ingredient`, `review`
 - The hero photo is picked from the image value, so round 2 needs no code change
 - Rules and glossary: `ads/README.md`
+
+## Article page events (2026-10-05, PR #27)
+- New events `note_view` (prop `note`) and `note_link_click` (props `note`, `target`) for `/notes/` pages. README 4.2 now allows a separate view event per page type
+- Article events carry the same common keys; `landing_page`, `round`, `variant` are `(none)` there
+- Link from the article to /concept: `utm_source=notes&utm_medium=owned&utm_campaign=organic&utm_content=n01`
+- `scripts/check_taxonomy.py` reads `landing/**/*.html` and skips hidden folders. 26 unit tests
+- Amplitude tracking plan synced the same day (events, `note`, `target` enum, `landing_page` enum with `(none)`)
 
 ## Decided 2026-09-30 (README section 7)
 - Keep `{object}_{action}` present-tense names

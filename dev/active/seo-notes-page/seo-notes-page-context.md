@@ -1,25 +1,39 @@
 # SEO 글 페이지: 맥락
 
-Last Updated: 2026-10-05 (구현과 리뷰 반영 끝, PR 전)
+Last Updated: 2026-10-05 (글 운영 반영, 검색 엔진 등록 끝. 다음은 스레드와 블로그)
+
+## 운영 상태
+- 글: https://seongbun-dotbogi.vercel.app/notes/pdrn-cream-reviews (2026-10-05 PR #27). 검색 허용
+- 구글 서치 콘솔(URL 접두어 속성)과 네이버 서치어드바이저 등록, sitemap 제출, 색인 요청 끝(2026-10-05)
+- 소유 확인 파일: `landing/google2e9047ca9cc0e9f7.html`, `landing/naver8ad44ea19e0d116fef037d4373ef854e.html`(지우면 소유 확인이 풀림)
 
 ## 핵심 파일
-- 새 페이지: `landing/notes/pdrn-cream-reviews.html` (cleanUrls라 주소는 `/notes/pdrn-cream-reviews`)
-- 참고만 하는 파일: `landing/concept.html` (글꼴, 색, 계측 코드 모양). 이 PR에서 수정하지 않음
-- `landing/vercel.json`: cleanUrls false(2026-10-05, 소유 확인 파일 때문), rewrites로 `/concept`, `/privacy`, `/notes/:slug` 연결, trailingSlash false, `/` → `/concept` 리다이렉트
-- `scripts/check_taxonomy.py`: `PAGES_GLOB = "landing/*.html"`이라 하위 폴더를 못 봄. 여러 페이지의 코드를 합쳐서 events.csv와 대조함
-- `docs/taxonomy/events.csv`, `docs/taxonomy/README.md`(4.2 view 이벤트 원칙, 6절 5문항)
-- `landing/privacy.html` 1절 수집 항목
+- 글 페이지: `landing/notes/pdrn-cream-reviews.html`
+- `landing/vercel.json`: cleanUrls false(2026-10-05, 소유 확인 파일 때문), rewrites로 `/concept`, `/privacy`, `/notes/:slug` 연결, trailingSlash false, `/` → `/concept` 리다이렉트. 새 페이지를 만들면 rewrites에 주소를 더함
+- 참고만 하는 파일: `landing/concept.html`. 광고가 10/9 17:00까지 돌아 수정하지 않음
+- `scripts/check_taxonomy.py`: `landing/**/*.html`(숨김 폴더 제외)을 합쳐서 events.csv와 대조
+- `docs/taxonomy/events.csv`, `docs/taxonomy/README.md`(4.2 예외: 페이지 종류가 다르면 view를 따로 둠)
+- `landing/privacy.html` 1, 2, 11절(2026-10-05 개정)
 
-## 글 원본
-노션 진행 현황 → "SEO 단계별 할 일" → "사이트 글 초안 v3". 숫자와 표현은 최종 기획안 "공통 사실 표"를 따름. 지원 님 숫자 대조는 아직
+## 글 원본과 근거
+- 노션 진행 현황 → "SEO 단계별 할 일" → "사이트 글 원고 (/notes/pdrn-cream-reviews)". 숫자와 표현은 최종 기획안 "공통 사실 표"를 따름. 지원 님 숫자 대조는 아직
+- 키워드 시트: 같은 행 안 "키워드 시트 (SEO 1단계)". 사이트 대표 검색어 "pdrn 크림 후기"(구글), 블로그 "화장품 성분표"(네이버)
+- 리뷰토픽 비교: PDRN 10개 대 일반 20개(2026-10-04 비교군 확장). PDRN 쪽은 기준에 맞는 제품이 10개뿐이었음
+- 글 말투: v1 습니다체 → v2 해요체 → v3 -다체 블로그 말투(원식 피드백 "감정이 없다"). 감정은 지어내지 않고 원식이 고른 두 문장만 넣음
 
 ## 계측 설계
 - 글 페이지 공통 속성은 콘셉트와 같은 키: UTM 다섯 개, round, variant, landing_page는 `(none)`, debug일 때 is_test
 - `note_view`: 글 페이지 조회(1회). 글로 온 사람 수의 분모
-- `note_link_click`: 콘셉트 링크 클릭. 속성 `target`(지금은 `concept`)
-- 콘셉트로 넘어간 뒤는 `/concept`의 `landing_view`에 `utm_source=notes`로 잡힘
+- `note_link_click`: 콘셉트 링크 클릭. 속성 `note`, `target`(지금은 `concept`). 같은 탭 이동은 beacon으로 보내고 flush 뒤 이동, 가운데 클릭은 auxclick으로 잡음
+- 콘셉트 링크 값: `utm_source=notes&utm_medium=owned&utm_campaign=organic&utm_content=n01`. 스레드 → 글 → 콘셉트로 간 사람은 콘셉트에서 notes로 보이므로 스레드 출처는 앞의 note_view로 이어 봄
+- 글 페이지에는 메타 픽셀 없음
+
+## 스레드 운영 (2026-10-05 결정)
+- 계정: 성분돋보기 인스타그램 계정을 새로 만들어 스레드 프로필. 가입은 새 구글 계정 이메일로(개인 번호로 가입하면 연락처 추천에 엮임). 10/9까지 페이스북 페이지와 광고에 연결하지 않음
+- 스레드 글은 사이트 글로 보냄. 콘셉트 반응은 기대하지 않음(원식). 글 쪽에서 볼 것은 note_view와 색인 여부
+- 공개 스레드 글을 보고 정한 방식: 반말 음슴체, 한 줄을 짧게, 첫 줄로 멈추게, 본문은 글만 쓰고 링크는 작성자 댓글, 끝은 질문으로 댓글 유도
+- 초안 세 개(수수께끼형, 공감형, 대결형)는 대화에서 원식에게 전달함. 첫 글은 수수께끼형 추천
 
 ## 정해진 값
 - 사이트 주소: https://seongbun-dotbogi.vercel.app
 - Amplitude 키는 공개 브라우저 키(concept.html과 같은 값)
-- 대표 검색어: pdrn 크림 후기
