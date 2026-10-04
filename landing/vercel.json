@@ -1,5 +1,5 @@
 {
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": false,
   "headers": [
     {
@@ -22,5 +22,10 @@
       "destination": "/concept",
       "permanent": false
     }
+  ],
+  "rewrites": [
+    { "source": "/concept", "destination": "/concept.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/notes/:slug", "destination": "/notes/:slug.html" }
   ]
 }
