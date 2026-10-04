@@ -69,17 +69,17 @@
   :root {
     --bg: #F4E6DD; --paper: #FFF8F3; --ink: #3B2A25; --muted: #76615B; --line: #E6D2C6;
     --accent: #C74222; --accent-ink: #A8391D; --tint: #FBE1D6; --on-accent: #FFFFFF;
-    --footer-bg: #3B2A25; --footer-ink: #E6D2C6;
+    --footer-bg: #3B2A25; --footer-ink: #E6D2C6; --gen: #BFA79E;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
-      --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --footer-bg: #140E0C; --footer-ink: #BFA79E;
+      --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --footer-bg: #140E0C; --footer-ink: #BFA79E; --gen: #6E5A53;
     }
   }
   :root[data-theme="dark"] {
     --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
-    --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --footer-bg: #140E0C; --footer-ink: #BFA79E;
+    --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --footer-bg: #140E0C; --footer-ink: #BFA79E; --gen: #6E5A53;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -104,6 +104,24 @@
   .summary { background: var(--tint); border-radius: 14px; padding: 16px 18px; }
   .summary strong { font-weight: 700; }
   .aside { color: var(--muted); font-size: 14px; }
+
+  /* 비교 그래프: 막대는 꾸밈이고 숫자는 글자로 남겨 검색과 화면 읽기 프로그램이 읽게 함 */
+  .chart { margin: 20px 0 8px; padding: 18px 16px 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); }
+  .chart figcaption { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.45; margin: 0 0 4px; }
+  .chart .sub { font-size: 12px; color: var(--muted); margin: 0 0 12px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; margin: 0 0 6px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .group { font-size: 12px; font-weight: 700; color: var(--accent-ink); margin: 14px 0 4px; }
+  .bars { margin: 0; }
+  .bars .row { display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: center; padding: 5px 0; }
+  .bars dt { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .bars dd { margin: 0; display: grid; gap: 4px; }
+  .bar { display: flex; align-items: center; gap: 6px; font-size: 12px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .bar .fill { height: 12px; border-radius: 0 6px 6px 0; min-width: 2px; }
+  .pdrn { background: var(--accent); }
+  .gen { background: var(--gen); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   .table-wrap { overflow-x: auto; margin: 4px 0 20px; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.5; }
@@ -147,6 +165,29 @@
       <p>화해에서 PDRN을 검색하면 제품이 1,816개 나온다(2026년 10월 1일 기준). 크림만 그런 것도 아니다. 세럼, 토너, 패드까지 줄줄이 나온다.</p>
       <p>그런데 이름에 성분을 크게 걸어 두면 써 본 사람들도 성분 얘기를 할까? 궁금해서 PDRN 크림 후기를 직접 세어 봤다.</p>
       <p class="summary"><strong>먼저 결론부터. PDRN 크림 후기에는 잘 발린다, 흡수가 잘 된다, 보습이 잘 된다는 말이 일반 크림보다 자주 붙어 있었다. 가볍다, 산뜻하다는 말은 오히려 일반 크림 쪽이 훨씬 많았다. 그리고 PDRN 때문에 샀다고 쓴 리뷰는 110개 중 15개 정도였다.</strong></p>
+      <figure class="chart">
+        <figcaption>어느 쪽 후기에 더 자주 붙었나</figcaption>
+        <p class="sub">화해 리뷰토픽 상위 7개에 그 말이 들어 있던 제품 수. 막대 길이는 비율</p>
+        <p class="legend"><span><i class="pdrn"></i>PDRN 크림 10개</span><span><i class="gen"></i>일반 크림 20개</span></p>
+        <p class="group">PDRN 크림 쪽에 더 자주</p>
+        <dl class="bars">
+          <div class="row"><dt>흡수잘되는</dt><dd><span class="bar"><span class="fill pdrn" style="width:100%"></span><span class="sr">PDRN 크림 </span>10/10</span><span class="bar"><span class="fill gen" style="width:65%"></span><span class="sr">일반 크림 </span>13/20</span></dd></div>
+          <div class="row"><dt>잘발리는</dt><dd><span class="bar"><span class="fill pdrn" style="width:90%"></span><span class="sr">PDRN 크림 </span>9/10</span><span class="bar"><span class="fill gen" style="width:40%"></span><span class="sr">일반 크림 </span>8/20</span></dd></div>
+          <div class="row"><dt>보습잘되는</dt><dd><span class="bar"><span class="fill pdrn" style="width:50%"></span><span class="sr">PDRN 크림 </span>5/10</span><span class="bar"><span class="fill gen" style="width:15%"></span><span class="sr">일반 크림 </span>3/20</span></dd></div>
+          <div class="row"><dt>수분있는</dt><dd><span class="bar"><span class="fill pdrn" style="width:40%"></span><span class="sr">PDRN 크림 </span>4/10</span><span class="bar"><span class="fill gen" style="width:5%"></span><span class="sr">일반 크림 </span>1/20</span></dd></div>
+          <div class="row"><dt>윤기나는</dt><dd><span class="bar"><span class="fill pdrn" style="width:40%"></span><span class="sr">PDRN 크림 </span>4/10</span><span class="bar"><span class="fill gen" style="width:5%"></span><span class="sr">일반 크림 </span>1/20</span></dd></div>
+        </dl>
+        <p class="group">비슷</p>
+        <dl class="bars">
+          <div class="row"><dt>끈적하지않은</dt><dd><span class="bar"><span class="fill pdrn" style="width:80%"></span><span class="sr">PDRN 크림 </span>8/10</span><span class="bar"><span class="fill gen" style="width:85%"></span><span class="sr">일반 크림 </span>17/20</span></dd></div>
+        </dl>
+        <p class="group">일반 크림 쪽에 더 자주</p>
+        <dl class="bars">
+          <div class="row"><dt>가벼운</dt><dd><span class="bar"><span class="fill pdrn" style="width:40%"></span><span class="sr">PDRN 크림 </span>4/10</span><span class="bar"><span class="fill gen" style="width:70%"></span><span class="sr">일반 크림 </span>14/20</span></dd></div>
+          <div class="row"><dt>산뜻한</dt><dd><span class="bar"><span class="fill pdrn" style="width:20%"></span><span class="sr">PDRN 크림 </span>2/10</span><span class="bar"><span class="fill gen" style="width:60%"></span><span class="sr">일반 크림 </span>12/20</span></dd></div>
+          <div class="row"><dt>자극없는</dt><dd><span class="bar"><span class="fill pdrn" style="width:20%"></span><span class="sr">PDRN 크림 </span>2/10</span><span class="bar"><span class="fill gen" style="width:55%"></span><span class="sr">일반 크림 </span>11/20</span></dd></div>
+        </dl>
+      </figure>
 
       <h2>화해 리뷰토픽으로 세어 봤다</h2>
       <p>화해 제품 페이지를 내리다 보면 리뷰토픽이라는 목록이 있다. 화해가 AI로 리뷰를 분석해서 많이 나온 특징을 뽑아 둔 건데 토픽마다 옆에 숫자가 붙어 있다. 그 말이 들어간 리뷰 수다. 목록은 매일 0시에 바뀌고 어떻게 뽑는지는 나와 있지 않다.</p>
@@ -171,23 +212,7 @@
       <h2>근데 크림이면 원래 다 그런 거 아닌가?</h2>
       <p>흡수 잘되고 잘 발린다는 말은 크림 후기라면 어디에나 있을 것 같은 말이다. 그래서 이름에 PDRN이 없는 크림도 똑같이 세어 봤다. 화해에서 '크림'을 검색해서 나온 순서대로 얼굴용 크림 20개.</p>
       <p>처음엔 일반 크림을 10개만 봤다. 그때는 차이가 꽤 커 보였다. 그런데 비교할 크림을 20개로 늘리니까 차이가 확 줄었다. 결과가 좀 싱거워진 셈이다. 괜히 늘렸나 싶었다. 그래도 방향까지 뒤집히지는 않았다.</p>
-      <div class="table-wrap">
-        <table>
-          <caption>긍정 리뷰토픽 상위 7개에 그 토픽이 들어 있던 제품 수</caption>
-          <thead><tr><th scope="col">리뷰토픽</th><th scope="col" class="num">PDRN 크림 (10개 중)</th><th scope="col" class="num">일반 크림 (20개 중)</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">잘발리는</th><td class="num">9</td><td class="num">8</td></tr>
-            <tr><th scope="row">흡수잘되는</th><td class="num">10</td><td class="num">13</td></tr>
-            <tr><th scope="row">보습잘되는</th><td class="num">5</td><td class="num">3</td></tr>
-            <tr><th scope="row">수분있는</th><td class="num">4</td><td class="num">1</td></tr>
-            <tr><th scope="row">윤기나는</th><td class="num">4</td><td class="num">1</td></tr>
-            <tr><th scope="row">끈적하지않은</th><td class="num">8</td><td class="num">17</td></tr>
-            <tr><th scope="row">가벼운</th><td class="num">4</td><td class="num">14</td></tr>
-            <tr><th scope="row">산뜻한</th><td class="num">2</td><td class="num">12</td></tr>
-            <tr><th scope="row">자극없는</th><td class="num">2</td><td class="num">11</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <p>숫자는 맨 위 그래프 그대로다.</p>
       <p>PDRN 크림 쪽에 더 자주 보인 건 잘발리는, 보습잘되는, 수분있는, 윤기나는. 일반 크림 쪽은 가벼운, 산뜻한, 자극없는이 훨씬 많았다. <span class="aside">(그렇다고 PDRN 크림이 자극이 있다는 얘기는 아니다. 상위 7개에 안 들었을 뿐이다.)</span> 끈적하지않은은 양쪽 다 많았다. 크림 후기의 기본값 같은 말이다.</p>
       <p>이 부분은 꼭 짚어 두자. 일반 크림 20개 중엔 수딩 크림이나 수분 크림이 많았다. 그러니 이 차이가 PDRN 때문인지 그냥 제형이 달라서인지는 이걸로는 모른다.</p>
 
@@ -197,7 +222,7 @@
       <p>제일 많이 나온 말은 '촉촉하다'(약 31개). 그다음이 '흡수가 잘 된다'(약 29개), '발림성이 좋다'(약 28개)였다. 그런데 '건조하다'는 불만도 약 22개나 있었다. 촉촉하다는 말과 건조하다는 불만이 같은 리뷰 더미에 나란히 있었던 셈이다.</p>
       <p>읽다 보니 리뷰에 쓰는 말은 성분보다 제형을 따라가는 것처럼 보였다. 젤 타입 크림엔 '가볍다, 산뜻하다'가, 영양 크림엔 '쫀쫀하다, 광이 난다'가 붙는 식이었다.</p>
       <p>그리고 PDRN 때문에 샀다고 쓴 리뷰는 약 15개였다. 110개 중 15개. 효과를 의심하는 리뷰도 약 6개 있었다. 이름에 성분을 크게 걸어 둔 크림인데 후기에서 가장 많이 나온 건 바를 때의 느낌이었다. 생각해 보면 나도 크림 후기를 쓸 때 성분 얘기는 안 한다.</p>
-      <p class="aside">(한 사람이 한 번 센 숫자라 한두 개씩은 틀릴 수 있다. 체험단이라고 밝힌 리뷰도 약 8개 섞여 있었다. 그리고 이건 리뷰 문장을 직접 센 거라 위의 토픽 표와는 세는 방식이 다르다. '가볍다'가 여기선 많은데 토픽 비교에선 일반 크림 쪽이 더 많은 것처럼 서로 어긋나 보일 수 있다.)</p>
+      <p class="aside">(한 사람이 한 번 센 숫자라 한두 개씩은 틀릴 수 있다. 체험단이라고 밝힌 리뷰도 약 8개 섞여 있었다. 그리고 이건 리뷰 문장을 직접 센 거라 위의 토픽 비교와는 세는 방식이 다르다. '가볍다'가 여기선 많은데 토픽 비교에선 일반 크림 쪽이 더 많은 것처럼 서로 어긋나 보일 수 있다.)</p>
 
       <h2>정리하면</h2>
       <p>PDRN 크림 후기에 많이 나오는 건 흡수가 잘 된다, 잘 발린다, 촉촉하다 같은 사용감 얘기였다. 일반 크림과 견주면 발림이나 보습 쪽 말이 조금 더 자주 보였고 가볍다, 산뜻하다는 덜 보였다.</p>
