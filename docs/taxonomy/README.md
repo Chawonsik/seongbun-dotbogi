@@ -46,6 +46,7 @@ flowchart LR
 |---|---|---|
 | 관심 전환 | landing_view → interest_click | landing_view, interest_click, engaged_60s |
 | 설문 | survey_view → survey_answer(q3) | survey_view, survey_answer, survey_close |
+| 글 | note_view → note_link_click → (/concept의 landing_view, utm_source=notes) | note_view, note_link_click |
 | 세션 (자동) | Amplitude가 기록 | session_start, session_end |
 | 광고 최적화 | 메타 픽셀 | PageView, InterestClick(제안) |
 
@@ -84,6 +85,8 @@ view는 새로 고침마다 쌓이고 의도를 알 수 없어 비용 대비 효
 - survey_view: 설문 응답률의 분모. 설문은 관심 버튼과 20초 타이머 두 경로로 뜨므로 view 하나로 받는 편이 경로별 click을 두는 것보다 단순함
 
 Amplitude의 페이지 조회 자동 수집은 landing_view와 겹쳐서 끕니다.
+
+**예외: 페이지 종류가 다르면 view를 따로 둡니다(2026-10-05).** 검색용 글 페이지(`/notes/`)는 광고 도착 페이지가 아니라서 note_view로 따로 셉니다. landing_view에 섞으면 블로그나 스레드에서 콘셉트에 도착한 수를 셀 때 글 조회가 함께 잡힙니다. note_view는 글에서 콘셉트로 넘어간 비율(note_link_click)의 분모라 4.2의 조건(분모가 필요함)에도 맞습니다.
 
 ### 4.3 모든 행동을 잡지 않는다
 분석 목적이 없는 이벤트는 만들지 않습니다. events.csv의 Analysis 열이 비면 그 이벤트는 추가하지 않습니다. 지금 **일부러 넣지 않은 것**:
@@ -144,7 +147,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 5. 처리방침의 수집 항목(1절)에 이미 포함되나? 아니면 처리방침을 같은 PR에서 고침
 
 ### 자동 점검 (2026-09-30 적용)
-- `python3 scripts/check_taxonomy.py`가 `landing/*.html`의 코드와 events.csv를 대조합니다. PR에서 `landing/`, `docs/taxonomy/`, `scripts/`를 건드리면 GitHub Actions(taxonomy)가 같은 점검을 돌리고 어긋나면 PR에 실패 표시가 붙습니다.
+- `python3 scripts/check_taxonomy.py`가 `landing/` 아래 모든 HTML(하위 폴더 포함, 2026-10-05부터)의 코드를 합쳐 events.csv와 대조합니다. PR에서 `landing/`, `docs/taxonomy/`, `scripts/`를 건드리면 GitHub Actions(taxonomy)가 같은 점검을 돌리고 어긋나면 PR에 실패 표시가 붙습니다.
 - 대조하는 것
   - `track()`, `trackOnce()`로 보내는 이벤트 이름과 이벤트별 속성 키 ↔ Status가 active인 SDK 행
   - `COMMON`에 들어가는 공통 속성 키 ↔ Event Name이 `*`인 active 행
@@ -167,6 +170,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 
 | 날짜 | 내용 |
 |---|---|
+| 2026-10-05 | 검색용 글 페이지(`/notes/pdrn-cream-reviews`) 추가. 이벤트 note_view(속성 note), note_link_click(속성 note, target) 추가. 4.2에 "페이지 종류가 다르면 view를 따로 둔다" 예외. 글 페이지 이벤트의 공통 속성은 콘셉트와 같은 키이고 landing_page는 (none). 글에서 콘셉트로 가는 링크 값 utm_source=notes, utm_medium=owned, utm_campaign=organic, utm_content=n01. 자동 점검이 landing/ 하위 폴더도 보게 바꿈. 글 페이지에는 메타 픽셀을 넣지 않음 |
 | 2026-10-02 | 광고 이름 규칙을 바꾸고 UTM을 광고 관리자의 이름과 같은 글자로 맞춤(강사님 피드백: 이름이 실험 계획을 드러내고 그 내용이 UTM에 들어가야 함). utm_campaign은 캠페인 이름, utm_term은 광고 세트 이름, utm_content는 광고 이름. 공통 속성 utm_term 추가(8개 → 9개). utm_content는 r1_name, r1_review에서 img_ingredient_text_common_r1_v1, img_texture_text_common_r1_v1로(규칙: img_그림_text_글_차수_버전). variant 값은 name, review에서 ingredient, texture, review로(A와 B가 다른 쪽의 값: 1차는 그림 값, 2차는 글 값). landing_page 값 name → ingredient. 첫 화면 사진은 이름의 그림 값으로 고름. 게시 전이라 옛 값으로 쌓인 데이터는 테스트뿐. 규칙은 ads/README.md |
 | 2026-10-01 | B 문구 확정("바르면 쫀쫀해지고 광이 나는 크림"). 이벤트와 속성은 바뀌지 않음 |
 | 2026-09-30 | B 소재를 효능 언어에서 리뷰 언어로 바꿈. variant와 landing_page 값 benefit → review, utm_content r1_benefit → r1_review(r2도 같음). 설문 Q1에 texture(사용감) 선택지 추가. 광고 전이라 옛 값으로 쌓인 데이터는 테스트뿐 |
