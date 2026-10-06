@@ -1,6 +1,6 @@
 # Event taxonomy: context
 
-Last Updated: 2026-10-05 (article page events; see dev/active/seo-notes-page)
+Last Updated: 2026-10-06 (section_view added)
 
 ## Key files
 - `docs/taxonomy/events.csv`, `docs/taxonomy/README.md` (new, SSOT for events and properties)
@@ -42,3 +42,12 @@ Last Updated: 2026-10-05 (article page events; see dev/active/seo-notes-page)
 - Keep `{object}_{action}` present-tense names
 - Repo events.csv is SSOT; Notion 계측 설계 event tables replaced with links (done)
 - Meta InterestClick: rejected
+
+## Section views (2026-10-06)
+- New event `section_view` (prop `section`: `cta` = interest button, `info` = product intro section, `footer`). Elements carry `data-section`; one observer at the end of the concept page script sends each section once at 50% visibility
+- The hero is not tracked (same count as `landing_view`); the survey card already has `survey_view`
+- Browsers without IntersectionObserver send nothing. A page opened in a background tab sends nothing until it is shown
+- Local check at 375x812 and 360x640: the interest button is already on screen at load, so `cta` fires with `landing_view` on those sizes. `info` needs a small scroll, `footer` a full scroll. No duplicates after scrolling up and down
+- Data exists only for visits after the deploy. Section ratios use `landing_view` from the same period as the denominator, and results state the measurement period
+- README 4.3 used to reject scroll depth; that row now points to `section_view`
+- Do not change the landing page on this data before 2026-10-09 17:00 (round 1 conditions stay fixed)

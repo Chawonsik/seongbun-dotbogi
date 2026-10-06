@@ -14,6 +14,12 @@ Goal: one source of truth for events and properties that stays in sync with the 
 4. Optional: import events.csv into Amplitude Data tracking plan.
 5. Apply any rename decided in phase 1 (before the first campaign).
 
+## Phase 3: section views (2026-10-06)
+Feedback: look at who drops off and where, so the landing page can be fixed.
+1. Add `section_view` with property `section` (`cta`, `info`, `footer`) to `landing/concept.html`. Fired once per section when at least half of the marked element is on screen (IntersectionObserver). No visible change.
+2. Same PR: events.csv row, README 4.2 exception, 4.3 row, change log, privacy section 1 and 11, `landing/README.md`.
+3. After merge: check production with `&debug=1`, record the deploy time, sync the Amplitude tracking plan.
+
 ## Not in scope
 - Notion 계측 설계 page edits (user said not to touch; propose only)
 - Changing UTM rules or survey wording

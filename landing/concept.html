@@ -152,14 +152,14 @@
     <p class="lead rise d3">떠낼 때 모양이 잡히는 쫀쫀한 크림을 생각하고 있어요. 이런 크림이 나온다면 써 보고 싶은지 알려 주세요.</p>
 
     <div class="cta rise d4">
-      <button class="btn" id="interestBtn" type="button" data-track="interest_click">출시되면 관심 있어요</button>
+      <button class="btn" id="interestBtn" type="button" data-track="interest_click" data-section="cta">출시되면 관심 있어요</button>
       <p class="thanks" id="interestThanks" role="status" tabindex="-1" hidden>아직 판매하지 않는 콘셉트 테스트였어요. 관심 가져 주셔서 고마워요.<span id="surveyAsk" hidden> 아래 질문에 답해 주시면 큰 도움이 돼요.</span></p>
     </div>
 
     <section class="card survey" id="survey" aria-live="polite" hidden></section>
     </section>
 
-    <section class="sec sec-info" aria-labelledby="introTitle">
+    <section class="sec sec-info" aria-labelledby="introTitle" data-section="info">
       <h2 id="introTitle">어떤 크림인가요</h2>
       <dl class="spec">
         <div><dt>제형</dt><dd>떠낼 때 모양이 잡히는 쫀쫀한 크림</dd></div>
@@ -172,7 +172,7 @@
 
   </main>
 
-  <footer>
+  <footer data-section="footer">
     <div>&copy; 2026 성분돋보기</div>
     <div class="links"><a href="privacy">개인정보 처리방침</a><span>문의 <a href="mailto:wonsikcha12@gmail.com">wonsikcha12@gmail.com</a></span></div>
   </footer>
@@ -340,6 +340,24 @@
     showSurvey('interest');
     document.getElementById('surveyAsk').hidden = surveyState !== 'open';
   });
+
+  /* 구역 노출: data-section 요소가 화면에 절반 이상 들어오면 구역마다 1회. 어디까지 보고 나갔는지 보려는 것.
+     IntersectionObserver가 없는 브라우저에서는 보내지 않음 */
+  var SECTION_RATIO = 0.5, seenSection = {};
+  if ('IntersectionObserver' in window) {
+    var sectionObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        /* isIntersecting은 조금만 걸쳐도 참인 브라우저가 있어 비율로 직접 확인 */
+        if (e.intersectionRatio < SECTION_RATIO) return;
+        sectionObserver.unobserve(e.target);
+        var name = e.target.getAttribute('data-section');
+        if (seenSection[name]) return; /* 같은 구역 값이 두 요소에 붙어도 한 번만 */
+        seenSection[name] = true;
+        track('section_view', { section: name });
+      });
+    }, { threshold: SECTION_RATIO });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-section]'), function (el) { sectionObserver.observe(el); });
+  }
 
 })();
 </script>

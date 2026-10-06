@@ -17,7 +17,7 @@
 
 ## 계측
 이벤트와 속성의 기준은 `docs/taxonomy/events.csv` 이다. 광고 이름과 UTM 규칙은 `ads/README.md`. `?debug=1` 로 열면 화면 아래에 보내는 이벤트가 보이고 `is_test` 가 붙는다.
-디자인을 고칠 때도 `id` 와 `data-track` 표시는 유지한다.
+디자인을 고칠 때도 `id`, `data-track`, `data-section` 표시는 유지한다. `data-section`(cta, info, footer)이 붙은 요소가 화면에 절반 이상 들어오면 section_view를 보낸다.
 
 ## 광고 링크 UTM 예
 ?utm_source=facebook&utm_medium=cpc&utm_campaign=pdrncream_traffic_imgtest_r1_261002&utm_term=ua_2040_female_interest_skincare&utm_content=img_ingredient_text_common_r1_v1
