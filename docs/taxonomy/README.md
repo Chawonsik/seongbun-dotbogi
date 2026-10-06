@@ -172,6 +172,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 
 | 날짜 | 내용 |
 |---|---|
+| 2026-10-06 | Amplitude 트래킹 플랜에 section_view를 등록(카테고리 관심 전환). section은 허용 값 목록(cta, info, footer)이고 필수 |
 | 2026-10-06 | 이벤트 section_view(속성 section: cta, info, footer) 추가. 피드백(랜딩 안에서 어디서 이탈하는지 보아야 랜딩을 고칠 수 있음)에 따라 4.3의 "스크롤 깊이는 넣지 않음"을 구역 노출로 바꿈. 4.2에 예외 추가. 화면은 바꾸지 않음. 배포 뒤 방문에만 기록됨. 처리방침 1절에 "페이지의 어느 구역까지 보았는지" 추가 |
 | 2026-10-05 | 검색용 글 페이지(`/notes/pdrn-cream-reviews`) 추가. 이벤트 note_view(속성 note), note_link_click(속성 note, target) 추가. 4.2에 "페이지 종류가 다르면 view를 따로 둔다" 예외. 글 페이지 이벤트의 공통 속성은 콘셉트와 같은 키이고 landing_page는 (none). 글에서 콘셉트로 가는 링크 값 utm_source=notes, utm_medium=owned, utm_campaign=organic, utm_content=n01. 자동 점검이 landing/ 하위 폴더도 보게 바꿈. 글 페이지에는 메타 픽셀을 넣지 않음 |
 | 2026-10-02 | 광고 이름 규칙을 바꾸고 UTM을 광고 관리자의 이름과 같은 글자로 맞춤(강사님 피드백: 이름이 실험 계획을 드러내고 그 내용이 UTM에 들어가야 함). utm_campaign은 캠페인 이름, utm_term은 광고 세트 이름, utm_content는 광고 이름. 공통 속성 utm_term 추가(8개 → 9개). utm_content는 r1_name, r1_review에서 img_ingredient_text_common_r1_v1, img_texture_text_common_r1_v1로(규칙: img_그림_text_글_차수_버전). variant 값은 name, review에서 ingredient, texture, review로(A와 B가 다른 쪽의 값: 1차는 그림 값, 2차는 글 값). landing_page 값 name → ingredient. 첫 화면 사진은 이름의 그림 값으로 고름. 게시 전이라 옛 값으로 쌓인 데이터는 테스트뿐. 규칙은 ads/README.md |

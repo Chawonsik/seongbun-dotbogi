@@ -20,4 +20,4 @@
 - [x] Local browser check with `?debug=1` at 375x812 and 360x640
 - [x] Code review, PR, merge (#34, merged 2026-10-06 14:33 KST)
 - [x] Production check with `&debug=1` (cta, info, footer once each, no console errors); deploy time 2026-10-06 14:34 KST recorded in dev/active/ingredient-map context
-- [ ] Sync the Amplitude tracking plan (`section_view`, `section` enum)
+- [x] Sync the Amplitude tracking plan (2026-10-06): `section_view` added to the plan with category 관심 전환, `section` set to enum (cta, info, footer) and required
