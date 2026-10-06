@@ -97,6 +97,34 @@ B: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cp
 - 판정에 쓰는 CTR은 광고 관리자의 "CTR(링크 클릭률)"이다. "CTR(전체)"는 좋아요와 프로필 누르기까지 세므로 쓰지 않는다
 - 링크 클릭은 광고를 누른 수, 랜딩 페이지 조회는 페이지가 열려 픽셀이 작동한 수라서 랜딩 페이지 조회가 더 적다
 
+## 2차 사전 준비 (2026-10-06, 그림과 시작일만 비어 있음)
+
+1차가 끝나고 그림이 정해지면 `(그림)` 자리에 `ingredient` 또는 `texture`, `(시작일)` 자리에 실제 게시일(YYMMDD)을 넣는다.
+
+| 항목 | 값 |
+|---|---|
+| 캠페인 | `pdrncream_traffic_texttest_r2_(시작일)`, 목표 트래픽, 하루 10,000원, A/B 테스트 기능 쓰지 않음 |
+| 광고 세트 | `ua_2040_female_interest_skincare`, 1차와 같은 설정(위 "광고 세트" 표) |
+| 광고 A | `img_(그림)_text_ingredient_r2_v1`, 그림 위 문구 "PDRN 연어크림" |
+| 광고 B | `img_(그림)_text_review_r2_v1`, 그림 위 문구 "바르면 쫀쫀해지고 광이 나는 크림"(두 줄: 바르면 쫀쫀해지고 / 광이 나는 크림) |
+
+- 지금 계획은 1차와 같은 구성(광고 세트 1개에 광고 2개). 1차에서 원료 쪽 노출이 멈춘 일이 있어 세트를 2개로 나눌지는 등록 전에 확정한다(`dev/active/ingredient-map/` 할 일). 영상은 하지 않는다(2026-10-06 결정)
+- 그림 위 문구: 같은 글꼴, 같은 크기(72px, 굵게), 같은 위치(왼쪽 위 72, 72), 같은 색. A는 한 줄, B는 두 줄. 시안은 로컬 `r2-draft/`(스크립트 `make_overlay.py`). 시안 글꼴은 맥 기본 글꼴이라 게시 전에 공개 라이선스 글꼴로 바꾼다
+- 기본 문구, 제목, 설명, 버튼은 1차와 같게 두는 안(A와 B가 다른 것은 그림 위 문구뿐). 게시 전에 확정
+- 랜딩은 고칠 것이 없다. `/concept` 코드가 2차 이름을 이미 읽는다(round r2, variant ingredient 또는 review, 첫 화면 사진은 그림 값)
+
+```text
+A: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=pdrncream_traffic_texttest_r2_(시작일)&utm_term=ua_2040_female_interest_skincare&utm_content=img_(그림)_text_ingredient_r2_v1
+B: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=pdrncream_traffic_texttest_r2_(시작일)&utm_term=ua_2040_female_interest_skincare&utm_content=img_(그림)_text_review_r2_v1
+```
+
+게시 전 순서
+1. 1차 분석 결과로 그림을 정하고 분석에서 나온 피드백을 소재와 설정에 반영한다
+2. 결과 예측을 각자 적는다
+3. 두 링크에 `&debug=1`을 붙여 열고 round(r2), variant(ingredient, review), 첫 화면 사진, 픽셀 PageView를 확인한다
+4. 광고 관리자의 이름 세 곳이 링크의 UTM과 글자까지 같은지, 그림과 문구가 이름과 맞는지 대조한다(1차 때 뒤바뀐 적이 있음)
+5. 시작 시각은 "준비 중" 지연(보통 2시간, 길면 12시간)을 감안해 잡는다
+
 ## 폴더
 - `r1/`: 1차 광고 이미지
 - `r2-draft/`: 2차 시안 후보(예전 글자 들어간 이미지와 바탕 원본). 2차 방향이 정해질 때까지 저장소에 올리지 않고 로컬에만 둔다
