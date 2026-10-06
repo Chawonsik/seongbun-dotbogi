@@ -44,7 +44,7 @@ flowchart LR
 
 | 이벤트 카테고리 | 퍼널 | 이벤트 |
 |---|---|---|
-| 관심 전환 | landing_view → interest_click | landing_view, interest_click, engaged_60s |
+| 관심 전환 | landing_view → interest_click | landing_view, interest_click, engaged_60s, section_view |
 | 설문 | survey_view → survey_answer(q3) | survey_view, survey_answer, survey_close |
 | 글 | note_view → note_link_click → (/concept의 landing_view, utm_source=notes) | note_view, note_link_click |
 | 세션 (자동) | Amplitude가 기록 | session_start, session_end |
@@ -79,8 +79,8 @@ flowchart LR
 ### 4.1 소재(A/B)는 이벤트가 아니라 속성으로 나눈다
 버거킹 사례는 킹오더와 딜리버리를 `k_`, `d_` 이벤트로 쪼갰습니다. 두 퍼널을 늘 따로 보기 때문입니다. 우리는 반대입니다. A와 B는 **항상 나란히 비교**하는 대상이라 한 이벤트에 variant 속성을 두고 Amplitude에서 "variant로 나눠 보기" 한 번으로 두 줄을 겹쳐 봅니다. 이벤트를 쪼개면 비교할 때마다 둘을 다시 합쳐야 합니다.
 
-### 4.2 view 이벤트는 두 개만
-view는 새로 고침마다 쌓이고 의도를 알 수 없어 비용 대비 효용이 낮을 수 있습니다. 우리는 다음 두 개만 둡니다.
+### 4.2 view 이벤트는 분모가 필요할 때만
+view는 새로 고침마다 쌓이고 의도를 알 수 없어 비용 대비 효용이 낮을 수 있습니다. 처음에는 다음 두 개만 두었고 아래 예외 두 가지(note_view, section_view)가 더해졌습니다.
 - landing_view: 소재별 방문 수의 분모. 광고 클릭 수(메타)와 도착 수를 맞춰 보는 유일한 값
 - survey_view: 설문 응답률의 분모. 설문은 관심 버튼과 20초 타이머 두 경로로 뜨므로 view 하나로 받는 편이 경로별 click을 두는 것보다 단순함
 
@@ -88,12 +88,14 @@ Amplitude의 페이지 조회 자동 수집은 landing_view와 겹쳐서 끕니�
 
 **예외: 페이지 종류가 다르면 view를 따로 둡니다(2026-10-05).** 검색용 글 페이지(`/notes/`)는 광고 도착 페이지가 아니라서 note_view로 따로 셉니다. landing_view에 섞으면 블로그나 스레드에서 콘셉트에 도착한 수를 셀 때 글 조회가 함께 잡힙니다. note_view는 글에서 콘셉트로 넘어간 비율(note_link_click)의 분모라 4.2의 조건(분모가 필요함)에도 맞습니다.
 
+**예외: 구역 노출은 속성 하나로 받습니다(2026-10-06).** section_view는 콘셉트 페이지의 구역(관심 버튼, 제품 소개, 푸터)이 화면에 절반 이상 들어올 때 구역마다 한 번 보냅니다. 관심 버튼을 본 기기 수가 관심 클릭률의 분모가 되므로 4.2의 조건에 맞습니다. 구역마다 이벤트를 따로 만들지 않고 section 속성으로 나눕니다(4.1과 같은 이유). 첫 화면의 머리와 사진은 landing_view와 같은 수라서 넣지 않았고 설문 카드는 survey_view가 이미 있습니다. 2026-10-06 배포 뒤 방문에만 있으므로 구역 비율의 분모는 같은 기간의 landing_view로 잡습니다. 관심 버튼이 첫 화면에 들어오는 기기에서는 cta가 landing_view와 같은 수가 됩니다(375x812, 360x640에서 확인). 그런 기기에서 구분력이 있는 값은 info와 footer입니다.
+
 ### 4.3 모든 행동을 잡지 않는다
 분석 목적이 없는 이벤트는 만들지 않습니다. events.csv의 Analysis 열이 비면 그 이벤트는 추가하지 않습니다. 지금 **일부러 넣지 않은 것**:
 
 | 후보 | 넣지 않은 이유 |
 |---|---|
-| 스크롤 깊이 | 콘셉트 페이지가 한두 화면 분량이라 engaged_60s로 충분 |
+| 스크롤 깊이(%) | 화면 크기마다 같은 %가 다른 내용을 가리킴. 어디까지 보았는지는 구역 노출(section_view)로 봄. 2026-10-06 전에는 engaged_60s로 충분하다고 보고 넣지 않았음 |
 | 처리방침 링크 클릭 | 실험 질문과 무관 |
 | 설문 완료 이벤트 | 문항 순서가 고정이라 survey_answer(q=q3)가 곧 완주 |
 | 선택지가 몇 번째 자리에 있었는지 | 순서를 섞어서 쏠림을 줄였고 자리별 쏠림 자체를 분석할 계획은 없음 |
@@ -170,6 +172,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 
 | 날짜 | 내용 |
 |---|---|
+| 2026-10-06 | 이벤트 section_view(속성 section: cta, info, footer) 추가. 피드백(랜딩 안에서 어디서 이탈하는지 보아야 랜딩을 고칠 수 있음)에 따라 4.3의 "스크롤 깊이는 넣지 않음"을 구역 노출로 바꿈. 4.2에 예외 추가. 화면은 바꾸지 않음. 배포 뒤 방문에만 기록됨. 처리방침 1절에 "페이지의 어느 구역까지 보았는지" 추가 |
 | 2026-10-05 | 검색용 글 페이지(`/notes/pdrn-cream-reviews`) 추가. 이벤트 note_view(속성 note), note_link_click(속성 note, target) 추가. 4.2에 "페이지 종류가 다르면 view를 따로 둔다" 예외. 글 페이지 이벤트의 공통 속성은 콘셉트와 같은 키이고 landing_page는 (none). 글에서 콘셉트로 가는 링크 값 utm_source=notes, utm_medium=owned, utm_campaign=organic, utm_content=n01. 자동 점검이 landing/ 하위 폴더도 보게 바꿈. 글 페이지에는 메타 픽셀을 넣지 않음 |
 | 2026-10-02 | 광고 이름 규칙을 바꾸고 UTM을 광고 관리자의 이름과 같은 글자로 맞춤(강사님 피드백: 이름이 실험 계획을 드러내고 그 내용이 UTM에 들어가야 함). utm_campaign은 캠페인 이름, utm_term은 광고 세트 이름, utm_content는 광고 이름. 공통 속성 utm_term 추가(8개 → 9개). utm_content는 r1_name, r1_review에서 img_ingredient_text_common_r1_v1, img_texture_text_common_r1_v1로(규칙: img_그림_text_글_차수_버전). variant 값은 name, review에서 ingredient, texture, review로(A와 B가 다른 쪽의 값: 1차는 그림 값, 2차는 글 값). landing_page 값 name → ingredient. 첫 화면 사진은 이름의 그림 값으로 고름. 게시 전이라 옛 값으로 쌓인 데이터는 테스트뿐. 규칙은 ads/README.md |
 | 2026-10-01 | B 문구 확정("바르면 쫀쫀해지고 광이 나는 크림"). 이벤트와 속성은 바뀌지 않음 |
