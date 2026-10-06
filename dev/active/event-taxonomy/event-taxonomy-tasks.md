@@ -18,6 +18,6 @@
 - [x] events.csv row first, check fails (RED), then concept.html observer, check and 26 tests pass
 - [x] README 4.2, 4.3, change log; privacy sections 1 and 11; landing/README.md
 - [x] Local browser check with `?debug=1` at 375x812 and 360x640
-- [ ] Code review, PR, merge
-- [ ] Production check with `&debug=1`, record the deploy time in dev/active/ingredient-map context
+- [x] Code review, PR, merge (#34, merged 2026-10-06 14:33 KST)
+- [x] Production check with `&debug=1` (cta, info, footer once each, no console errors); deploy time 2026-10-06 14:34 KST recorded in dev/active/ingredient-map context
 - [ ] Sync the Amplitude tracking plan (`section_view`, `section` enum)
