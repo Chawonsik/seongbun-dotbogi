@@ -104,7 +104,7 @@ B: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cp
 | 항목 | 값 |
 |---|---|
 | 캠페인 | `pdrncream_traffic_texttest_r2_(시작일)`, 목표 트래픽, A/B 테스트 기능 쓰지 않음. 예산은 캠페인에 걸지 않는다(캠페인 예산 끔) |
-| 광고 세트 | 2개. 세트마다 광고 1개(A 세트에 광고 A, B 세트에 광고 B). 두 세트 모두 이름은 1차 세트와 같은 `ua_2040_female_interest_skincare`(utm_term도 같음, 광고는 utm_content로 구분), 설정도 1차와 같고(위 "광고 세트" 표) 하루 예산을 같은 금액으로 넣는다. 금액은 등록 전에 확정 |
+| 광고 세트 | 2개. 세트마다 광고 1개(A 세트에 광고 A, B 세트에 광고 B). 두 세트 모두 이름은 1차 세트와 같은 `ua_2040_female_interest_skincare`(utm_term도 같음, 광고는 utm_content로 구분), 설정도 1차와 같고(위 "광고 세트" 표) 하루 예산을 세트마다 5,000원씩 넣는다(합계 하루 10,000원, 7일 70,000원) |
 | 광고 A | `img_(그림)_text_ingredient_r2_v1`, 그림 위 문구 "PDRN 연어크림" |
 | 광고 B | `img_(그림)_text_review_r2_v1`, 그림 위 문구 "바르면 쫀쫀해지고 광이 나는 크림"(두 줄: 바르면 쫀쫀해지고 / 광이 나는 크림) |
 
