@@ -97,34 +97,59 @@ B: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cp
 - 판정에 쓰는 CTR은 광고 관리자의 "CTR(링크 클릭률)"이다. "CTR(전체)"는 좋아요와 프로필 누르기까지 세므로 쓰지 않는다
 - 링크 클릭은 광고를 누른 수, 랜딩 페이지 조회는 페이지가 열려 픽셀이 작동한 수라서 랜딩 페이지 조회가 더 적다
 
-## 2차 사전 준비 (2026-10-06, 그림과 시작일만 비어 있음)
+## 2차 등록 값 (2026-10-08 확정, 게시는 2026-10-09 17:00 뒤)
 
-1차가 끝나고 그림이 정해지면 `(그림)` 자리에 `ingredient` 또는 `texture`, `(시작일)` 자리에 실제 게시일(YYMMDD)을 넣는다.
+그림은 사용감 그림(`texture`)이다(2026-10-07). 캠페인 이름의 시작일은 실제 게시일이라 10/9에 게시하면 `261009`. 게시가 자정을 넘기면 캠페인 이름과 두 링크의 utm_campaign을 함께 바꾼다.
 
+### 캠페인
 | 항목 | 값 |
 |---|---|
-| 캠페인 | `pdrncream_traffic_texttest_r2_(시작일)`, 목표 트래픽, A/B 테스트 기능 쓰지 않음. 예산은 캠페인에 걸지 않는다(캠페인 예산 끔) |
-| 광고 세트 | 2개. 세트마다 광고 1개(A 세트에 광고 A, B 세트에 광고 B). 두 세트 모두 이름은 1차 세트와 같은 `ua_2040_female_interest_skincare`(utm_term도 같음, 광고는 utm_content로 구분), 설정도 1차와 같고(위 "광고 세트" 표) 하루 예산을 세트마다 5,000원씩 넣는다(합계 하루 10,000원, 7일 70,000원) |
-| 광고 A | `img_(그림)_text_ingredient_r2_v1`, 그림 위 문구 "PDRN 연어크림" |
-| 광고 B | `img_(그림)_text_review_r2_v1`, 그림 위 문구 "바르면 쫀쫀해지고 광이 나는 크림"(두 줄: 바르면 쫀쫀해지고 / 광이 나는 크림) |
+| 이름 | `pdrncream_traffic_texttest_r2_261009` |
+| 목표 | 트래픽 |
+| A/B 테스트 기능 | 쓰지 않음 |
+| 예산 | 캠페인에 걸지 않는다(어드밴티지 캠페인 예산 끔). 1차 캠페인을 복제하면 이 설정이 따라오니 새로 만든다 |
 
-- 2차는 1차 캠페인에 넣지 않고 새 캠페인으로 만든다(1차 캠페인 이름이 이미지 테스트 1차를 뜻하므로). 광고 세트를 2개로 나누고 세트마다 같은 예산을 고정한다(2026-10-06 결정). 1차는 세트 1개에 광고 2개였고 원료 쪽 노출이 10/5부터 멈췄다. 예산이 캠페인에 걸려 있으면 세트를 나눠도 Meta가 한쪽으로 몰아주므로 캠페인 예산을 끄고 세트에 직접 넣는다. 1차 캠페인을 복제해서 만들면 캠페인 예산 설정이 따라오니 확인한다. 영상은 하지 않는다(2026-10-06 결정)
-- 그림 위 문구: 같은 글꼴, 같은 크기(72px, 굵게), 같은 위치(왼쪽 위 72, 72), 같은 색. A는 한 줄, B는 두 줄. 시안은 로컬 `r2-draft/`(스크립트 `make_overlay.py`). 시안 글꼴은 맥 기본 글꼴이라 게시 전에 공개 라이선스 글꼴로 바꾼다
-- 기본 문구, 제목, 설명, 버튼은 1차와 같게 두는 안(A와 B가 다른 것은 그림 위 문구뿐). 게시 전에 확정
-- 랜딩은 고칠 것이 없다. `/concept` 코드가 2차 이름을 이미 읽는다(round r2, variant ingredient 또는 review, 첫 화면 사진은 그림 값)
+### 광고 세트 (2개, 세트마다 광고 1개)
+| 항목 | 값 |
+|---|---|
+| 이름 | 두 세트 모두 `ua_2040_female_interest_skincare`(1차와 같음. utm_term도 같고 광고는 utm_content로 구분) |
+| 하루 예산 | 세트마다 5,000원(합계 하루 10,000원, 7일 70,000원) |
+| 일정 | 예약하지 않고 게시한 때부터 7일. 두 세트에 같은 종료 시각을 넣는다 |
+| 나머지 | 1차와 같음(위 "광고 세트" 표): 웹사이트, 랜딩 페이지 조회, 대한민국, 20~49세 고정, 여성, 스킨케어(화장품), 다이내믹 크리에이티브 끔, 노출 위치 자동 |
+
+### 광고
+| 항목 | 광고 A | 광고 B |
+|---|---|---|
+| 광고 이름 | `img_texture_text_ingredient_r2_v1` | `img_texture_text_review_r2_v1` |
+| 이미지 | `r2/r2_A_text_ingredient_1x1.png` | `r2/r2_B_text_review_1x1.png` |
+| 그림 위 문구 | PDRN 연어크림 | 바르면 쫀쫀해지고 / 광이 나는 크림 (두 줄) |
+| 웹사이트 URL | 아래 A 링크 | 아래 B 링크 |
+
+- 기본 문구, 제목, 설명, 버튼은 1차와 글자까지 같게 둔다(2026-10-08). A와 B가 다른 것은 그림 위 문구뿐이다
+- 인스타그램 계정은 연결하지 않는다(2026-10-08). 1차처럼 페이스북 페이지 이름으로 나간다
+- "여러 광고주의 광고", 어드밴티지+ 크리에이티브 개선 사항, 필수 개선 사항, 크리에이티브 설정은 1차처럼 모두 끈다. URL 매개변수 칸은 비운다
+- 그림 위 문구: 나눔고딕 ExtraBold(SIL 오픈 폰트 라이선스), 72px, 왼쪽 위(72, 72), 색 #3A2A26. A는 한 줄, B는 두 줄. `r2/make_overlay.py`로 만든다
+- 영상은 하지 않는다(2026-10-06). 강사님 검수는 받지 않고 게시한다(2026-10-08)
 
 ```text
-A: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=pdrncream_traffic_texttest_r2_(시작일)&utm_term=ua_2040_female_interest_skincare&utm_content=img_(그림)_text_ingredient_r2_v1
-B: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=pdrncream_traffic_texttest_r2_(시작일)&utm_term=ua_2040_female_interest_skincare&utm_content=img_(그림)_text_review_r2_v1
+A: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=pdrncream_traffic_texttest_r2_261009&utm_term=ua_2040_female_interest_skincare&utm_content=img_texture_text_ingredient_r2_v1
+B: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cpc&utm_campaign=pdrncream_traffic_texttest_r2_261009&utm_term=ua_2040_female_interest_skincare&utm_content=img_texture_text_review_r2_v1
 ```
 
-게시 전 순서
-1. 1차 분석 결과로 그림을 정하고 분석에서 나온 피드백을 소재와 설정에 반영한다
-2. 결과 예측을 각자 적는다
-3. 두 링크에 `&debug=1`을 붙여 열고 round(r2), variant(ingredient, review), 첫 화면 사진, 픽셀 PageView를 확인한다
-4. 광고 관리자의 이름 세 곳이 링크의 UTM과 글자까지 같은지, 그림과 문구가 이름과 맞는지 대조한다(1차 때 뒤바뀐 적이 있음)
-5. 시작 시각은 "준비 중" 지연(보통 2시간, 길면 12시간)을 감안해 잡는다
+### 2차를 이렇게 바꾼 이유
+- 1차는 세트 1개에 광고 2개였고 예산이 캠페인에 걸려 원료 쪽 노출이 10/5부터 멈췄다. 그래서 세트를 2개로 나누고 세트마다 같은 예산을 고정한다(2026-10-06). 예산이 캠페인에 걸려 있으면 세트를 나눠도 메타가 한쪽으로 몰아준다
+- 2차는 1차 캠페인에 넣지 않고 새 캠페인으로 만든다(1차 캠페인 이름이 이미지 테스트 1차를 뜻하므로)
+- 랜딩은 소재별 랜딩으로 고친다. 첫 화면의 말을 누른 광고의 문구와 맞추고 `landing_page` 값은 `ingredient` 또는 `review`. 1차가 끝나는 10/9 17:00 뒤에 운영에 반영한다
+
+### 게시 순서 (10/9)
+1. 17:00 뒤 1차 캠페인이 끝났는지 확인하고 랜딩 수정을 운영에 반영한다
+2. 위 두 링크에 `&debug=1`을 붙여 열고 round(r2), variant(ingredient, review), landing_page, 첫 화면 제목과 버튼, 픽셀 PageView를 확인한다
+3. 결과 예측을 각자 적는다(노션 "2차 결과 예측")
+4. 캠페인, 광고 세트 2개, 광고 2개를 만든다. 캠페인 예산이 꺼져 있고 금액이 세트에 들어갔는지 확인한다
+5. 광고 관리자의 이름 세 곳이 링크의 UTM과 글자까지 같은지, 그림과 문구가 이름과 맞는지 대조한다(1차 때 뒤바뀐 적이 있음)
+6. 게시하고 게시 시각, 심사 통과 시각, 세트별 첫 노출 시각을 노션에 적는다. "준비 중"이 보통 2시간, 길면 12시간 이어질 수 있다
 
 ## 폴더
 - `r1/`: 1차 광고 이미지
+- `r2/`: 2차 광고 이미지와 문구를 얹는 스크립트
 - `r2-draft/`: 2차 시안 후보(예전 글자 들어간 이미지와 바탕 원본). 2차 방향이 정해질 때까지 저장소에 올리지 않고 로컬에만 둔다
