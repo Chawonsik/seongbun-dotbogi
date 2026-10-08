@@ -8,7 +8,7 @@ Run from the repo root: python3 ads/r2/make_overlay.py
 """
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 ADS = Path(__file__).resolve().parents[1]
 BASE_IMAGE = ADS / "r1" / "r1_B_texture_1x1.png"
@@ -20,13 +20,12 @@ FONT_INDEX_REGULAR = 0
 FONT_INDEX_ACCENT = 2  # ExtraBold
 
 CANVAS = 1080
-PHOTO_SIZE = 830
+PHOTO_SIZE = 900
 LABEL_HEIGHT = 250
 FONT_SIZE = 64
 TRACKING = 6
 LINE_HEIGHT = 98
-EDGE_FADE = 70
-EDGE_BLUR = 42
+EDGE_SAMPLE = 6
 
 INK = (74, 58, 52)
 ACCENT = (150, 92, 84)
@@ -44,18 +43,17 @@ COPIES = {
 
 
 def photo_on_canvas() -> Image.Image:
-    """Shrink the photo, centre it at the top and fade its left and right edges into the backdrop."""
-    photo = Image.open(BASE_IMAGE).convert("RGB")
-    backdrop = photo.crop((0, 0, photo.width, 40)).resize((1, 1)).getpixel((0, 0))
-    canvas = Image.new("RGB", (CANVAS, CANVAS), backdrop)
-    photo = photo.resize((PHOTO_SIZE, PHOTO_SIZE))
-    pad = 160
-    mask = Image.new("L", (PHOTO_SIZE + 2 * pad, PHOTO_SIZE + 2 * pad), 255)
-    draw = ImageDraw.Draw(mask)
-    draw.rectangle((0, 0, pad + EDGE_FADE, mask.height), fill=0)
-    draw.rectangle((pad + PHOTO_SIZE - EDGE_FADE, 0, mask.width, mask.height), fill=0)
-    mask = mask.filter(ImageFilter.GaussianBlur(EDGE_BLUR)).crop((pad, pad, pad + PHOTO_SIZE, pad + PHOTO_SIZE))
-    canvas.paste(photo, ((CANVAS - PHOTO_SIZE) // 2, 0), mask)
+    """Shrink the photo and keep it flush with the top and right edges so nothing in it is cut or faded.
+
+    The empty strip on the left is filled by stretching the photo's own left edge, row by row,
+    so the backdrop continues without a seam.
+    """
+    photo = Image.open(BASE_IMAGE).convert("RGB").resize((PHOTO_SIZE, PHOTO_SIZE))
+    margin = CANVAS - PHOTO_SIZE
+    canvas = Image.new("RGB", (CANVAS, CANVAS))
+    edge = photo.crop((0, 0, EDGE_SAMPLE, PHOTO_SIZE)).resize((1, PHOTO_SIZE)).resize((margin, PHOTO_SIZE))
+    canvas.paste(edge, (0, 0))
+    canvas.paste(photo, (margin, 0))
     return canvas
 
 
