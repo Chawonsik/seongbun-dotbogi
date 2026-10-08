@@ -35,16 +35,17 @@ UTM 운영 규칙, 설문 문구, 지표 해석은 [계측 설계 초안](../tra
 flowchart LR
   ad["메타 광고 클릭<br/>(메타 집계)"] --> lv[landing_view]
   lv --> ic[interest_click]
+  lv --> nic[no_interest_click]
   lv -. 보이는 시간 60초 .-> e60[engaged_60s]
   ic -- trigger=interest --> sv[survey_view]
-  lv -. 보이는 시간 20초 trigger=timer .-> sv
+  nic -- trigger=no_interest --> sv
   sv --> sa1["survey_answer q=q1<br/>(광고 유입만)"] --> sa2[survey_answer q=q2] --> sa3["survey_answer q=q3<br/>= 완주"]
   sv -. 닫기 .-> sc["survey_close step=보던 문항"]
 ```
 
 | 이벤트 카테고리 | 퍼널 | 이벤트 |
 |---|---|---|
-| 관심 전환 | landing_view → interest_click | landing_view, interest_click, engaged_60s, section_view |
+| 관심 전환 | landing_view → interest_click | landing_view, interest_click, no_interest_click, engaged_60s, section_view |
 | 설문 | survey_view → survey_answer(q3) | survey_view, survey_answer, survey_close |
 | 글 | note_view → note_link_click → (/concept의 landing_view, utm_source=notes) | note_view, note_link_click |
 | 세션 (자동) | Amplitude가 기록 | session_start, session_end |
@@ -124,7 +125,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 - **기기 기준**: landing_view와 interest_click은 새로 고침하면 다시 쌓일 수 있으니 이벤트 수가 아니라 기기 수(Uniques)로 셉니다.
 - **설문 코드**: answer의 `ingredient`, `effect`, `other`는 q1과 q2에 모두 있습니다. 항상 q로 먼저 거릅니다.
 - **(none)**: SNS나 검색 유입은 round, variant가 `(none)`입니다. A/B 비교에서는 variant가 `(none)`이 아닌 것만 봅니다. 1차는 ingredient와 texture, 2차는 ingredient와 review입니다.
-- **링크 점검**: variant와 landing_page가 어긋나면(2차에서 ingredient 소재인데 landing_page=review) 광고 링크 오류입니다.
+- **링크 점검**: 2026-10-09부터 landing_page는 페이지가 광고 이름에서 직접 정합니다. round가 r2인데 landing_page가 common이면 광고 이름이 규칙에 맞지 않아 공통 문구가 나간 것입니다.
 
 ## 6. 변경 절차 (문서와 개발을 잇는 방법)
 
@@ -172,6 +173,7 @@ Amplitude가 스스로 붙이는 사용자 속성(참고):
 
 | 날짜 | 내용 |
 |---|---|
+| 2026-10-09 | 2차 랜딩(배포 날짜는 예정). 버튼을 "더 보고 싶어요"(interest_click, 문구만 바뀜)와 "관심 없어요"(새 이벤트 no_interest_click) 둘로 나눔. 버튼 줄은 화면 아래에 붙어 따라오고 하나를 누르면 사라짐. 설문은 버튼을 누른 직후에만 뜸(survey_view의 trigger에 no_interest 추가, timer는 더 보내지 않음). 제품 설명 구역(section=info, 화면 제목은 "조금 더 보여 드릴게요")은 "더 보고 싶어요"를 누른 뒤에만 열리고 예상 가격을 더함. 첫 화면 문구를 광고 이름의 글 값에 맞춰 ingredient, review, common으로 나누고 landing_page를 페이지가 직접 정함. 새 이벤트 확인 5문항: (1) 안 누르고 떠난 기기와 관심 없다고 답한 기기를 나눠 랜딩 문구를 고칠지 정함 (2) interest_click에 속성을 더하면 1차 기록과 뜻이 달라져 따로 둠 (3) click (4) 개인 정보나 자유 입력 없음 (5) 처리방침 1절의 버튼 누름을 두 버튼으로 고침 |
 | 2026-10-06 | Amplitude 트래킹 플랜에 section_view를 등록(카테고리 관심 전환). section은 허용 값 목록(cta, info, footer)이고 필수 |
 | 2026-10-06 | 이벤트 section_view(속성 section: cta, info, footer) 추가. 피드백(랜딩 안에서 어디서 이탈하는지 보아야 랜딩을 고칠 수 있음)에 따라 4.3의 "스크롤 깊이는 넣지 않음"을 구역 노출로 바꿈. 4.2에 예외 추가. 화면은 바꾸지 않음. 배포 뒤 방문에만 기록됨. 처리방침 1절에 "페이지의 어느 구역까지 보았는지" 추가 |
 | 2026-10-05 | 검색용 글 페이지(`/notes/pdrn-cream-reviews`) 추가. 이벤트 note_view(속성 note), note_link_click(속성 note, target) 추가. 4.2에 "페이지 종류가 다르면 view를 따로 둔다" 예외. 글 페이지 이벤트의 공통 속성은 콘셉트와 같은 키이고 landing_page는 (none). 글에서 콘셉트로 가는 링크 값 utm_source=notes, utm_medium=owned, utm_campaign=organic, utm_content=n01. 자동 점검이 landing/ 하위 폴더도 보게 바꿈. 글 페이지에는 메타 픽셀을 넣지 않음 |
