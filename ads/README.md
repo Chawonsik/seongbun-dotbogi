@@ -27,7 +27,7 @@
 - 시작일은 실제 게시일(YYMMDD). 게시가 미뤄지면 캠페인 이름과 두 링크의 utm_campaign을 같이 바꾼다
 - 2차의 "(고른 그림)" 자리에는 1차에서 이긴 쪽에 따라 `ingredient` 또는 `texture` 가 들어간다
 
-`/concept` 코드는 utm_content에서 차수와 소재 구분을 읽고 그림 값으로 첫 화면 사진을 고른다. 규칙에 맞지 않는 이름은 읽지 못하므로 이름을 바꾸려면 코드와 `docs/taxonomy/events.csv` 를 같은 PR에서 고친다. 게시한 뒤에는 바꾸지 않는다. 2026-10-01까지 쓰던 값(`kr_2040_skincare`, `r1_name`, `r1_review`)은 게시 전에 바꿨다.
+`/concept` 코드는 utm_content에서 차수와 소재 구분을 읽고 그림 값으로 첫 화면 사진을 고른다. 2차 광고(r2)는 글 값(`ingredient`, `review`)으로 첫 화면의 제목과 한 줄 소개도 고른다. 규칙에 맞지 않는 이름은 읽지 못하므로 이름을 바꾸려면 코드와 `docs/taxonomy/events.csv` 를 같은 PR에서 고친다. 게시한 뒤에는 바꾸지 않는다. 2026-10-01까지 쓰던 값(`kr_2040_skincare`, `r1_name`, `r1_review`)은 게시 전에 바꿨다.
 
 이미지 파일: A `r1/r1_A_ingredient_1x1.png`, B `r1/r1_B_texture_1x1.png`
 
@@ -140,10 +140,11 @@ B: https://seongbun-dotbogi.vercel.app/concept?utm_source=facebook&utm_medium=cp
 - 1차는 세트 1개에 광고 2개였고 예산이 캠페인에 걸려 원료 쪽 노출이 10/5부터 멈췄다. 그래서 세트를 2개로 나누고 세트마다 같은 예산을 고정한다(2026-10-06). 예산이 캠페인에 걸려 있으면 세트를 나눠도 메타가 한쪽으로 몰아준다
 - 2차는 1차 캠페인에 넣지 않고 새 캠페인으로 만든다(1차 캠페인 이름이 이미지 테스트 1차를 뜻하므로)
 - 랜딩은 소재별 랜딩으로 고친다. 첫 화면의 말을 누른 광고의 문구와 맞추고 `landing_page` 값은 `ingredient` 또는 `review`. 1차가 끝나는 10/9 17:00 뒤에 운영에 반영한다
+- 랜딩에서 A와 B가 다른 곳은 제목(이미지 안 문구와 같은 글자)과 한 줄 소개뿐이다. 그 아래 "이럴 때" 세 줄, 두 버튼(더 보고 싶어요, 관심 없어요), 누른 뒤의 제품 설명과 설문은 같다. 1차 랜딩에서 버튼은 98%가 보았지만 누른 기기가 3대뿐이어서 첫 화면 내용과 버튼을 함께 고쳤다(2026-10-08). 화면 구성은 `landing/README.md`
 
 ### 게시 순서 (10/9)
 1. 17:00 뒤 1차 캠페인이 끝났는지 확인하고 랜딩 수정을 운영에 반영한다
-2. 위 두 링크에 `&debug=1`을 붙여 열고 round(r2), variant(ingredient, review), landing_page, 첫 화면 제목과 버튼, 픽셀 PageView를 확인한다
+2. 위 두 링크에 `&debug=1`을 붙여 열고 round(r2), variant(ingredient, review), landing_page, 첫 화면 제목과 한 줄 소개, 픽셀 PageView를 확인한다. 두 버튼을 각각 눌러 interest_click, no_interest_click, survey_view(trigger가 interest, no_interest)와 section_view(cta, info, footer)가 찍히는지도 본다. 유입 대부분이 아이폰 인스타그램 앱이라 그 안에서도 한 번 열어 본다
 3. 캠페인, 광고 세트 2개, 광고 2개를 만든다. 캠페인 예산이 꺼져 있고 금액이 세트에 들어갔는지 확인한다
 4. 광고 관리자의 이름 세 곳이 링크의 UTM과 글자까지 같은지, 그림과 문구가 이름과 맞는지 대조한다(1차 때 뒤바뀐 적이 있음)
 5. 게시하고 게시 시각, 심사 통과 시각, 세트별 첫 노출 시각을 노션에 적는다. "준비 중"이 보통 2시간, 길면 12시간 이어질 수 있다
