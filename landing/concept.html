@@ -14,19 +14,32 @@
      예: img_ingredient_text_common_r1_v1, img_texture_text_review_r2_v1 (영상이면 맨 앞이 vid)
      여기서 한 번만 읽어 SD_AD로 넘기고 아래 계측 코드가 같은 값을 씀. 사진과 기록이 어긋나지 않게 하려는 것.
      사진은 그림 값으로 고르므로 2차 광고도 고른 그림이 그대로 나옴. 그 밖(UTM 없음, SNS)은 기본 사진.
-     페이지가 그려지기 전에 정해서 사진이 바뀌며 깜빡이지 않게 함 */
+     첫 화면 문구도 여기서 고름: 2차 광고(r2)는 글 값(ingredient, review)에 맞춘 문구, 그 밖은 공통 문구(common).
+     페이지가 그려지기 전에 정해서 사진과 문구가 바뀌며 깜빡이지 않게 함 */
   (function () {
     /* UTM 값은 영어 소문자, 숫자, 밑줄, 하이픈만 씁니다(운영 규칙). 공백은 밑줄로 바꾸고 나머지 문자는 지웁니다 */
     window.SD_CLEAN = function (v) { return (v || '').trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '').slice(0, 60) || '(none)'; };
     var HERO = {
-      ingredient: { src: 'img/r1-ingredient.webp', alt: '코랄색 유리 크림 통과, 옆에 놓인 작은 유리병과 유리 접시' },
-      texture: { src: 'img/r1-texture.webp', alt: '뚜껑을 연 분홍색 크림 통과, 스패출러로 뜬 크림과 펴 바른 크림' }
+      ingredient: { src: 'img/r1-ingredient.webp', alt: '코랄색 유리 크림 통과, 옆에 놓인 작은 유리병과 유리 접시', edge: [['#d7c9be', '#dacdc2', '#e8dcd1', '#ddcfc5', '#cfc1b8'], ['#ab9e95', '#aea299', '#bcaea3', '#d3bdad', '#ccb8aa']] },
+      /* 사용감 사진은 옆으로 늘린 판(배경과 스패출러 손잡이를 이어 그림)을 써서 화면 폭을 꽉 채움 */
+      texture: { src: 'img/r1-texture-wide.webp', alt: '뚜껑을 연 분홍색 크림 통과, 스패출러로 뜬 크림과 펴 바른 크림', wide: true }
     };
+    /* edge는 사진 왼쪽과 오른쪽 가장자리 색을 위에서 아래로 다섯 군데 잰 값. 늘린 판이 없는 사진은 옆 빈 곳을 이 색으로 채워 사진과 이어 보이게 함 */
     var c = window.SD_CLEAN(new URLSearchParams(location.search).get('utm_content'));
     var m = /^(?:img|vid)_(ingredient|texture)_text_(common|ingredient|review)_(r[12])_v[0-9]+$/.exec(c);
     /* variant는 A와 B가 다른 쪽의 값: 글이 common이면 그림 값(1차), 아니면 글 값(2차) */
     window.SD_AD = m ? { round: m[3], variant: m[2] === 'common' ? m[1] : m[2], image: m[1] } : null;
-    window.SD_HERO = m ? HERO[m[1]] : { src: 'img/concept-hero.webp', alt: '뚜껑을 연 코랄색 크림 통과, 옆에 펴 바른 크림' };
+    window.SD_HERO = m ? HERO[m[1]] : { src: 'img/concept-hero.webp', alt: '뚜껑을 연 코랄색 크림 통과, 옆에 펴 바른 크림', edge: [['#f0ded3', '#f5e8df', '#faefe7', '#fdf7f0', '#fbf1ea'], ['#f4cfb6', '#f1dbcc', '#f5e6db', '#dcb9a3', '#e9d2c2']] };
+    /* 첫 화면 문구. title은 [앞말, 강조하는 말, 줄을 나눌지]. A(ingredient)와 B(review)는 이 표의 말(제목과 한 줄 소개)만 다르고
+       그 아래 "이럴 때" 세 줄을 포함한 나머지 화면은 같음.
+       ingredient와 review의 제목은 광고 그림 위 문구와 같은 글자 */
+    var COPY = {
+      common: { title: ['이런 크림', '더 보고 싶나요?', true], lead: '떠낼 때 모양이 잡히는 쫀쫀한 크림을 준비하고 있어요. 이런 크림이 나온다면 더 보고 싶은지 알려 주세요.' },
+      ingredient: { title: ['PDRN ', '연어크림', false], lead: '연어에서 추출한 성분 PDRN을 크림으로 만나면 어떨까요?' },
+      review: { title: ['바르면 쫀쫀해지고', '광이 나는 크림', true], lead: '다른 PDRN 크림을 써 본 사람들이 남긴 말 그대로인 크림이면 어떨까요?' }
+    };
+    window.SD_LANDING = (m && m[3] === 'r2' && m[2] !== 'common') ? m[2] : 'common';
+    window.SD_COPY = COPY[window.SD_LANDING];
     var l = document.createElement('link'); l.rel = 'preload'; l.as = 'image'; l.href = window.SD_HERO.src;
     document.head.appendChild(l);
   })();
@@ -35,8 +48,8 @@
 <script>
   /* 계측 설정
      amplitude: Amplitude API 키. 비어 있으면 Amplitude를 싣지 않고 이벤트는 페이지 안 기록(?debug=1)에만 남습니다.
-     landingPage: 이 페이지가 어떤 랜딩인지. 1차 공통 랜딩은 common, 2차는 ingredient 또는 review. */
-  window.SD_CONFIG = { amplitude: "7a7863df8d25938e6e2a54abdc0a6666", pixel: "1547670487046797", landingPage: "common" };
+     어떤 랜딩 문구인지(landing_page)는 위 머리 스크립트가 광고 이름에서 정합니다(SD_LANDING). */
+  window.SD_CONFIG = { amplitude: "7a7863df8d25938e6e2a54abdc0a6666", pixel: "1547670487046797" };
 </script>
 <style>
   /* 광고 이미지와 같은 톤: 아이보리 바탕, 코랄 강조. 사진 윗부분 색(--bg)과 맞춰 사진이 바탕에 녹아들게 함 */
@@ -44,16 +57,19 @@
     --bg: #F4E6DD; --paper: #FFF8F3; --ink: #3B2A25; --muted: #86706A; --line: #E6D2C6;
     --accent: #C74222; --accent-ink: #A8391D; --tint: #FBE1D6; --on-accent: #FFFFFF;
     --shadow: 0 14px 34px rgba(120, 60, 40, 0.10); --footer-bg: #3B2A25; --footer-ink: #E6D2C6;
+    --card-opt: #FFFFFF;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
       --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --shadow: 0 14px 34px rgba(0, 0, 0, 0.35); --footer-bg: #140E0C; --footer-ink: #BFA79E;
+      --card-opt: #33271F;
     }
   }
   :root[data-theme="dark"] {
     --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
     --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --on-accent: #1E1614; --shadow: 0 14px 34px rgba(0, 0, 0, 0.35); --footer-bg: #140E0C; --footer-ink: #BFA79E;
+      --card-opt: #33271F;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -69,7 +85,7 @@
   .sec-main { background: var(--paper); }
   .sec-info { background: var(--bg); border-top: 1px solid var(--line); }
 
-  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; background: var(--paper); border-bottom: 1px solid var(--ink); }
   .brand { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
   .brand img { width: 30px; height: 24px; object-fit: contain; }
   .notice { font-size: 12px; font-weight: 700; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 5px 11px; white-space: nowrap; }
@@ -77,13 +93,28 @@
   h1 { font-weight: 800; font-size: 30px; line-height: 1.22; letter-spacing: -0.035em; margin: 0 0 10px; }
   h1 em { font-style: normal; color: var(--accent); }
   h2 { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .eyebrow { margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-ink); }
 
   .hero { margin: 0; }
-  .hero img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 62%; }
-  @media (max-height: 740px) { .hero img { aspect-ratio: 4 / 3; } }
+  /* 사진은 자르지 않고 전체(1:1)를 작게 보여 줌. 화면이 낮으면 더 줄여 제목과 요점이 첫 화면에 들어오게 함.
+     양옆 빈 곳은 사진 가장자리 색으로 채움(색은 머리 스크립트의 HERO 표, 아래 스크립트가 넣음) */
+  .hero { background: var(--bg); }
+  .hero img { display: block; width: min(66%, 35vh); height: auto; aspect-ratio: 1 / 1; object-fit: cover; margin: 0 auto;
+    /* 사진 양끝을 살짝 흐리게 풀어 옆 색과 경계선이 보이지 않게 함 */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%); }
+  /* 옆으로 늘린 사진: 높이는 그대로(폭의 66%, 화면 높이의 35%까지) 두고 가로를 세로의 1.5배까지만 보여 줌.
+     휴대전화에서는 화면 폭을 채우고, 넓은 화면에서는 배경만 길어 보이지 않게 가운데에서 끊음. 모서리는 각지게 */
+  .hero-wide { background: var(--paper); }
+  .hero-wide img { width: min(100%, 52.5vh); aspect-ratio: 1.5 / 1; -webkit-mask-image: none; mask-image: none; }
+  .hero + .sec { padding-top: 16px; }
 
-  .lead { font-size: 15px; margin: 0 0 16px; }
-  .cta { margin: 0; }
+  .lead { font-size: 15px; margin: 0 0 12px; }
+  /* 한 줄 소개 아래 "이럴 때" 세 줄. A, B, 공통 화면 모두 같은 문구 */
+  .points-head { margin: 18px 0 8px; font-size: 13px; font-weight: 700; letter-spacing: -0.01em; color: var(--accent-ink); }
+  .points { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .points li { display: flex; align-items: baseline; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .points li:last-child { border-bottom: 0; }
+  .points li::before { content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); transform: translateY(-2px); }
   .btn {
     display: block; width: 100%; min-height: 54px; border: 0; border-radius: 999px;
     background: var(--accent); color: var(--on-accent); font: inherit; font-size: 16px; font-weight: 800; letter-spacing: -0.02em;
@@ -93,7 +124,52 @@
   .btn:active { transform: translateY(1px); }
   .btn[disabled] { opacity: 0.55; cursor: default; transform: none; box-shadow: none; }
   .btn:focus-visible, .opt:focus-visible, .close:focus-visible, a:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 3px; }
-  .thanks { margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--tint); font-size: 14px; }
+  .btn-ghost { background: var(--tint); color: var(--accent-ink); border: 1.5px solid var(--accent); box-shadow: 0 6px 14px rgba(120, 60, 40, 0.12); font-weight: 700; }
+  .btn-ghost:hover { box-shadow: 0 8px 18px rgba(120, 60, 40, 0.16); }
+
+  /* 버튼을 누른 뒤: 한 줄 소개와 요점 자리에 고마움 표시, (더 보고 싶어요일 때) 콘셉트 노트, 설문이 차례로 놓임.
+     상자를 쌓지 않고 얇은 선과 여백, 사진 클로즈업으로 구분함 */
+  .result-head { display: flex; align-items: center; gap: 10px; margin: 8px 0 0; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+  /* 버튼을 누른 뒤 화면 읽기 프로그램이 읽도록 포커스만 옮김. 누를 수 있는 요소가 아니라서 테두리는 그리지 않음 */
+  .result-head:focus { outline: none; }
+  .result-mark { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); font-size: 12px; line-height: 1; }
+
+  /* 콘셉트 노트: 카드 없이 페이지에 바로 놓음. 줄마다 이름은 왼쪽, 내용은 오른쪽 정렬 */
+  .detail { margin: 26px 0 0; }
+  .detail h2 { margin-bottom: 12px; }
+  .price { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; padding: 12px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+  .price span { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent-ink); }
+  .price strong { font-size: 19px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+  .notes { list-style: none; margin: 0; padding: 0; }
+  .notes li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .notes li:last-child { border-bottom: 0; }
+  .notes li > div { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+  /* 항목마다 따로 만든 작은 사진(크림 결, 펴 바르는 모습, 통과 뚜껑, 세안 뒤 선반) */
+  .shot { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--bg) center / cover no-repeat; box-shadow: 0 4px 10px rgba(120, 60, 40, 0.14); }
+  .shot-form { background-image: url('img/note-form.webp'); }
+  .shot-feel { background-image: url('img/note-feel.webp'); }
+  .shot-jar { background-image: url('img/note-jar.webp'); }
+  .shot-use { background-image: url('img/note-use.webp'); }
+  .notes em { flex: none; font-style: normal; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent-ink); }
+  .notes p { margin: 0 0 0 auto; font-size: 14px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.45; text-align: right; }
+  .survey-lead { margin: 22px 0 0; font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+  /* 설문 머리에 작은 영문 표지를 달아 콘셉트 노트와 같은 급의 구역으로 읽히게 함 */
+  .survey-lead::before { content: 'Survey'; display: block; margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-ink); }
+  /* 콘셉트 노트가 열렸을 때는 설문과의 사이를 화면 폭 가득한 띠로 나눔(상자 없이 구역만 구분) */
+  .detail:not([hidden]) + .survey-lead { margin: 18px -16px 0; padding: 28px 16px 0; border-top: 10px solid var(--bg); }
+
+  /* 버튼 줄: 스크롤해도 화면 아래에 붙어 따라옴. 하나를 누르면 사라짐 */
+  .cta-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; }
+  .cta-in { max-width: 520px; margin: 0 auto; padding: 16px 16px calc(14px + env(safe-area-inset-bottom)); background: var(--paper); border-top: 1px solid var(--line); box-shadow: 0 -10px 24px rgba(120, 60, 40, 0.10); }
+  .cta-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; }
+  /* 버튼 줄의 버튼은 둥근 알약 대신 모서리만 둥근 네모로, 조금 더 크게. 눌리는 물건처럼 보이게 아래쪽에 두께를 줌 */
+  .cta-row .btn { min-height: 60px; border-radius: 16px; font-size: 17px; }
+  .cta-row .btn:not(.btn-ghost) { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 10px 22px rgba(199, 66, 34, 0.30); }
+  .cta-row .btn-ghost { box-shadow: inset 0 -3px 0 rgba(199, 66, 34, 0.14), 0 6px 14px rgba(120, 60, 40, 0.12); }
+  .cta-row .btn:active { transform: translateY(2px); box-shadow: none; }
+  .cta-hint { margin: 10px 0 0; text-align: center; font-size: 13px; }
+  /* 버튼 줄이 푸터를 가리지 않게 그만큼 띄움 */
+  .bar-on footer { padding-bottom: 176px; }
 
   .card { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 20px 18px; margin: 20px 0 0; }
   .muted { color: var(--muted); font-size: 13px; }
@@ -105,9 +181,13 @@
   .spec dd { margin: 0; font-size: 14px; }
   .spec-note { margin: 12px 0 0; }
 
-  .survey { position: relative; }
-  .survey .step { font-size: 12px; font-weight: 700; color: var(--accent-ink); margin: 0 0 4px; }
-  .survey .q { font-weight: 800; letter-spacing: -0.02em; margin: 0 0 12px; padding-right: 30px; }
+  /* 설문도 카드 없이 페이지에 바로 놓음. 선택지만 흰 바탕에 선을 둘러 누를 곳이 드러나게 함 */
+  .survey { position: relative; margin-top: 12px; padding: 0; background: none; border: 0; border-radius: 0; }
+  .survey .close { top: -6px; right: -8px; }
+  .survey .opt { background: var(--card-opt); }
+  .survey .qhead { margin: 0 0 12px; padding-right: 30px; }
+  .survey .q { display: inline; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+  .survey .step { display: inline; margin: 0 0 0 6px; font-size: 12px; font-weight: 700; color: var(--accent-ink); white-space: nowrap; }
   .opts { display: grid; gap: 8px; }
   .opt {
     min-height: 46px; text-align: left; padding: 11px 14px; border: 1px solid var(--line); border-radius: 14px;
@@ -129,10 +209,11 @@
   @media (prefers-reduced-motion: reduce) { .rise { animation: none; opacity: 1; transform: none; } .btn, .opt { transition: none; } }
 
   #debug { position: fixed; left: 8px; right: 8px; bottom: 8px; max-height: 38vh; overflow: auto; background: #111; color: #9f9; font: 11px/1.4 ui-monospace, Menlo, monospace; padding: 8px; border-radius: 8px; z-index: 10; white-space: pre-wrap; }
+  .bar-on #debug { bottom: 156px; max-height: 26vh; }
   [hidden] { display: none !important; }
 </style>
 </head>
-<body>
+<body class="bar-on">
 <div class="wrap">
   <main>
     <div class="top rise">
@@ -142,40 +223,70 @@
 
     <figure class="hero rise d1">
       <img id="heroImg" width="960" height="960" alt="" fetchpriority="high">
-      <script>(function () { var i = document.getElementById('heroImg'); i.src = window.SD_HERO.src; i.alt = window.SD_HERO.alt; })();</script>
+      <script>(function () { var i = document.getElementById('heroImg'); i.src = window.SD_HERO.src; i.alt = window.SD_HERO.alt; if (window.SD_HERO.wide) { i.parentNode.className += ' hero-wide'; return; } var e = window.SD_HERO.edge, g = function (c) { return 'linear-gradient(to bottom, ' + c.map(function (v, k) { return v + ' ' + (k * 20 + 10) + '%'; }).join(', ') + ')'; }; i.parentNode.style.background = g(e[1]) + ' right / 50% 100% no-repeat, ' + g(e[0]) + ' left / 50% 100% no-repeat'; })();</script>
       <noscript><img src="img/concept-hero.webp" width="960" height="960" alt="뚜껑을 연 코랄색 크림 통과, 옆에 펴 바른 크림"></noscript>
     </figure>
 
     <section class="sec sec-main">
-    <h1 class="rise d2">이런 크림<br><em>써 보고 싶나요?</em></h1>
+    <!-- 아래 글자는 공통 문구(common). 2차 광고로 오면 바로 밑 스크립트가 머리에서 고른 문구로 바꿈 -->
+    <h1 class="rise d2" id="heroTitle">이런 크림<br><em>더 보고 싶나요?</em></h1>
 
-    <p class="lead rise d3">떠낼 때 모양이 잡히는 쫀쫀한 크림을 생각하고 있어요. 이런 크림이 나온다면 써 보고 싶은지 알려 주세요.</p>
+    <p class="lead rise d3" id="heroLead">떠낼 때 모양이 잡히는 쫀쫀한 크림을 준비하고 있어요. 이런 크림이 나온다면 더 보고 싶은지 알려 주세요.</p>
 
-    <div class="cta rise d4">
-      <button class="btn" id="interestBtn" type="button" data-track="interest_click" data-section="cta">출시되면 관심 있어요</button>
-      <p class="thanks" id="interestThanks" role="status" tabindex="-1" hidden>아직 판매하지 않는 콘셉트 테스트였어요. 관심 가져 주셔서 고마워요.<span id="surveyAsk" hidden> 아래 질문에 답해 주시면 큰 도움이 돼요.</span></p>
+    <div class="rise d4" id="heroPoints">
+      <p class="points-head">이럴 때 바르는 크림이에요</p>
+      <ul class="points">
+        <li>환절기에 피부가 예민하고 푸석할 때</li>
+        <li>스킨케어 마지막에 하나만 든든하게 바르고 싶을 때</li>
+        <li>세안하고 나면 금방 당기는 날</li>
+      </ul>
+    </div>
+    <script>(function () {
+      var c = window.SD_COPY; if (!c) return;
+      var t = document.getElementById('heroTitle'); t.textContent = c.title[0];
+      if (c.title[2]) t.appendChild(document.createElement('br'));
+      var em = document.createElement('em'); em.textContent = c.title[1]; t.appendChild(em);
+      document.getElementById('heroLead').textContent = c.lead;
+    })();</script>
+
+    <!-- 버튼을 누른 뒤에 열림. 위의 한 줄 소개와 요점은 이때 접힘 -->
+    <div id="result" hidden>
+      <p class="result-head" id="interestThanks" role="status" tabindex="-1"><span class="result-mark" aria-hidden="true">&#10003;</span><span id="thanksTitle"></span></p>
     </div>
 
-    <section class="card survey" id="survey" aria-live="polite" hidden></section>
+    <!-- "더 보고 싶어요"를 누른 뒤에만 열림 -->
+    <section class="detail" id="detail" aria-labelledby="introTitle" data-section="info" hidden>
+      <p class="eyebrow">Concept Note</p>
+      <h2 id="introTitle">조금 더 보여 드릴게요</h2>
+      <p class="price"><span>예상 가격</span><strong>3만원대</strong></p>
+      <ul class="notes">
+        <li><span class="shot shot-form" aria-hidden="true"></span><div><em>제형</em><p>쫀쫀하게 떠지는 크림</p></div></li>
+        <li><span class="shot shot-feel" aria-hidden="true"></span><div><em>바르는 느낌</em><p>얇게 발리고 은은한 윤기</p></div></li>
+        <li><span class="shot shot-jar" aria-hidden="true"></span><div><em>용기</em><p>돌려 여는 단지</p></div></li>
+        <li><span class="shot shot-use" aria-hidden="true"></span><div><em>쓰는 때</em><p>세안 뒤, 아침과 저녁</p></div></li>
+      </ul>
     </section>
 
-    <section class="sec sec-info" aria-labelledby="introTitle" data-section="info">
-      <h2 id="introTitle">어떤 크림인가요</h2>
-      <dl class="spec">
-        <div><dt>제형</dt><dd>떠낼 때 모양이 잡히는 쫀쫀한 크림</dd></div>
-        <div><dt>바르는 느낌</dt><dd>얇게 펴 발리고, 은은한 윤기가 남아요</dd></div>
-        <div><dt>쓰는 때</dt><dd>세안 뒤 스킨케어 마지막 단계, 아침과 저녁</dd></div>
-        <div><dt>용기</dt><dd>뚜껑을 돌려 여는 단지형</dd></div>
-      </dl>
-      <p class="muted spec-note">이름과 가격은 아직 정하지 않았어요.</p>
+    <p class="survey-lead" id="surveyLead" hidden></p>
+    <section class="card survey" id="survey" aria-live="polite" hidden></section>
     </section>
 
   </main>
 
   <footer data-section="footer">
     <div>&copy; 2026 성분돋보기</div>
+    <div>성분돋보기는 개인 학습 프로젝트예요. 화장품 회사나 브랜드가 아니에요.</div>
     <div class="links"><a href="privacy">개인정보 처리방침</a><span>문의 <a href="mailto:wonsikcha12@gmail.com">wonsikcha12@gmail.com</a></span></div>
   </footer>
+</div>
+<div class="cta-bar" id="ctaBar" data-section="cta">
+  <div class="cta-in">
+    <div class="cta-row">
+      <button class="btn" id="interestBtn" type="button" data-track="interest_click">더 보고 싶어요</button>
+      <button class="btn btn-ghost" id="noInterestBtn" type="button" data-track="no_interest_click">관심 없어요</button>
+    </div>
+    <p class="muted cta-hint">'더 보고 싶어요'를 누르면 용기와 예상 가격까지 볼 수 있어요.</p>
+  </div>
 </div>
 <div id="debug" hidden></div>
 
@@ -186,7 +297,6 @@
   var qs = new URLSearchParams(location.search);
   var DEBUG = qs.get('debug') === '1';
   var SURVEY_KEY = 'sd_survey_seen_v1';
-  var SURVEY_DELAY_MS = 20000; /* 화면이 보이는 시간 기준 */
 
   /* 공통 속성: UTM 다섯 값, round, variant, landing_page.
      광고 링크는 utm_campaign=캠페인 이름, utm_term=광고 세트 이름, utm_content=광고 이름 */
@@ -197,7 +307,7 @@
     utm_campaign: clean(qs.get('utm_campaign')),
     utm_term: clean(qs.get('utm_term')),
     utm_content: clean(qs.get('utm_content')),
-    landing_page: CFG.landingPage || 'common'
+    landing_page: window.SD_LANDING || 'common'
   };
   if (DEBUG) COMMON.is_test = true; /* ?debug=1 테스트 방문은 분석에서 거르도록 표시 */
   /* 차수와 소재 구분은 머리 스크립트가 광고 이름에서 읽어 둔 값. 규칙에 맞지 않으면 (none) */
@@ -269,12 +379,12 @@
 
   function finishSurvey(closedAt) {
     surveyState = 'done';
+    document.getElementById('surveyLead').hidden = true;
     if (closedAt) {
       track('survey_close', { step: closedAt });
       surveyEl.hidden = true;
-      /* 닫기 버튼이 사라지므로 포커스를 관심 버튼(이미 눌렀으면 안내 문구)으로 옮김 */
-      var btn = document.getElementById('interestBtn');
-      (btn.disabled ? document.getElementById('interestThanks') : btn).focus();
+      /* 닫기 버튼이 사라지므로 포커스를 안내 문구로 옮김 */
+      document.getElementById('interestThanks').focus();
     } else {
       surveyEl.innerHTML = '<p class="q" id="surveyDone" tabindex="-1">응답해 주셔서 감사합니다.</p>';
       document.getElementById('surveyDone').focus();
@@ -302,7 +412,9 @@
       });
       box.appendChild(b);
     });
-    surveyEl.appendChild(close); surveyEl.appendChild(step); surveyEl.appendChild(title); surveyEl.appendChild(box);
+    /* 질문과 진행 표시(1/3)를 한 줄에 나란히 둠 */
+    var head = document.createElement('div'); head.className = 'qhead'; head.appendChild(title); head.appendChild(step);
+    surveyEl.appendChild(close); surveyEl.appendChild(head); surveyEl.appendChild(box);
     if (moveFocus) {
       /* 설문 카드 전체가 화면에 들어오게 내리고, 제목에 포커스 */
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -316,29 +428,50 @@
     surveyState = 'open';
     store(false, '1'); /* 한 번 뜨면 기록: 답하지 않고 떠나도 다시 띄우지 않음 */
     surveyEl.hidden = false;
-    renderStep(trigger === 'interest');
+    renderStep(false); /* 화면을 어디로 옮길지는 버튼 처리(answered)가 정함 */
     track('survey_view', { trigger: trigger });
   }
 
-  /* 화면이 보이는 시간만 누적: 20초에 설문, 60초에 engaged_60s */
+  /* 화면이 보이는 시간만 누적: 60초에 engaged_60s. 설문은 버튼을 누른 직후에만 뜸(20초 타이머는 2차 랜딩에서 뺌) */
   (function () {
     var acc = 0, last = Date.now(), vis = document.visibilityState === 'visible';
     function tick() {
       var now = Date.now(); if (vis) acc += now - last; last = now; vis = document.visibilityState === 'visible';
-      if (acc >= SURVEY_DELAY_MS) showSurvey('timer');
       if (acc >= 60000) { trackOnce('engaged_60s'); clearInterval(timer); }
     }
     var timer = setInterval(tick, 1000);
     document.addEventListener('visibilitychange', tick);
   })();
 
-  var interestBtn = document.getElementById('interestBtn');
-  interestBtn.addEventListener('click', function () {
+  /* 두 버튼 중 하나를 누르면 버튼 줄을 내리고 안내 문구와 설문을 띄움. "더 보고 싶어요"는 자세한 콘셉트도 엶 */
+  var COUNT_WORD = { 1: '한', 2: '두', 3: '세' };
+  var thanksEl = document.getElementById('interestThanks');
+  function answered(wantsMore) {
+    document.getElementById('ctaBar').hidden = true;
+    document.body.classList.remove('bar-on');
+    showSurvey(wantsMore ? 'interest' : 'no_interest');
+    /* 첫 화면의 한 줄 소개와 요점을 접고 그 자리에 결과를 보여 줌. 제목 바로 아래라 화면을 따로 내리지 않아도 보임 */
+    document.getElementById('heroLead').hidden = true;
+    document.getElementById('heroPoints').hidden = true;
+    document.getElementById('thanksTitle').textContent = wantsMore ? '관심 가져 주셔서 고마워요' : '알려 주셔서 고마워요';
+    document.getElementById('result').hidden = false;
+    if (wantsMore) document.getElementById('detail').hidden = false;
+    if (surveyState === 'open') {
+      var lead = document.getElementById('surveyLead');
+      lead.textContent = '30초면 돼요. ' + (COUNT_WORD[QUESTIONS.length] || QUESTIONS.length) + ' 가지만 여쭤볼게요';
+      lead.hidden = false;
+    }
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById('result').scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    thanksEl.focus({ preventScroll: true });
+  }
+  document.getElementById('interestBtn').addEventListener('click', function () {
     trackOnce('interest_click');
-    interestBtn.disabled = true;
-    document.getElementById('interestThanks').hidden = false;
-    showSurvey('interest');
-    document.getElementById('surveyAsk').hidden = surveyState !== 'open';
+    answered(true);
+  });
+  document.getElementById('noInterestBtn').addEventListener('click', function () {
+    trackOnce('no_interest_click');
+    answered(false);
   });
 
   /* 구역 노출: data-section 요소가 화면에 절반 이상 들어오면 구역마다 1회. 어디까지 보고 나갔는지 보려는 것.
