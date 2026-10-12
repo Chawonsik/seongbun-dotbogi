@@ -2,9 +2,10 @@
 
 정적 페이지. 서버 없음. 배포는 Vercel 프로젝트 `ingredient-lens`(main 머지 시 자동 배포).
 
-주소 연결은 `vercel.json`의 rewrites가 한다(`/concept`, `/privacy`, `/notes/:slug` → 같은 이름의 .html). cleanUrls는 2026-10-05에 껐다. 켜 두면 검색 엔진 소유 확인 파일(`google….html`, `naver….html`)이 .html 없는 주소로 넘어가 확인이 실패할 수 있어서다. 새 페이지를 만들면 rewrites에 주소를 더한다.
+주소 연결은 `vercel.json`의 rewrites가 한다(`/concept`, `/privacy`, `/report`, `/notes/:slug` → 같은 이름의 .html). cleanUrls는 2026-10-05에 껐다. 켜 두면 검색 엔진 소유 확인 파일(`google….html`, `naver….html`)이 .html 없는 주소로 넘어가 확인이 실패할 수 있어서다. 새 페이지를 만들면 rewrites에 주소를 더한다.
 
 ## 파일
+- report.html: 광고 실험 리포트. 주소는 /report. 직접 고치지 않는다. `scripts/report_template.html`과 `docs/report/data.json`을 고친 뒤 `python3 scripts/make_report.py`로 다시 만든다. 계측 코드가 없다
 - concept.html: 광고 도착 페이지(출시 전 콘셉트). 주소는 /concept. `window.SD_CONFIG` 에 Amplitude 키와 메타 픽셀 ID를 넣는다. 화면 구성은 아래 "콘셉트 페이지 구성"
 - privacy.html: 개인정보 처리방침. 주소는 /privacy
 - notes/: 검색용 글. `notes/pdrn-cream-reviews.html` 주소는 /notes/pdrn-cream-reviews. 검색 허용(콘셉트와 처리방침은 noindex). 계측은 note_view, note_link_click이고 메타 픽셀은 싣지 않는다. 콘셉트 링크 값은 `utm_source=notes&utm_medium=owned&utm_campaign=organic&utm_content=n01`
