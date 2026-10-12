@@ -176,11 +176,10 @@ def share_bars(rows: list[tuple[str, list[tuple[str, str, float]]]], title: str)
         usable = inner - gap * (len(segments) - 1)
         for k, (name, cls, value) in enumerate(segments):
             width = value / total * usable
-            tip = f"{label} {name}: {share(value, total)}"
-            parts.append(_bar_right(x, y + 26, width, bar_h, cls, tip))
-            edge, anchor = (PAD, "start") if k == 0 else (W - PAD, "end")
             # near an even split a whole-number label would read 50% and 50%
             label_pct = pct(value, total, 1) if abs(value / total - 0.5) < 0.05 else share(value, total)
+            parts.append(_bar_right(x, y + 26, width, bar_h, cls, f"{label} {name}: {label_pct}"))
+            edge, anchor = (PAD, "start") if k == 0 else (W - PAD, "end")
             parts.append(_text(edge, y + 26 + bar_h + 17, f"{name} {label_pct}", "vz-s", anchor, 12))
             described.append(f"{label} {name} {label_pct}.")
             x += width + gap
