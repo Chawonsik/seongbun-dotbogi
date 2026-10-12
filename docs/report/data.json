@@ -1,0 +1,67 @@
+{
+  "queried_at": "2026-10-11 21:57",
+  "headline": {
+    "result_title": "두 문구의 클릭률 차이는 아직 보이지 않는다",
+    "result_body": "성분 이름 문구와 후기의 말 문구를 같은 규모로 내보냈습니다. 2차는 10월 16일에 끝나고 아래 수치는 중간값입니다.",
+    "solution_title": "다음은 랜딩을 시험한다",
+    "solution_body": "광고를 누르고 들어온 사람은 버튼을 보고도 누르지 않습니다. 3차는 광고를 그대로 두고 랜딩 첫 화면만 바꿔 비교합니다."
+  },
+  "background": {
+    "hwahae_pdrn_products": 1816,
+    "hwahae_checked": "2026-10-01"
+  },
+  "round1": {
+    "period": "10월 2일 17시 ~ 10월 9일 17시",
+    "same_days": {"label": "10/3과 10/4", "ingredient": [25, 918], "texture": [80, 2768]},
+    "days": ["10/2", "10/3", "10/4", "10/5", "10/6", "10/7", "10/8", "10/9"],
+    "ingredient": {
+      "name": "원료 그림",
+      "impressions": 1000,
+      "clicks": 28,
+      "spend": 8761,
+      "daily_impressions": [57, 658, 260, 24, 0, 1, 0, 0]
+    },
+    "texture": {
+      "name": "사용감 그림",
+      "impressions": 12346,
+      "clicks": 464,
+      "spend": 61176,
+      "daily_impressions": [19, 1003, 1765, 2506, 2178, 1928, 2111, 836]
+    }
+  },
+  "round2": {
+    "period": "10월 9일 18시 ~ 10월 16일 18시",
+    "a": {
+      "name": "성분 이름 문구",
+      "copy": "PDRN 연어크림",
+      "impressions": 2136,
+      "clicks": 60,
+      "spend": 12036
+    },
+    "b": {
+      "name": "후기의 말 문구",
+      "copy": "바르면 쫀쫀해지고 광이 나는 크림",
+      "impressions": 2097,
+      "clicks": 57,
+      "spend": 12310
+    },
+    "daily": [
+      {"day": "10/9", "a": [9, 326], "b": [5, 273]},
+      {"day": "10/10", "a": [16, 811], "b": [21, 698]},
+      {"day": "10/11", "a": [35, 999], "b": [31, 1126]}
+    ]
+  },
+  "landing": {
+    "round1": {"arrived": 471, "interest": 3},
+    "round2": {"arrived": 114, "interest": 1},
+    "sections": {
+      "period": "1차의 마지막 사흘",
+      "steps": [
+        {"label": "랜딩에 도착", "devices": 210},
+        {"label": "관심 버튼이 화면에 들어옴", "devices": 208},
+        {"label": "제품 소개까지 내려감", "devices": 140},
+        {"label": "관심 버튼을 누름", "devices": 0}
+      ]
+    }
+  }
+}

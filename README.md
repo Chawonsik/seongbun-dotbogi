@@ -2,7 +2,7 @@
 
 한 줄 요약: 화장품 광고에서 성분 이름과 후기의 말 중 무엇을 앞세울지 정해야 하는 브랜드 마케터를 가정하고 소액 Meta 광고 실험을 두 번 돌려 반응을 비교한 뒤 다음에 시험할 것(랜딩 개선)을 제안했습니다.
 
-공개 URL: (작성 필요: 결과물 형태를 정한 뒤 주소를 넣습니다)
+공개 URL: https://seongbun-dotbogi.vercel.app/report (광고 실험 리포트)
 
 - 광고 도착 페이지: https://seongbun-dotbogi.vercel.app/concept
 - 검색용 글: https://seongbun-dotbogi.vercel.app/notes/pdrn-cream-reviews
@@ -73,6 +73,8 @@ PDRN 크림을 고른 이유와 가상 제품으로 한 이유는 [docs/decision
 | CTR(링크 클릭률) | 2.80% (28/1,000) | 3.76% (464/12,346) |
 | 함께 나간 이틀의 CTR | 2.72% (25/918) | 2.89% (80/2,768) |
 
+![1차 광고의 일자별 노출 수](docs/report/img/r1-daily-impressions.svg)
+
 - 사실: 원료 그림은 10/5부터 노출이 멈췄습니다. 본 사람의 구성도 달랐습니다(20~24세 23% 대 62%).
 - 해석: 세트 하나에 광고 두 개를 넣어 배분을 Meta에 맡긴 구조였습니다. 사실상 Meta가 그림을 고른 셈이라 두 그림의 차이는 확정하지 못했습니다.
 
@@ -83,6 +85,9 @@ PDRN 크림을 고른 이유와 가상 제품으로 한 이유는 [docs/decision
 | 노출 | 2,136 (50.5%) | 2,097 (49.5%) |
 | CTR(링크 클릭률) | 2.81% (60/2,136) | 2.72% (57/2,097) |
 
+![광고별 노출 비중](docs/report/img/impression-share.svg)
+![2차 광고의 링크 클릭률](docs/report/img/r2-ctr.svg)
+
 - 사실: 세트를 둘로 나누자 노출이 거의 같게 나갔습니다. 날마다 앞서는 쪽이 바뀝니다.
 - 해석: 지금까지 두 문구의 CTR은 거의 같습니다. 화해 글의 권고를 뒷받침하는 차이도 반대 방향의 차이도 아직 보이지 않습니다.
 
@@ -92,6 +97,8 @@ PDRN 크림을 고른 이유와 가상 제품으로 한 이유는 [docs/decision
 |---|---|---|
 | 광고로 도착한 기기 | 471 | 114 |
 | 관심 버튼을 누른 기기 | 3 | 1 |
+
+![도착한 기기가 어디까지 갔나](docs/report/img/landing-steps.svg)
 
 - 사실: 1차에서 도착한 기기의 99%가 버튼을 화면에서 봤습니다. 제품 소개까지 내려간 기기는 67%입니다.
 - 해석: 버튼을 못 봐서 안 누르는 것이 아닙니다. 왜 떠나는지는 이 데이터로 알 수 없습니다.
@@ -146,12 +153,14 @@ landing/        광고 도착 페이지와 검색용 글 (정적 HTML, Vercel �
   concept.html  콘셉트 페이지. 광고 이름(utm_content)에 따라 첫 화면 사진과 문구가 바뀜
   notes/        검색용 글
   privacy.html  개인정보 처리방침
+  report.html   광고 실험 리포트. scripts/make_report.py가 만듦
 ads/            광고 이미지, 광고 이름 규칙, 광고 관리자에 넣은 값
 docs/decisions.md 실험을 이렇게 짠 이유
 docs/results.md 일자별 수치와 전처리 단계
+docs/report/    리포트의 수치(data.json)와 차트 그림
 docs/taxonomy/  이벤트와 속성 정의(events.csv)와 설명
 docs/workflow.md 브랜치 작업 방식, 배포, 운영 중인 랜딩에서 유지할 것
-scripts/        택소노미 자동 검사(check_taxonomy.py)와 테스트
+scripts/        택소노미 자동 검사(check_taxonomy.py), 리포트 생성(make_report.py)과 테스트
 dev/active/     작업별 계획, 맥락, 할 일 기록
 ```
 
@@ -167,6 +176,13 @@ python3 scripts/check_taxonomy.py
 cd scripts && python3 -m unittest test_check_taxonomy
 ```
 랜딩 코드가 보내는 이벤트와 `docs/taxonomy/events.csv`가 어긋나면 실패합니다. PR마다 GitHub Actions가 같은 검사를 돌립니다.
+
+**리포트 다시 만들기**
+```bash
+python3 scripts/make_report.py
+cd scripts && python3 -m unittest test_make_report
+```
+`docs/report/data.json`의 수치를 고친 뒤 실행하면 `landing/report.html`과 차트 그림이 새로 만들어집니다.
 
 작업 방식과 배포는 [docs/workflow.md](docs/workflow.md)에 있습니다.
 

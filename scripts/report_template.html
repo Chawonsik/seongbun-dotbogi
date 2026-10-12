@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>광고 실험 리포트 | 성분돋보기</title>
+<meta name="description" content="화장품 광고에서 성분 이름과 후기의 말 중 무엇이 반응을 더 끄는지 소액 Meta 광고로 비교한 개인 학습 프로젝트의 리포트입니다.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='14' cy='14' r='9' fill='none' stroke='%23C74222' stroke-width='3'/%3E%3Cpath d='M21 21l7 7' stroke='%23C74222' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='14' cy='14' r='3' fill='%23C74222'/%3E%3C/svg%3E">
+<!-- 이 파일은 scripts/make_report.py가 만든다. 직접 고치지 말고 scripts/report_template.html과 docs/report/data.json을 고친 뒤 다시 만든다.
+     계측 코드는 넣지 않는다. 광고 랜딩의 기록과 섞이지 않게 하기 위해서다. -->
+<style>
+  /* 색은 광고 랜딩(concept.html)과 같은 값. 차트의 두 계열 색은 밝은 바탕과 어두운 바탕에서 각각 검사한 값 */
+  :root {
+    --bg: #F4E6DD; --paper: #FFF8F3; --ink: #3B2A25; --muted: #7D6761; --line: #E6D2C6;
+    --accent: #C74222; --accent-ink: #A8391D; --tint: #FBE1D6; --card: #FFFFFF;
+    --series-a: #2a78d6; --series-b: #eb6834;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
+      --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --card: #33271F;
+      --series-a: #3987e5; --series-b: #d95926;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
+    --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --card: #33271F;
+    --series-a: #3987e5; --series-b: #d95926;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-size: 15px; line-height: 1.7; word-break: keep-all; overflow-wrap: break-word;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; background: var(--paper); min-height: 100vh; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--ink); }
+  .brand { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+  .brand img { width: 30px; height: 24px; object-fit: contain; }
+  .notice { font-size: 12px; font-weight: 700; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 5px 11px; white-space: nowrap; }
+  .sec { padding: 28px 16px; border-top: 1px solid var(--line); }
+  .hero { padding: 24px 16px 28px; }
+  h1 { font-weight: 800; font-size: 27px; line-height: 1.28; letter-spacing: -0.035em; margin: 0 0 8px; text-wrap: balance; }
+  h1 em { font-style: normal; color: var(--accent); }
+  h2 { font-size: 20px; font-weight: 800; line-height: 1.35; letter-spacing: -0.03em; margin: 0 0 10px; text-wrap: balance; }
+  h3, .h3 { font-size: 16px; font-weight: 800; line-height: 1.4; letter-spacing: -0.02em; margin: 0 0 6px; }
+  p { margin: 0 0 10px; }
+  .eyebrow { margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--accent-ink); }
+  .lead { color: var(--muted); margin: 0 0 18px; }
+  a { color: var(--accent-ink); }
+  a:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 3px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+  .card p { font-size: 14px; color: var(--muted); margin: 0; }
+  .card p.eyebrow { font-size: 12px; color: var(--accent-ink); margin: 0 0 6px; }
+  .card .big { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); margin: 10px 0 0; font-variant-numeric: tabular-nums; }
+  .card .cap { font-size: 12px; }
+
+  .ads { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0 0; }
+  .ads figure { margin: 0; }
+  .ads img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 12px; border: 1px solid var(--line); }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  .flow { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; counter-reset: step; }
+  .flow li { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 14px; color: var(--muted); }
+  .flow b { display: block; color: var(--ink); font-weight: 800; font-size: 15px; }
+  .flow .tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 2px 9px; margin-bottom: 6px; }
+  .facts { margin: 14px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+  .facts li { padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; display: flex; gap: 10px; }
+  .facts li span:first-child { flex: none; width: 3.2em; font-weight: 700; color: var(--accent-ink); }
+
+  .chart { margin: 16px 0 0; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 4px 10px; }
+  .chart h3 { padding: 0 12px; }
+  .chart .sub { font-size: 13px; color: var(--muted); padding: 0 12px; margin: 0 0 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 0 12px; margin: 0 0 6px; font-size: 13px; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; }
+  .legend .a i { background: var(--series-a); }
+  .legend .b i { background: var(--series-b); }
+  .vz { display: block; width: 100%; max-width: 480px; height: auto; margin: 0 auto; }
+  .vz text { font-family: inherit; font-variant-numeric: tabular-nums; }
+  .vz-t { fill: var(--ink); }
+  .vz-s { fill: var(--muted); }
+  .vz-g { stroke: var(--line); }
+  .vz-a { fill: var(--series-a); }
+  .vz-b { fill: var(--series-b); }
+  .vz-la { stroke: var(--series-a); }
+  .vz-lb { stroke: var(--series-b); }
+  .vz-ring { stroke: var(--card); }
+
+  .limits { margin: 12px 0 0; padding-left: 18px; font-size: 14px; }
+  .limits li { margin-bottom: 6px; }
+  footer { padding: 24px 16px 32px; border-top: 1px solid var(--ink); font-size: 13px; color: var(--muted); }
+  footer p { margin: 0 0 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="/report"><img src="/img/logo-mark.webp" alt="" width="30" height="24">성분돋보기</a>
+    <span class="notice">개인 학습 프로젝트</span>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">광고 실험 리포트</p>
+      <h1>성분 이름과 후기의 말 중 <em>무엇을 앞세울까</em></h1>
+      <p class="lead">PDRN 크림 광고 두 개를 같은 조건으로 내보내 클릭률을 비교했습니다. 광고에 나온 크림은 판매하지 않는 가상 제품입니다.</p>
+      <div class="cards">
+        <div class="card">
+          <p class="eyebrow">문제</p>
+          <h2 class="h3">근거 없이 문구를 정해야 한다</h2>
+          <p>화해 비즈니스는 성분 이름 대신 후기의 말을 쓰라고 권합니다. 그 말이 반응을 더 끈다는 실험 근거는 없습니다.</p>
+          <p class="big">${pdrn_products}개</p>
+          <p class="cap">화해에서 PDRN을 검색하면 나오는 제품</p>
+        </div>
+        <div class="card">
+          <p class="eyebrow">핵심 결과</p>
+          <h2 class="h3">${result_title}</h2>
+          <p>${result_body}</p>
+          <p class="big">${r2_ctr_a} 대 ${r2_ctr_b}</p>
+          <p class="cap">링크 클릭률. 성분 이름 대 후기의 말</p>
+        </div>
+        <div class="card">
+          <p class="eyebrow">해결책</p>
+          <h2 class="h3">${solution_title}</h2>
+          <p>${solution_body}</p>
+          <p class="big">${l1_interest}</p>
+          <p class="cap">1차에서 도착한 기기 중 관심 버튼을 누른 기기</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <p class="eyebrow">문제</p>
+      <h2>출시 광고에서 어떤 말을 앞세울지 정할 근거가 없다</h2>
+      <p>성분 이름을 앞세운 화장품이 크게 늘었습니다. 이름에 PDRN을 단 제품 6개의 성분표를 보니 3개는 PDRN이 성분표 후반부에 적혀 있었습니다.</p>
+      <p>화해 비즈니스는 브랜드에게 성분 이름 대신 후기에 나오는 말을 쓰라고 권합니다. PDRN 크림 출시를 앞둔 마케터라고 가정하고 두 문구를 광고로 직접 비교했습니다.</p>
+      <div class="ads">
+        <figure>
+          <img src="/img/r2-ad-ingredient.webp" alt="크림 사진 아래에 PDRN 연어크림이라고 적힌 광고" width="720" height="720" loading="lazy">
+          <figcaption>A. 성분 이름 문구 "${copy_a}"</figcaption>
+        </figure>
+        <figure>
+          <img src="/img/r2-ad-review.webp" alt="같은 크림 사진 아래에 바르면 쫀쫀해지고 광이 나는 크림이라고 적힌 광고" width="720" height="720" loading="lazy">
+          <figcaption>B. 후기의 말 문구 "${copy_b}"</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="sec">
+      <p class="eyebrow">실험 흐름</p>
+      <h2>한 번에 하나만 바꿨다</h2>
+      <p>대상은 스킨케어에 관심 있는 20~49세 여성입니다. 단계마다 7일 동안 하루 1만 원을 썼습니다. 판단 지표는 광고를 보고 누른 비율인 링크 클릭률입니다.</p>
+      <ol class="flow">
+        <li><span class="tag">1차 · 끝남</span><b>그림만 다르게</b>원료가 보이는 그림과 사용감이 보이는 그림. 광고 글은 같게 두었습니다.</li>
+        <li><span class="tag">2차 · 진행 중</span><b>문구만 다르게</b>같은 그림 위에 성분 이름 문구와 후기의 말 문구를 얹었습니다.</li>
+        <li><span class="tag">3차 · 제안</span><b>랜딩만 다르게</b>광고는 그대로 두고 도착 페이지의 첫 화면을 바꿔 비교합니다.</li>
+      </ol>
+    </section>
+
+    <section class="sec">
+      <p class="eyebrow">1차 결과</p>
+      <h2>Meta가 노출을 한쪽 광고에 몰아줬다</h2>
+      <p>광고 세트 하나에 광고 두 개를 넣었더니 노출의 ${r1_share_tex}가 사용감 그림으로 갔습니다. 원료 그림은 나흘째부터 거의 나가지 않았습니다.</p>
+      <div class="chart">
+        <h3>1차 광고의 일자별 노출 수</h3>
+        <p class="sub">원료 그림 ${r1_imp_ing}회. 사용감 그림 ${r1_imp_tex}회</p>
+        <p class="legend"><span class="a"><i></i>원료 그림</span><span class="b"><i></i>사용감 그림</span></p>
+        ${chart_r1_daily_impressions}
+      </div>
+      <ul class="facts">
+        <li><span>사실</span><span>전체 링크 클릭률은 원료 그림 ${r1_ctr_ing}이고 사용감 그림 ${r1_ctr_tex}입니다. 두 광고가 함께 나간 이틀만 보면 ${r1_same_ing}와 ${r1_same_tex}입니다.</span></li>
+        <li><span>해석</span><span>배분을 Meta에 맡긴 구조라 사실상 Meta가 그림을 골랐습니다. 두 그림의 차이는 확정하지 못했습니다.</span></li>
+      </ul>
+    </section>
+
+    <section class="sec">
+      <p class="eyebrow">2차 결과 · 중간</p>
+      <h2>광고 세트를 나누자 노출이 반반이 됐다</h2>
+      <p>2차는 광고마다 세트를 따로 만들고 세트마다 하루 5,000원을 고정했습니다. 노출은 ${r2_share_a} 대 ${r2_share_b}로 나갔습니다.</p>
+      <div class="chart">
+        <h3>광고별 노출 비중</h3>
+        <p class="sub">1차는 한쪽에 몰렸고 2차는 거의 같습니다</p>
+        ${chart_impression_share}
+      </div>
+      <div class="chart">
+        <h3>2차 광고의 링크 클릭률</h3>
+        <p class="sub">누적 클릭 수와 노출 수는 A ${r2_frac_a}. B ${r2_frac_b}</p>
+        <p class="legend"><span class="a"><i></i>성분 이름 문구</span><span class="b"><i></i>후기의 말 문구</span></p>
+        ${chart_r2_ctr}
+      </div>
+      <ul class="facts">
+        <li><span>사실</span><span>누적 링크 클릭률은 성분 이름 문구 ${r2_ctr_a}이고 후기의 말 문구 ${r2_ctr_b}입니다.</span></li>
+        <li><span>해석</span><span>화해 글의 권고를 뒷받침하는 차이도 반대 방향의 차이도 아직 보이지 않습니다.</span></li>
+      </ul>
+    </section>
+
+    <section class="sec">
+      <p class="eyebrow">랜딩 결과</p>
+      <h2>버튼은 보이지만 눌리지 않는다</h2>
+      <p>광고를 누르고 들어온 기기 가운데 관심 버튼을 누른 기기는 1차 ${l1_interest}이고 2차 ${l2_interest}입니다.</p>
+      <div class="chart">
+        <h3>도착한 기기가 어디까지 갔나</h3>
+        <p class="sub">${section_period}에 사용감 그림 광고로 도착한 ${section_base}대</p>
+        ${chart_landing_steps}
+      </div>
+      <ul class="facts">
+        <li><span>사실</span><span>도착한 기기의 ${seen_share}가 버튼을 화면에서 봤고 ${info_share}가 제품 소개까지 내려갔습니다. 2차에서 랜딩 첫 화면과 버튼을 고쳤지만 달라진 것은 보이지 않습니다.</span></li>
+        <li><span>해석</span><span>버튼을 못 봐서 안 누르는 것이 아닙니다. 왜 떠나는지는 이 데이터로 알 수 없습니다.</span></li>
+      </ul>
+    </section>
+
+    <section class="sec">
+      <p class="eyebrow">해결책</p>
+      <h2>고친 것 두 가지와 다음에 시험할 것 하나</h2>
+      <div class="cards">
+        <div class="card">
+          <p class="eyebrow">2차에 적용</p>
+          <h3>비교할 광고마다 세트를 따로 만든다</h3>
+          <p>세트마다 예산을 같게 고정합니다. 노출 비중이 ${r1_share_ing} 대 ${r1_share_tex}에서 ${r2_share_a} 대 ${r2_share_b}가 됐습니다.</p>
+        </div>
+        <div class="card">
+          <p class="eyebrow">2차에 적용</p>
+          <h3>랜딩 첫 화면을 광고 문구와 맞춘다</h3>
+          <p>버튼도 "더 보고 싶어요"와 "관심 없어요" 둘로 나눴습니다. 지금까지 버튼을 누른 기기는 ${l2_interest}입니다.</p>
+        </div>
+        <div class="card">
+          <p class="eyebrow">3차 제안</p>
+          <h3>광고는 그대로 두고 랜딩만 시험한다</h3>
+          <p>첫 화면만 바꾼 두 랜딩을 비교합니다. 버튼을 누른 비율이 지금의 ${l1_interest}과 ${l2_interest}보다 나아지는지 봅니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <p class="eyebrow">한계</p>
+      <h2>이 결과로 말할 수 없는 것</h2>
+      <ul class="limits">
+        <li>측정한 것은 클릭과 관심 버튼까지입니다. 구매가 아닙니다.</li>
+        <li>세트를 나눠도 Meta가 세트마다 보여 줄 사람을 고릅니다. 두 광고를 본 사람이 같은 조건이었다고 말할 수 없습니다.</li>
+        <li>노출의 대부분이 인스타그램 릴스와 20대 초반에 나갔습니다.</li>
+        <li>관심 버튼 클릭은 한 자리 수라서 광고끼리 비교하지 못했습니다.</li>
+        <li>2차는 아직 끝나지 않았습니다. 2차 수치는 ${queried_at}에 조회한 중간값입니다.</li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <p>수치와 정의, 전처리, 결정 이유, AI 사용 내역은 <a href="https://github.com/Chawonsik/seongbun-dotbogi#readme">GitHub 저장소의 README</a>에 있습니다.</p>
+    <p>화해와 관련이 없는 개인 학습 프로젝트입니다. 이 페이지에는 방문 분석 도구를 넣지 않았습니다.</p>
+    <p>&copy; 2026 성분돋보기</p>
+  </footer>
+</div>
+</body>
+</html>

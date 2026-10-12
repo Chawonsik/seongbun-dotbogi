@@ -26,6 +26,7 @@
   "rewrites": [
     { "source": "/concept", "destination": "/concept.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/report", "destination": "/report.html" },
     { "source": "/notes/:slug", "destination": "/notes/:slug.html" }
   ]
 }
