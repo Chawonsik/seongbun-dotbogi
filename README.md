@@ -4,8 +4,9 @@
 
 공개 URL: https://seongbun-dotbogi.vercel.app/report (광고 실험 리포트)
 
+팀: 원식, 지원 (2인 프로젝트. 역할은 8절)
+
 - 광고 도착 페이지: https://seongbun-dotbogi.vercel.app/concept
-- 검색용 글: https://seongbun-dotbogi.vercel.app/notes/pdrn-cream-reviews
 
 > 화해와 관련이 없는 개인 학습 프로젝트. 광고에 나온 크림은 출시 계획이 없는 가상 제품이고 랜딩 페이지에 판매하지 않는다고 밝힘. 측정한 것은 관심이지 구매가 아님
 
@@ -224,7 +225,6 @@ cd scripts && python3 -m unittest test_make_report
 - 이벤트 택소노미와 자동 검사
 - 분석 환경 연결과 분석 기록
 - 2차 광고 이미지와 등록 값
-- 검색용 글과 스레드
 
 **내가 내린 결정**
 - 성분 이름 마케팅을 주제로 정하고 화해 글의 권고를 검증 대상으로 삼음
@@ -243,7 +243,6 @@ cd scripts && python3 -m unittest test_make_report
 - 화해 언급 정리
 - 1차 결과 분석과 2차 랜딩 개선 항목 정리
 - 2차 계측 점검
-- 검색어 조사와 네이버 블로그 글
 
 **내가 내린 결정**
 - 누른 광고와 같은 사진을 랜딩 첫 화면에 보여 줌
