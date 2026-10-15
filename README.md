@@ -4,7 +4,7 @@
 
 공개 URL: https://seongbun-dotbogi.vercel.app/report (광고 실험 리포트)
 
-팀: 원식, 지원 (2인 프로젝트. 역할은 8절)
+팀: 차원식, 권지원 (2인 프로젝트. 역할은 8절)
 
 **먼저 볼 것**
 - [광고 실험 리포트](https://seongbun-dotbogi.vercel.app/report): 문제, 결과, 해결책을 차트와 함께 한 페이지로
@@ -229,7 +229,7 @@ cd scripts && python3 -m unittest test_make_report
 
 ## 8. 나의 역할 (팀원별)
 
-### 원식
+### 차원식
 
 **맡은 부분**
 - 프로젝트의 초반 틀(분석 주제와 그 이유, 가설, 1차와 2차로 나눈 실험 구조)
@@ -249,7 +249,7 @@ cd scripts && python3 -m unittest test_make_report
 - 판단 기준 숫자를 빼고 CTR을 그대로 비교
 - 분석에서 뺄 방문의 기준
 
-### 지원
+### 권지원
 
 **맡은 부분**
 - 콘셉트 랜딩 페이지(구역 구성, 누른 광고와 같은 첫 화면 사진, 2차의 광고별 문구와 버튼 두 개)
