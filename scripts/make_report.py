@@ -231,7 +231,7 @@ def charts(data: dict) -> dict[str, str]:
         summed = [sum(d[key][0] for d in r2["daily"]), sum(d[key][1] for d in r2["daily"])]
         if summed != [total["clicks"], total["impressions"]]:
             raise ValueError(f"round2.daily {key} sums to {summed}, but the totals say {[total['clicks'], total['impressions']]}")
-    daily = r2["daily"] + [{"day": "누적", "a": [a["clicks"], a["impressions"]], "b": [b["clicks"], b["impressions"]]}]
+    days, last = r2["daily"], len(r2["daily"]) - 1
     return {
         "r1-daily-impressions": line_chart(
             r1["days"],
@@ -254,13 +254,18 @@ def charts(data: dict) -> dict[str, str]:
             ],
             "광고별 노출 비중. 1차와 2차",
         ),
-        "r2-ctr": grouped_bars(
-            [d["day"] for d in daily],
+        "r2-ctr": line_chart(
+            [d["day"] for d in days],
             [
-                (a["name"], "vz-a", [rate(*d["a"]) for d in daily], [pct(*d["a"]) for d in daily]),
-                (b["name"], "vz-b", [rate(*d["b"]) for d in daily], [pct(*d["b"]) for d in daily]),
+                (a["name"], "vz-a", [rate(*d["a"]) for d in days], [pct(*d["a"]) for d in days]),
+                (b["name"], "vz-b", [rate(*d["b"]) for d in days], [pct(*d["b"]) for d in days]),
             ],
-            "2차 광고의 일자별 링크 클릭률과 누적 링크 클릭률",
+            "2차 광고의 일자별 링크 클릭률",
+            # only the latest day is labeled; the higher line's label sits above, the lower one's below
+            {
+                (0, last): (pct(*days[-1]["a"]), -11 if rate(*days[-1]["a"]) >= rate(*days[-1]["b"]) else 20),
+                (1, last): (pct(*days[-1]["b"]), -11 if rate(*days[-1]["b"]) > rate(*days[-1]["a"]) else 20),
+            },
         ),
         "landing-steps": step_bars(
             [(s["label"], s["devices"]) for s in landing["sections"]["steps"]],
@@ -307,6 +312,8 @@ def render(data: dict) -> str:
         copy_b=b["copy"],
         l1_interest=f"{landing['round1']['interest']} / {num(landing['round1']['arrived'])}",
         l2_interest=f"{landing['round2']['interest']} / {num(landing['round2']['arrived'])}",
+        l1_rate=pct(landing["round1"]["interest"], landing["round1"]["arrived"], 1),
+        l2_rate=pct(landing["round2"]["interest"], landing["round2"]["arrived"], 1),
         seen_share=share(steps[1]["devices"], steps[0]["devices"]),
         info_share=share(steps[2]["devices"], steps[0]["devices"]),
         section_base=num(steps[0]["devices"]),

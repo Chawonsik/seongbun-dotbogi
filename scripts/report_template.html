@@ -138,8 +138,8 @@
           <p class="eyebrow">해결책</p>
           <h2 class="h3">${solution_title}</h2>
           <p>${solution_body}</p>
-          <p class="big">${l1_interest}</p>
-          <p class="cap">1차에서 도착한 기기 중 관심 버튼을 누른 기기</p>
+          <p class="big">${l1_rate} → ${l2_rate}</p>
+          <p class="cap">도착한 기기 중 관심 버튼을 누른 비율. 1차 → 2차(랜딩 고친 뒤)</p>
         </div>
       </div>
     </section>
@@ -252,8 +252,8 @@
         ${chart_impression_share}
       </div>
       <div class="chart">
-        <h3>2차 광고의 링크 클릭률</h3>
-        <p class="sub">누적 클릭 수와 노출 수는 A ${r2_frac_a}. B ${r2_frac_b}</p>
+        <h3>2차 광고의 일자별 링크 클릭률</h3>
+        <p class="sub">누적은 성분 이름 문구 ${r2_ctr_a}(${r2_frac_a}), 후기의 말 문구 ${r2_ctr_b}(${r2_frac_b})</p>
         <p class="legend"><span class="a"><i></i>성분 이름 문구</span><span class="b"><i></i>후기의 말 문구</span></p>
         ${chart_r2_ctr}
       </div>
@@ -266,7 +266,7 @@
     <section class="sec">
       <p class="eyebrow">랜딩 결과</p>
       <h2>버튼은 보이지만 눌리지 않는다</h2>
-      <p>광고를 누르고 들어온 기기 가운데 관심 버튼을 누른 기기는 1차 ${l1_interest}이고 2차 ${l2_interest}입니다.</p>
+      <p>광고를 누르고 들어온 기기 가운데 관심 버튼을 누른 기기는 1차 ${l1_rate}(${l1_interest})이고 2차 ${l2_rate}(${l2_interest})입니다. 비율은 올랐지만 둘 다 한 자리 수입니다.</p>
       <div class="chart">
         <h3>도착한 기기가 어디까지 갔나</h3>
         <p class="sub">${section_period}에 사용감 그림 광고로 도착한 ${section_base}대</p>

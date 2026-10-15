@@ -91,6 +91,12 @@ class RenderTest(unittest.TestCase):
         for text in expected:
             self.assertIn(text, self.html)
 
+    def test_landing_interest_shown_as_rates(self):
+        landing = DATA["landing"]
+        for key in ("round1", "round2"):
+            rate = mr.pct(landing[key]["interest"], landing[key]["arrived"], 1)
+            self.assertIn(f"{rate}({landing[key]['interest']} / {mr.num(landing[key]['arrived'])})", self.html)
+
     def test_text_from_data_is_escaped(self):
         data = copy.deepcopy(DATA)
         data["headline"]["result_title"] = "<b>A & B</b>"
@@ -137,9 +143,12 @@ class DataEditTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             mr.render(data)
 
-    def test_many_days_label_only_the_cumulative_group(self):
-        extra = [{"day": f"10/{d}", "a": [20, 900], "b": [21, 900]} for d in (12, 13, 14, 15)]
+    def test_r2_daily_ctr_is_a_line_chart_like_round1(self):
+        extra = [{"day": f"10/{d}", "a": [20, 900], "b": [21, 900]} for d in (16, 17)]
         svg = mr.charts(self.with_days(extra))["r2-ctr"]
+        self.assertIn('class="vz-la"', svg)
+        self.assertNotIn("누적", svg)
+        # only the latest day is labeled, one label per line
         self.assertEqual(len(re.findall(r'font-size="12">[0-9.]+%</text>', svg)), 2)
 
     def test_labels_of_equal_bars_do_not_share_a_line(self):
