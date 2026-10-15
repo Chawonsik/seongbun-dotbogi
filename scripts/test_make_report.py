@@ -91,6 +91,12 @@ class RenderTest(unittest.TestCase):
         for text in expected:
             self.assertIn(text, self.html)
 
+    def test_landing_interest_shown_as_rates(self):
+        landing = DATA["landing"]
+        for key in ("round1", "round2"):
+            rate = mr.pct(landing[key]["interest"], landing[key]["arrived"], 1)
+            self.assertIn(f"{rate}({landing[key]['interest']} / {mr.num(landing[key]['arrived'])})", self.html)
+
     def test_text_from_data_is_escaped(self):
         data = copy.deepcopy(DATA)
         data["headline"]["result_title"] = "<b>A & B</b>"
@@ -137,15 +143,34 @@ class DataEditTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             mr.render(data)
 
-    def test_many_days_label_only_the_cumulative_group(self):
-        extra = [{"day": f"10/{d}", "a": [20, 900], "b": [21, 900]} for d in (12, 13, 14, 15)]
+    def test_r2_daily_ctr_is_a_line_chart_like_round1(self):
+        extra = [{"day": f"10/{d}", "a": [20, 900], "b": [21, 900]} for d in (16, 17)]
         svg = mr.charts(self.with_days(extra))["r2-ctr"]
+        self.assertIn('class="vz-la"', svg)
+        self.assertNotIn("누적", svg)
+        # only the latest day is labeled, one label per line
         self.assertEqual(len(re.findall(r'font-size="12">[0-9.]+%</text>', svg)), 2)
 
     def test_labels_of_equal_bars_do_not_share_a_line(self):
         svg = mr.grouped_bars(["x"], [("one", "vz-a", [5], ["5.00%"]), ("two", "vz-b", [5], ["5.00%"])], "t")
         ys = re.findall(r'y="([0-9.]+)" text-anchor="middle" font-size="12">5.00%', svg)
         self.assertEqual(len(set(ys)), 2)
+
+    def test_label_clears_a_taller_neighbour_it_spills_over(self):
+        days = [f"d{i}" for i in range(8)]
+        series = [("one", "vz-a", [2.97] * 8, ["2.97%"] * 8), ("two", "vz-b", [2.55] * 8, ["2.55%"] * 8)]
+        svg = mr.grouped_bars(days, series, "t")
+        bars = [
+            (float(x), float(top), float(right))
+            for x, top, right in re.findall(r'd="M([0-9.]+),[0-9.]+ V[0-9.]+ Q[0-9.]+,([0-9.]+) [0-9.]+,[0-9.]+ H[0-9.]+ Q([0-9.]+),', svg)
+        ]
+        labels = re.findall(r'x="([0-9.]+)" y="([0-9.]+)" text-anchor="middle" font-size="12">([0-9.]+%)</text>', svg)
+        self.assertEqual(len(labels), 2)
+        for cx, y, text in labels:
+            half = len(text) * 12 * 0.3
+            for left, top, right in bars:
+                if float(cx) - half < right and float(cx) + half > left:
+                    self.assertLessEqual(float(y), top - 4, f"{text} at y={y} overlaps a bar whose top is {top}")
 
 
 if __name__ == "__main__":

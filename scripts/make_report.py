@@ -22,6 +22,7 @@ IMG_DIR = ROOT / "docs" / "report" / "img"
 W = 360  # chart width in viewBox units; close to a phone's width so labels are not shrunk there
 PAD = 12
 FONT = 13
+BAR_LABEL = 12
 
 Series = tuple[str, str, list[float], list[str]]
 
@@ -110,21 +111,37 @@ def grouped_bars(categories: list[str], series: list[Series], title: str, height
     parts = [f'<line class="vz-g" x1="{PAD}" x2="{W - PAD}" y1="{base}" y2="{base}"/>']
     for i, category in enumerate(categories):
         left = PAD + band * i + (band - group_w) / 2
-        previous_y = None
+        group = []
         for j, (name, cls, values, labels) in enumerate(series):
             x = left + j * (bar_w + gap)
             bar_h = values[i] / peak * (base - top)
             if bar_h > 0:
                 parts.append(_bar_up(x, base, bar_w, bar_h, cls, f"{category} {name}: {labels[i]}"))
-            if label_all or i == len(categories) - 1:
-                y = base - bar_h - 6
-                # bars of nearly equal height would put their labels side by side and touching
-                if previous_y is not None and abs(y - previous_y) < 13:
-                    y = previous_y - 13
-                parts.append(_text(x + bar_w / 2, y, labels[i], size=12))
-                previous_y = y
+            group.append((x, base - bar_h, labels[i]))
+        if label_all or i == len(categories) - 1:
+            for x, y, label in _place_bar_labels(group, bar_w):
+                parts.append(_text(x, y, label, size=BAR_LABEL))
         parts.append(_text(PAD + band * (i + 0.5), base + 19, category, "vz-s"))
     return _svg(height, title, _describe(categories, series), "".join(parts))
+
+
+def _place_bar_labels(group: list[tuple[float, float, str]], bar_w: float) -> list[tuple[float, float, str]]:
+    """Label positions for one group of bars. group: (bar left, bar top, label).
+
+    A label wider than its bar spills over the neighbouring bar, so it sits
+    above every bar it spans. Two labels that end up on one line are split,
+    and the label of the taller bar goes on top.
+    """
+    placed = []
+    for x, _, label in group:
+        center, half = x + bar_w / 2, len(label) * BAR_LABEL * 0.3
+        spanned = [t for bx, t, _ in group if center - half < bx + bar_w and center + half > bx]
+        placed.append([center, min(spanned) - 6, label])
+    for (_, top_a, _), (_, top_b, _), a, b in zip(group, group[1:], placed, placed[1:]):
+        if abs(a[1] - b[1]) < BAR_LABEL + 1:
+            upper, lower = (a, b) if top_a < top_b else (b, a)
+            upper[1] = lower[1] - (BAR_LABEL + 1)
+    return [(x, y, label) for x, y, label in placed]
 
 
 def line_chart(
@@ -214,7 +231,7 @@ def charts(data: dict) -> dict[str, str]:
         summed = [sum(d[key][0] for d in r2["daily"]), sum(d[key][1] for d in r2["daily"])]
         if summed != [total["clicks"], total["impressions"]]:
             raise ValueError(f"round2.daily {key} sums to {summed}, but the totals say {[total['clicks'], total['impressions']]}")
-    daily = r2["daily"] + [{"day": "누적", "a": [a["clicks"], a["impressions"]], "b": [b["clicks"], b["impressions"]]}]
+    days, last = r2["daily"], len(r2["daily"]) - 1
     return {
         "r1-daily-impressions": line_chart(
             r1["days"],
@@ -237,13 +254,18 @@ def charts(data: dict) -> dict[str, str]:
             ],
             "광고별 노출 비중. 1차와 2차",
         ),
-        "r2-ctr": grouped_bars(
-            [d["day"] for d in daily],
+        "r2-ctr": line_chart(
+            [d["day"] for d in days],
             [
-                (a["name"], "vz-a", [rate(*d["a"]) for d in daily], [pct(*d["a"]) for d in daily]),
-                (b["name"], "vz-b", [rate(*d["b"]) for d in daily], [pct(*d["b"]) for d in daily]),
+                (a["name"], "vz-a", [rate(*d["a"]) for d in days], [pct(*d["a"]) for d in days]),
+                (b["name"], "vz-b", [rate(*d["b"]) for d in days], [pct(*d["b"]) for d in days]),
             ],
-            "2차 광고의 일자별 링크 클릭률과 누적 링크 클릭률",
+            "2차 광고의 일자별 링크 클릭률",
+            # only the latest day is labeled; the higher line's label sits above, the lower one's below
+            {
+                (0, last): (pct(*days[-1]["a"]), -11 if rate(*days[-1]["a"]) >= rate(*days[-1]["b"]) else 20),
+                (1, last): (pct(*days[-1]["b"]), -11 if rate(*days[-1]["b"]) > rate(*days[-1]["a"]) else 20),
+            },
         ),
         "landing-steps": step_bars(
             [(s["label"], s["devices"]) for s in landing["sections"]["steps"]],
@@ -290,6 +312,8 @@ def render(data: dict) -> str:
         copy_b=b["copy"],
         l1_interest=f"{landing['round1']['interest']} / {num(landing['round1']['arrived'])}",
         l2_interest=f"{landing['round2']['interest']} / {num(landing['round2']['arrived'])}",
+        l1_rate=pct(landing["round1"]["interest"], landing["round1"]["arrived"], 1),
+        l2_rate=pct(landing["round2"]["interest"], landing["round2"]["arrived"], 1),
         seen_share=share(steps[1]["devices"], steps[0]["devices"]),
         info_share=share(steps[2]["devices"], steps[0]["devices"]),
         section_base=num(steps[0]["devices"]),
