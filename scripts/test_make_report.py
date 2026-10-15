@@ -147,6 +147,22 @@ class DataEditTest(unittest.TestCase):
         ys = re.findall(r'y="([0-9.]+)" text-anchor="middle" font-size="12">5.00%', svg)
         self.assertEqual(len(set(ys)), 2)
 
+    def test_label_clears_a_taller_neighbour_it_spills_over(self):
+        days = [f"d{i}" for i in range(8)]
+        series = [("one", "vz-a", [2.97] * 8, ["2.97%"] * 8), ("two", "vz-b", [2.55] * 8, ["2.55%"] * 8)]
+        svg = mr.grouped_bars(days, series, "t")
+        bars = [
+            (float(x), float(top), float(right))
+            for x, top, right in re.findall(r'd="M([0-9.]+),[0-9.]+ V[0-9.]+ Q[0-9.]+,([0-9.]+) [0-9.]+,[0-9.]+ H[0-9.]+ Q([0-9.]+),', svg)
+        ]
+        labels = re.findall(r'x="([0-9.]+)" y="([0-9.]+)" text-anchor="middle" font-size="12">([0-9.]+%)</text>', svg)
+        self.assertEqual(len(labels), 2)
+        for cx, y, text in labels:
+            half = len(text) * 12 * 0.3
+            for left, top, right in bars:
+                if float(cx) - half < right and float(cx) + half > left:
+                    self.assertLessEqual(float(y), top - 4, f"{text} at y={y} overlaps a bar whose top is {top}")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -22,6 +22,7 @@ IMG_DIR = ROOT / "docs" / "report" / "img"
 W = 360  # chart width in viewBox units; close to a phone's width so labels are not shrunk there
 PAD = 12
 FONT = 13
+BAR_LABEL = 12
 
 Series = tuple[str, str, list[float], list[str]]
 
@@ -110,21 +111,37 @@ def grouped_bars(categories: list[str], series: list[Series], title: str, height
     parts = [f'<line class="vz-g" x1="{PAD}" x2="{W - PAD}" y1="{base}" y2="{base}"/>']
     for i, category in enumerate(categories):
         left = PAD + band * i + (band - group_w) / 2
-        previous_y = None
+        group = []
         for j, (name, cls, values, labels) in enumerate(series):
             x = left + j * (bar_w + gap)
             bar_h = values[i] / peak * (base - top)
             if bar_h > 0:
                 parts.append(_bar_up(x, base, bar_w, bar_h, cls, f"{category} {name}: {labels[i]}"))
-            if label_all or i == len(categories) - 1:
-                y = base - bar_h - 6
-                # bars of nearly equal height would put their labels side by side and touching
-                if previous_y is not None and abs(y - previous_y) < 13:
-                    y = previous_y - 13
-                parts.append(_text(x + bar_w / 2, y, labels[i], size=12))
-                previous_y = y
+            group.append((x, base - bar_h, labels[i]))
+        if label_all or i == len(categories) - 1:
+            for x, y, label in _place_bar_labels(group, bar_w):
+                parts.append(_text(x, y, label, size=BAR_LABEL))
         parts.append(_text(PAD + band * (i + 0.5), base + 19, category, "vz-s"))
     return _svg(height, title, _describe(categories, series), "".join(parts))
+
+
+def _place_bar_labels(group: list[tuple[float, float, str]], bar_w: float) -> list[tuple[float, float, str]]:
+    """Label positions for one group of bars. group: (bar left, bar top, label).
+
+    A label wider than its bar spills over the neighbouring bar, so it sits
+    above every bar it spans. Two labels that end up on one line are split,
+    and the label of the taller bar goes on top.
+    """
+    placed = []
+    for x, _, label in group:
+        center, half = x + bar_w / 2, len(label) * BAR_LABEL * 0.3
+        spanned = [t for bx, t, _ in group if center - half < bx + bar_w and center + half > bx]
+        placed.append([center, min(spanned) - 6, label])
+    for (_, top_a, _), (_, top_b, _), a, b in zip(group, group[1:], placed, placed[1:]):
+        if abs(a[1] - b[1]) < BAR_LABEL + 1:
+            upper, lower = (a, b) if top_a < top_b else (b, a)
+            upper[1] = lower[1] - (BAR_LABEL + 1)
+    return [(x, y, label) for x, y, label in placed]
 
 
 def line_chart(
