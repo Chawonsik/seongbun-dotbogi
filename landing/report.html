@@ -13,23 +13,27 @@
 <!-- 이 파일은 scripts/make_report.py가 만든다. 직접 고치지 말고 scripts/report_template.html과 docs/report/data.json을 고친 뒤 다시 만든다.
      계측 코드는 넣지 않는다. 광고 랜딩의 기록과 섞이지 않게 하기 위해서다. -->
 <style>
-  /* 색은 광고 랜딩(concept.html)과 같은 값. 차트의 두 계열 색은 밝은 바탕과 어두운 바탕에서 각각 검사한 값 */
+  /* 색과 형태는 발표 자료(Canva "성분돋보기 최종 발표")와 같은 값. 크림 바탕, 흰 둥근 카드, 검정 알약 라벨,
+     검정 결론 카드, 연노랑 띠, 노란 강조는 첫 화면 제목 한 곳. 차트의 두 계열은 발표 자료 2장의 분홍(A)과 청록(B) */
   :root {
-    --bg: #F4E6DD; --paper: #FFF8F3; --ink: #3B2A25; --muted: #7D6761; --line: #E6D2C6;
-    --accent: #C74222; --accent-ink: #A8391D; --tint: #FBE1D6; --card: #FFFFFF;
-    --series-a: #2a78d6; --series-b: #eb6834;
+    --bg: #FBF7F3; --card: #FFFFFF; --ink: #1C1C1E; --muted: #5F5F66; --line: #ECE6DF;
+    --pill: #1C1C1E; --pill-ink: #FFFFFF; --band: #FFF4C4; --band-ink: #1C1C1E; --mark: #FFD02F;
+    --dark: #1C1C1E; --dark-ink: #FFFFFF; --dark-muted: #C9C9CF; --link: #1C1C1E;
+    --series-a: #FF9999; --series-b: #0FBCB0;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
-      --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --card: #33271F;
-      --series-a: #3987e5; --series-b: #d95926;
+      --bg: #141416; --card: #222226; --ink: #F4F4F5; --muted: #B4B4BC; --line: #33333A;
+      --pill: #F4F4F5; --pill-ink: #141416; --band: #3A3320; --band-ink: #FFF4C4; --mark: #B8901A;
+      --dark: #2E2E34; --dark-ink: #FFFFFF; --dark-muted: #C9C9CF; --link: #FFF4C4;
+      --series-a: #F28A8A; --series-b: #12A99E;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #1E1614; --paper: #2A201D; --ink: #F4E6DD; --muted: #BFA79E; --line: #3F302A;
-    --accent: #E0735A; --accent-ink: #F09A83; --tint: #3A2621; --card: #33271F;
-    --series-a: #3987e5; --series-b: #d95926;
+    --bg: #141416; --card: #222226; --ink: #F4F4F5; --muted: #B4B4BC; --line: #33333A;
+    --pill: #F4F4F5; --pill-ink: #141416; --band: #3A3320; --band-ink: #FFF4C4; --mark: #B8901A;
+    --dark: #2E2E34; --dark-ink: #FFFFFF; --dark-muted: #C9C9CF; --link: #FFF4C4;
+    --series-a: #F28A8A; --series-b: #12A99E;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -38,51 +42,61 @@
     font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     font-size: 15px; line-height: 1.7; word-break: keep-all; overflow-wrap: break-word;
   }
-  .wrap { max-width: 760px; margin: 0 auto; background: var(--paper); min-height: 100vh; }
-  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--ink); }
-  .brand { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+  .wrap { max-width: 820px; margin: 0 auto; min-height: 100vh; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
   .brand img { width: 30px; height: 24px; object-fit: contain; }
-  .notice { font-size: 12px; font-weight: 700; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 5px 11px; white-space: nowrap; }
-  .sec { padding: 28px 16px; border-top: 1px solid var(--line); }
-  .hero { padding: 24px 16px 28px; }
-  h1 { font-weight: 800; font-size: 27px; line-height: 1.28; letter-spacing: -0.035em; margin: 0 0 8px; text-wrap: balance; }
-  h1 em { font-style: normal; color: var(--accent); }
-  h2 { font-size: 20px; font-weight: 800; line-height: 1.35; letter-spacing: -0.03em; margin: 0 0 10px; text-wrap: balance; }
-  h3, .h3 { font-size: 16px; font-weight: 800; line-height: 1.4; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .notice { font-size: 12px; font-weight: 700; color: var(--ink); border: 1.5px solid var(--ink); border-radius: 999px; padding: 4px 11px; white-space: nowrap; }
+  .sec { padding: 40px 16px 8px; }
+  .hero { padding: 28px 16px 12px 22px; border-left: 6px solid var(--mark); margin-left: 0; }
+  h1 { font-weight: 800; font-size: 32px; line-height: 1.25; letter-spacing: -0.04em; margin: 12px 0 10px; text-wrap: balance; }
+  h1 em { font-style: normal; background: linear-gradient(transparent 58%, var(--mark) 58%, var(--mark) 92%, transparent 92%); padding: 0 2px; }
+  h2 { font-size: 23px; font-weight: 800; line-height: 1.32; letter-spacing: -0.035em; margin: 12px 0 12px; text-wrap: balance; }
+  h3, .h3 { font-size: 17px; font-weight: 800; line-height: 1.4; letter-spacing: -0.025em; margin: 0 0 6px; }
   p { margin: 0 0 10px; }
-  .eyebrow { margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--accent-ink); }
-  .lead { color: var(--muted); margin: 0 0 18px; }
-  a { color: var(--accent-ink); }
-  a:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 3px; }
+  /* 묶음 꼬리표: 발표 자료의 검정 알약 라벨 */
+  .eyebrow { display: inline-block; margin: 0; font-size: 13px; font-weight: 700; line-height: 1; color: var(--pill-ink); background: var(--pill); border-radius: 999px; padding: 8px 16px; }
+  .lead { color: var(--muted); margin: 0 0 22px; }
+  a { color: var(--link); font-weight: 700; text-underline-offset: 3px; }
+  a:focus-visible { outline: 3px solid var(--mark); outline-offset: 3px; }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .card { background: var(--card); border-radius: 18px; padding: 20px 20px 18px; min-width: 0; }
+  .card .eyebrow { margin: 0 0 12px; font-size: 12px; padding: 7px 14px; color: var(--pill-ink); }
   .card p { font-size: 14px; color: var(--muted); margin: 0; }
-  .card p.eyebrow { font-size: 12px; color: var(--accent-ink); margin: 0 0 6px; }
-  .card .big { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); margin: 10px 0 0; font-variant-numeric: tabular-nums; }
-  .card .cap { font-size: 12px; }
+  .card .big { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); margin: 14px 0 0; font-variant-numeric: tabular-nums; }
+  .card .cap { font-size: 12px; margin-top: 2px; }
+  /* 결론 카드: 발표 자료의 검정 "결론" 카드 */
+  .card.dark { background: var(--dark); color: var(--dark-ink); }
+  .card.dark .eyebrow { background: var(--dark-ink); color: var(--dark); }
+  .card.dark p, .card.dark .cap { color: var(--dark-muted); }
+  .card.dark .big, .card.dark .h3 { color: var(--dark-ink); }
 
-  .ads { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0 0; }
+  .ads { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0 0; background: var(--card); border-radius: 18px; padding: 16px; }
   .ads figure { margin: 0; }
-  .ads img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 12px; border: 1px solid var(--line); }
-  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .ads img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 10px; }
+  figcaption { font-size: 13px; font-weight: 700; color: var(--muted); margin-top: 8px; text-align: center; }
 
-  .flow { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; counter-reset: step; }
-  .flow li { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 14px; color: var(--muted); }
-  .flow b { display: block; color: var(--ink); font-weight: 800; font-size: 15px; }
-  .flow .tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 2px 9px; margin-bottom: 6px; }
-  .facts { margin: 14px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
-  .facts li { padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; display: flex; gap: 10px; }
-  .facts li span:first-child { flex: none; width: 3.2em; font-weight: 700; color: var(--accent-ink); }
+  .flow { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; counter-reset: step; }
+  .flow li { counter-increment: step; position: relative; background: var(--card); border-radius: 18px; padding: 18px 18px 16px; font-size: 14px; color: var(--muted); }
+  .flow li::before { content: counter(step); display: inline-grid; place-items: center; width: 26px; height: 26px; margin: 0 8px 10px 0; border-radius: 50%; background: var(--pill); color: var(--pill-ink); font-size: 13px; font-weight: 800; vertical-align: middle; }
+  .flow b { display: block; color: var(--ink); font-weight: 800; font-size: 16px; margin-bottom: 2px; }
+  .flow .tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--muted); vertical-align: middle; margin-bottom: 10px; }
 
-  .chart { margin: 16px 0 0; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 4px 10px; }
-  .chart h3 { padding: 0 12px; }
-  .chart .sub { font-size: 13px; color: var(--muted); padding: 0 12px; margin: 0 0 8px; }
-  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 0 12px; margin: 0 0 6px; font-size: 13px; color: var(--muted); }
-  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; }
+  /* 사실과 해석: 사실은 흰 카드, 해석은 발표 자료의 연노랑 띠 */
+  .facts { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .facts li { display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; border-radius: 18px; background: var(--card); font-size: 14px; }
+  .facts li:last-child { background: var(--band); color: var(--band-ink); font-weight: 700; }
+  .facts li span:first-child { flex: none; font-size: 12px; font-weight: 700; line-height: 1; color: var(--pill-ink); background: var(--pill); border-radius: 999px; padding: 6px 12px; margin-top: 1px; }
+
+  .chart { margin: 18px 0 0; background: var(--card); border-radius: 18px; padding: 18px 6px 12px; }
+  .chart h3 { padding: 0 14px; }
+  .chart .sub { font-size: 13px; color: var(--muted); padding: 0 14px; margin: 0 0 10px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 0 14px; margin: 0 0 6px; font-size: 13px; font-weight: 700; color: var(--muted); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-right: 6px; vertical-align: -1px; }
   .legend .a i { background: var(--series-a); }
   .legend .b i { background: var(--series-b); }
-  .vz { display: block; width: 100%; max-width: 480px; height: auto; margin: 0 auto; }
+  .vz { display: block; width: 100%; max-width: 500px; height: auto; margin: 0 auto; }
   .vz text { font-family: inherit; font-variant-numeric: tabular-nums; }
   .vz-t { fill: var(--ink); }
   .vz-s { fill: var(--muted); }
@@ -93,19 +107,29 @@
   .vz-lb { stroke: var(--series-b); }
   .vz-ring { stroke: var(--card); }
 
-  .why { margin: 14px 0 0; border-top: 1px solid var(--line); }
+  .why { margin: 16px 0 0; background: var(--card); border-radius: 18px; padding: 4px 20px; }
   .why details { border-bottom: 1px solid var(--line); }
-  .why summary { cursor: pointer; padding: 13px 28px 13px 0; font-weight: 700; font-size: 15px; list-style: none; position: relative; }
+  .why details:last-child { border-bottom: 0; }
+  .why summary { cursor: pointer; padding: 15px 32px 15px 0; font-weight: 800; font-size: 15px; list-style: none; position: relative; }
   .why summary::-webkit-details-marker { display: none; }
-  .why summary::after { content: "+"; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 20px; font-weight: 500; color: var(--accent-ink); }
+  .why summary::after { content: "+"; position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--pill); color: var(--pill-ink); font-size: 16px; font-weight: 700; line-height: 1; }
   .why details[open] summary::after { content: "\2212"; }
-  .why summary:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
-  .why details > div { padding: 0 0 14px; font-size: 14px; color: var(--muted); }
+  .why summary:focus-visible { outline: 3px solid var(--mark); outline-offset: 2px; border-radius: 6px; }
+  .why details > div { padding: 0 0 16px; font-size: 14px; color: var(--muted); }
   .why details p { margin: 0 0 6px; }
-  .limits { margin: 12px 0 0; padding-left: 18px; font-size: 14px; }
+  .limits { margin: 16px 0 0; padding: 18px 20px 18px 38px; font-size: 14px; background: var(--card); border-radius: 18px; }
   .limits li { margin-bottom: 6px; }
-  footer { padding: 24px 16px 32px; border-top: 1px solid var(--ink); font-size: 13px; color: var(--muted); }
+  .limits li:last-child { margin-bottom: 0; }
+  footer { margin-top: 40px; padding: 24px 16px 36px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
   footer p { margin: 0 0 6px; }
+  @media (min-width: 720px) {
+    .sec { padding: 56px 24px 8px; }
+    .hero { padding: 36px 24px 16px 30px; }
+    h1 { font-size: 38px; }
+    h2 { font-size: 26px; }
+    .top { padding: 18px 24px; }
+    footer { padding: 24px 24px 40px; }
+  }
 </style>
 </head>
 <body>
@@ -127,7 +151,7 @@
           <p class="big">1,824개</p>
           <p class="cap">화해에서 PDRN을 검색하면 나오는 제품</p>
         </div>
-        <div class="card">
+        <div class="card dark">
           <p class="eyebrow">핵심 결과</p>
           <h2 class="h3">리뷰 언어 문구가 더 클릭되지는 않았다</h2>
           <p>성분 이름 문구와 리뷰 언어 문구를 같은 규모로 내보냈습니다. 누적 클릭률은 성분 이름 문구가 조금 높지만 날마다 앞서는 쪽이 바뀝니다. 2차는 10월 16일에 끝나고 아래 수치는 중간값입니다.</p>
@@ -148,7 +172,7 @@
       <p class="eyebrow">문제</p>
       <h2>출시 광고에서 어떤 말을 앞세울지 정할 근거가 없다</h2>
       <p>성분 이름을 앞세운 화장품 마케팅이 유행입니다. 그런데 브랜드가 달라도 광고 문구는 서로 비슷합니다. 그러면 사람들은 무엇을 보고 고르는지가 궁금했습니다.</p>
-      <p>화해 비즈니스의 글은 사람들이 기능이 아니라 경험에 지갑을 연다고 답하고 광고 문구도 성분 이름 대신 후기에 나오는 말로 쓰라고 권합니다. 그 말이 반응을 더 끈다는 실험 근거는 글에 없습니다. 그래서 PDRN 크림 출시를 앞둔 마케터라고 가정하고 두 문구를 광고로 직접 비교했습니다.</p>
+      <p>화해 비즈니스의 글은 사람들이 기능이 아니라 경험에 지갑을 연다고 답하고 광고 문구도 성분 이름 대신 리뷰 언어(소비자 리뷰에 나오는 사용감 표현)로 쓰라고 권합니다. 그 말이 반응을 더 끈다는 실험 근거는 글에 없습니다. 그래서 PDRN 크림 출시를 앞둔 마케터라고 가정하고 두 문구를 광고로 직접 비교했습니다.</p>
       <div class="ads">
         <figure>
           <img src="/img/r2-ad-ingredient.webp" alt="크림 사진 아래에 PDRN 연어크림이라고 적힌 광고" width="720" height="720" loading="lazy">
