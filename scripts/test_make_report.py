@@ -127,6 +127,18 @@ class RenderTest(unittest.TestCase):
         z, p = mr.two_proportion_z(a["clicks"], a["impressions"], b["clicks"], b["impressions"])
         self.assertIn(f"z = {z:.2f}, p = {p:.2f}", self.html)
 
+    def test_cost_per_interested_device(self):
+        r1, r2, landing = DATA["round1"], DATA["round2"], DATA["landing"]
+        r1_spend = r1["ingredient"]["spend"] + r1["texture"]["spend"]
+        r2_spend = r2["a"]["spend"] + r2["b"]["spend"]
+        self.assertIn(f"{mr.num(r1_spend / landing['round1']['interest'])}원", self.html)
+        self.assertIn(f"{mr.num(r2_spend / landing['round2']['interest'])}원", self.html)
+
+    def test_result_sections_show_the_ads(self):
+        for src in ("r1-ingredient.webp", "r1-texture.webp"):
+            self.assertIn(src, self.html)
+        self.assertGreaterEqual(self.html.count("r2-ad-review.webp"), 2)
+
     def test_significance_sentence_follows_p(self):
         data = copy.deepcopy(DATA)
         self.assertIn("5% 기준에서 통계적으로 유의하지 않습니다", mr.render(data))

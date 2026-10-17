@@ -330,6 +330,8 @@ def render(data: dict) -> str:
         copy_b=b["copy"],
         l1_interest=f"{landing['round1']['interest']} / {num(landing['round1']['arrived'])}",
         l2_interest=f"{landing['round2']['interest']} / {num(landing['round2']['arrived'])}",
+        l1_cost=num((ing["spend"] + tex["spend"]) / landing["round1"]["interest"]) if landing["round1"]["interest"] else "-",
+        l2_cost=num((a["spend"] + b["spend"]) / landing["round2"]["interest"]) if landing["round2"]["interest"] else "-",
         l1_rate=pct(landing["round1"]["interest"], landing["round1"]["arrived"], 1),
         l2_rate=pct(landing["round2"]["interest"], landing["round2"]["arrived"], 1),
         seen_share=share(steps[1]["devices"], steps[0]["devices"]),
