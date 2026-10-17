@@ -9,6 +9,7 @@ refreshing the report means editing that file and running this script again.
 from __future__ import annotations
 
 import json
+import math
 import pathlib
 import string
 from html import escape
@@ -56,6 +57,18 @@ def num(value: float) -> str:
 
 def rate(numerator: float, denominator: float) -> float:
     return numerator / denominator * 100 if denominator else 0.0
+
+
+def two_proportion_z(clicks_a: int, shown_a: int, clicks_b: int, shown_b: int) -> tuple[float, float]:
+    """Two-sided two-proportion z-test with a pooled rate. Returns (z, p); (0, 1) when it cannot be computed."""
+    if not shown_a or not shown_b:
+        return 0.0, 1.0
+    pooled = (clicks_a + clicks_b) / (shown_a + shown_b)
+    se = math.sqrt(pooled * (1 - pooled) * (1 / shown_a + 1 / shown_b))
+    if not se:
+        return 0.0, 1.0
+    z = (clicks_a / shown_a - clicks_b / shown_b) / se
+    return z, math.erfc(abs(z) / math.sqrt(2))
 
 
 def _svg(height: float, title: str, desc: str, body: str) -> str:
@@ -287,6 +300,7 @@ def render(data: dict) -> str:
     steps = landing["sections"]["steps"]
     values = {f"chart_{name.replace('-', '_')}": svg for name, svg in charts(data).items()}
     same = r1["same_days"]
+    z, p = two_proportion_z(a["clicks"], a["impressions"], b["clicks"], b["impressions"])
     text = dict(
         queried_at=data["queried_at"],
         result_title=data["headline"]["result_title"],
@@ -308,10 +322,16 @@ def render(data: dict) -> str:
         r2_frac_b=f"{b['clicks']}/{num(b['impressions'])}",
         r2_share_a=pct(a["impressions"], r2_total, 1),
         r2_share_b=pct(b["impressions"], r2_total, 1),
+        # the gap is taken from the rounded rates so it matches the two numbers printed beside it
+        r2_gap=f"{abs(round(rate(a['clicks'], a['impressions']), 2) - round(rate(b['clicks'], b['impressions']), 2)):.2f}%p",
+        r2_test=f"z = {z:.2f}, p = {p:.2f}" if p >= 0.01 else f"z = {z:.2f}, p < 0.01",
+        r2_verdict="5% 기준에서 통계적으로 유의합니다" if p < 0.05 else "5% 기준에서 통계적으로 유의하지 않습니다",
         copy_a=a["copy"],
         copy_b=b["copy"],
         l1_interest=f"{landing['round1']['interest']} / {num(landing['round1']['arrived'])}",
         l2_interest=f"{landing['round2']['interest']} / {num(landing['round2']['arrived'])}",
+        l1_cost=num((ing["spend"] + tex["spend"]) / landing["round1"]["interest"]) if landing["round1"]["interest"] else "-",
+        l2_cost=num((a["spend"] + b["spend"]) / landing["round2"]["interest"]) if landing["round2"]["interest"] else "-",
         l1_rate=pct(landing["round1"]["interest"], landing["round1"]["arrived"], 1),
         l2_rate=pct(landing["round2"]["interest"], landing["round2"]["arrived"], 1),
         seen_share=share(steps[1]["devices"], steps[0]["devices"]),
