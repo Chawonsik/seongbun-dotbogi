@@ -31,6 +31,31 @@ class PctTest(unittest.TestCase):
         self.assertEqual(mr.share(208, 210), "99%")
 
 
+class TwoProportionTest(unittest.TestCase):
+    def test_known_values(self):
+        z, p = mr.two_proportion_z(204, 6869, 181, 6545)
+        self.assertAlmostEqual(z, 0.709, places=3)
+        self.assertAlmostEqual(p, 0.479, places=3)
+
+    def test_equal_rates_give_p_of_one(self):
+        z, p = mr.two_proportion_z(10, 1000, 10, 1000)
+        self.assertEqual(z, 0)
+        self.assertAlmostEqual(p, 1.0)
+
+    def test_large_gap_is_significant(self):
+        _, p = mr.two_proportion_z(60, 1000, 20, 1000)
+        self.assertLess(p, 0.001)
+
+    def test_sign_follows_direction(self):
+        z, p = mr.two_proportion_z(181, 6545, 204, 6869)
+        self.assertLess(z, 0)
+        self.assertAlmostEqual(p, mr.two_proportion_z(204, 6869, 181, 6545)[1])
+
+    def test_degenerate_inputs_do_not_crash(self):
+        for args in ((0, 0, 3, 100), (0, 100, 0, 100), (5, 5, 7, 7)):
+            self.assertEqual(mr.two_proportion_z(*args), (0.0, 1.0))
+
+
 class GroupedBarsTest(unittest.TestCase):
     def setUp(self):
         self.svg = mr.grouped_bars(
@@ -96,6 +121,28 @@ class RenderTest(unittest.TestCase):
         for key in ("round1", "round2"):
             rate = mr.pct(landing[key]["interest"], landing[key]["arrived"], 1)
             self.assertIn(f"{rate}({landing[key]['interest']} / {mr.num(landing[key]['arrived'])})", self.html)
+
+    def test_round2_test_result_comes_from_data(self):
+        a, b = DATA["round2"]["a"], DATA["round2"]["b"]
+        z, p = mr.two_proportion_z(a["clicks"], a["impressions"], b["clicks"], b["impressions"])
+        self.assertIn(f"z = {z:.2f}, p = {p:.2f}", self.html)
+
+    def test_significance_sentence_follows_p(self):
+        data = copy.deepcopy(DATA)
+        self.assertIn("5% 기준에서 통계적으로 유의하지 않습니다", mr.render(data))
+        data["round2"]["a"]["clicks"] += 200
+        data["round2"]["daily"][0]["a"][0] += 200
+        html = mr.render(data)
+        self.assertNotIn("5% 기준에서 통계적으로 유의하지 않습니다", html)
+        self.assertIn("5% 기준에서 통계적으로 유의합니다", html)
+
+    def test_gap_matches_the_printed_rates(self):
+        data = copy.deepcopy(DATA)
+        data["round2"]["a"].update(clicks=2976, impressions=100000)
+        data["round2"]["b"].update(clicks=2774, impressions=100000)
+        data["round2"]["daily"] = [{"day": "10/9", "a": [1488, 50000], "b": [1387, 50000]}, {"day": "10/10", "a": [1488, 50000], "b": [1387, 50000]}]
+        html = mr.render(data)
+        self.assertIn("0.21%p", html)
 
     def test_text_from_data_is_escaped(self):
         data = copy.deepcopy(DATA)
