@@ -32,7 +32,7 @@
 - [x] 웹 공개 켜기 (차원식, 2026-10-15). https://spectrum-package-faa.notion.site/3f8a9a1d4f1b811d904afe98a9d84c69
 - [x] 공개 주소를 README "먼저 볼 것"에 넣고 QR 생성(`docs/slides/playbook-qr.png`, ID만 쓴 주소라 제목을 바꿔도 유효). 커밋 전
 - [ ] QR을 Canva 23장에 배치 (차원식)
-- [ ] 10/16 뒤 최종 수치와 사례 보강
+- [x] 10/16 뒤 최종 수치와 사례 보강 (10/17. Part 1 실험 용어, Part 2 지출, Part 8 하는 법 4(z검정)와 2차 사례, Part 9 로그, 함정 3개, FAQ, 노출 비중 그림 brand5)
 - [x] Part 5 "우리 사례"의 예전 10/11 노출 비중 그림 삭제 (차원식, 10/15)
 - [ ] 10/16 광고 종료 뒤 GitHub 커밋 기록 정리 (차원식, 10/15 결정)
 
