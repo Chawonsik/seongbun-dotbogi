@@ -161,14 +161,16 @@ def line_chart(
     categories: list[str],
     series: list[Series],
     title: str,
-    callouts: dict[tuple[int, int], tuple[str, int]],
+    callouts: dict[tuple[int, int], tuple],
     height: float = 250,
+    gutter: float = 0,
 ) -> str:
-    """Lines over time. callouts maps (series index, point index) to (label, dy).
+    """Lines over time. callouts maps (series index, point index) to (label, dy) or (label, dy, dx).
 
     dy is the label offset from the point: negative sits above it, positive below.
+    dx > 0 puts the label to the right of the point, starting there; gutter keeps room for it.
     """
-    top, base, left, right = 30.0, height - 30, PAD + 8, W - PAD - 8
+    top, base, left, right = 30.0, height - 30, PAD + 8, W - PAD - 8 - gutter
     peak = max(max(values) for _, _, values, _ in series) or 1
     step = (right - left) / (len(categories) - 1)
 
@@ -188,8 +190,9 @@ def line_chart(
                 f"<title>{escape(f'{categories[i]} {name}: {labels[i]}')}</title></circle>"
             )
             if (s, i) in callouts:
-                label, dy = callouts[(s, i)]
-                parts.append(_text(x, y + dy, label, size=12))
+                label, dy, *rest = callouts[(s, i)]
+                dx = rest[0] if rest else 0
+                parts.append(_text(x + dx, y + dy, label, anchor="start" if dx > 0 else "middle", size=12))
     return _svg(height, title, _describe(categories, series), "".join(parts))
 
 
@@ -274,11 +277,13 @@ def charts(data: dict) -> dict[str, str]:
                 (b["name"], "vz-b", [rate(*d["b"]) for d in days], [pct(*d["b"]) for d in days]),
             ],
             "2차 광고의 일자별 링크 클릭률",
-            # only the latest day is labeled; the higher line's label sits above, the lower one's below
+            # only the latest day is labeled, to the right of the point so no line crosses it;
+            # the higher one is nudged up and the lower one down so the two never touch
             {
-                (0, last): (pct(*days[-1]["a"]), -11 if rate(*days[-1]["a"]) >= rate(*days[-1]["b"]) else 20),
-                (1, last): (pct(*days[-1]["b"]), -11 if rate(*days[-1]["b"]) > rate(*days[-1]["a"]) else 20),
+                (0, last): (pct(*days[-1]["a"]), -2 if rate(*days[-1]["a"]) >= rate(*days[-1]["b"]) else 12, 9),
+                (1, last): (pct(*days[-1]["b"]), -2 if rate(*days[-1]["b"]) > rate(*days[-1]["a"]) else 12, 9),
             },
+            gutter=36,
         ),
         "landing-steps": step_bars(
             [(s["label"], s["devices"]) for s in landing["sections"]["steps"]],
@@ -292,6 +297,15 @@ def standalone(svg: str) -> str:
     return f"{head}>{STANDALONE_STYLE}{rest}"
 
 
+def diff_interval(clicks_a: int, shown_a: int, clicks_b: int, shown_b: int) -> tuple[float, float]:
+    """95% interval of rate A minus rate B in percentage points, unpooled. (0, 0) when it cannot be computed."""
+    if not shown_a or not shown_b:
+        return 0.0, 0.0
+    pa, pb = clicks_a / shown_a, clicks_b / shown_b
+    se = math.sqrt(pa * (1 - pa) / shown_a + pb * (1 - pb) / shown_b)
+    return (pa - pb - 1.96 * se) * 100, (pa - pb + 1.96 * se) * 100
+
+
 def render(data: dict) -> str:
     r1, r2, landing = data["round1"], data["round2"], data["landing"]
     ing, tex, a, b = r1["ingredient"], r1["texture"], r2["a"], r2["b"]
@@ -301,6 +315,9 @@ def render(data: dict) -> str:
     values = {f"chart_{name.replace('-', '_')}": svg for name, svg in charts(data).items()}
     same = r1["same_days"]
     z, p = two_proportion_z(a["clicks"], a["impressions"], b["clicks"], b["impressions"])
+    ci_low, ci_high = diff_interval(a["clicks"], a["impressions"], b["clicks"], b["impressions"])
+    r2_clicks = a["clicks"] + b["clicks"]
+    l2 = landing["round2"]
     text = dict(
         queried_at=data["queried_at"],
         result_title=data["headline"]["result_title"],
@@ -325,7 +342,15 @@ def render(data: dict) -> str:
         # the gap is taken from the rounded rates so it matches the two numbers printed beside it
         r2_gap=f"{abs(round(rate(a['clicks'], a['impressions']), 2) - round(rate(b['clicks'], b['impressions']), 2)):.2f}%p",
         r2_test=f"z = {z:.2f}, p = {p:.2f}" if p >= 0.01 else f"z = {z:.2f}, p < 0.01",
+        r2_ci=f"{ci_low:.2f}%p ~ {ci_high:.2f}%p".replace("-", "\u2212"),
+        r2_imp_total=num(r2_total),
+        r2_clk_total=num(r2_clicks),
+        r2_arrived=num(l2["arrived"]),
+        r2_interested=num(l2["interest"]),
+        r2_click_rate=pct(r2_clicks, r2_total, 1),
+        r2_arrive_rate=pct(l2["arrived"], r2_clicks, 1),
         r2_verdict="5% 기준에서 통계적으로 유의합니다" if p < 0.05 else "5% 기준에서 통계적으로 유의하지 않습니다",
+        r2_verdict_short="유의함" if p < 0.05 else "유의하지 않음",
         copy_a=a["copy"],
         copy_b=b["copy"],
         l1_interest=f"{landing['round1']['interest']} / {num(landing['round1']['arrived'])}",

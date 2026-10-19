@@ -56,6 +56,16 @@ class TwoProportionTest(unittest.TestCase):
             self.assertEqual(mr.two_proportion_z(*args), (0.0, 1.0))
 
 
+class DiffIntervalTest(unittest.TestCase):
+    def test_known_values(self):
+        low, high = mr.diff_interval(204, 6869, 181, 6545)
+        self.assertAlmostEqual(low, -0.36, places=2)
+        self.assertAlmostEqual(high, 0.77, places=2)
+
+    def test_degenerate_inputs_do_not_crash(self):
+        self.assertEqual(mr.diff_interval(0, 0, 3, 100), (0.0, 0.0))
+
+
 class GroupedBarsTest(unittest.TestCase):
     def setUp(self):
         self.svg = mr.grouped_bars(
@@ -155,6 +165,21 @@ class RenderTest(unittest.TestCase):
         data["round2"]["daily"] = [{"day": "10/9", "a": [1488, 50000], "b": [1387, 50000]}, {"day": "10/10", "a": [1488, 50000], "b": [1387, 50000]}]
         html = mr.render(data)
         self.assertIn("0.21%p", html)
+
+    def test_interval_is_shown_with_the_test(self):
+        a, b = DATA["round2"]["a"], DATA["round2"]["b"]
+        low, high = mr.diff_interval(a["clicks"], a["impressions"], b["clicks"], b["impressions"])
+        self.assertIn(f"95% 신뢰구간 {low:.2f}%p ~ {high:.2f}%p", self.html.replace("\u2212", "-"))
+
+    def test_after_click_funnel_comes_from_data(self):
+        a, b, l2 = DATA["round2"]["a"], DATA["round2"]["b"], DATA["landing"]["round2"]
+        for value in (a["impressions"] + b["impressions"], a["clicks"] + b["clicks"], l2["arrived"]):
+            self.assertIn(f">{mr.num(value)}<", self.html)
+        self.assertIn(mr.pct(l2["interest"], l2["arrived"], 1), self.html)
+
+    def test_sources_and_ai_use_are_disclosed(self):
+        for needle in ("출처와 AI 사용", "business.hwahae.co.kr", "GPT", "Claude"):
+            self.assertIn(needle, self.html)
 
     def test_text_from_data_is_escaped(self):
         data = copy.deepcopy(DATA)
