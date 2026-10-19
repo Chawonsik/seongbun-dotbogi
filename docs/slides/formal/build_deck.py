@@ -259,7 +259,7 @@ S.append(plain("한 장 요약", "",
 {sc("방법", "Meta 광고, 한 번에 하나만 바꿈", ul(["1차 그림, 2차 문구", "20~49세 여성, 7일씩, 14만 원", "지표: 링크 클릭률"]))}
 {sc("결과", "차이는 유의하지 않음", bar("A 성분 이름", MA, ACC) + bar("B 리뷰 언어", MB, SOFT) + '<div class="n">p = 0.48</div>')}
 </div>
-<div class="W box" style="top:780px;padding:26px 30px;font-size:34px;font-weight:700">리뷰 언어가 더 클릭된다는 근거 없음<br><span style="font-size:28px;font-weight:400">관심 표시 1대에 광고비 약 23,300원. 3차는 랜딩 첫 화면 비교</span></div>""",
+<div class="W box" style="top:780px;padding:26px 30px;font-size:34px;font-weight:700">리뷰 언어가 더 클릭된다는 근거 없음<br><span style="font-size:28px;font-weight:400">관심 표시 1대에 광고비 약 23,300원. 3차는 들어온 뒤 무엇을 찾는지 비교</span></div>""",
                "출처: Meta 광고 관리자, Amplitude(10/17 조회)"))
 
 # 3 background
@@ -411,7 +411,7 @@ S.append(page(4, "한계", "이 결과로 말할 수 없는 것",
 wr = [("결과", "리뷰 언어가 더 클릭된다는 근거 없음", "2.97% 대 2.77%, p = 0.48"),
       ("결과", "병목은 클릭 뒤. 랜딩을 고쳐도 관심 버튼은 한 자리 수", "365대 중 3대 · 1대에 약 23,300원"),
       ("권고", "문구를 더 고르는 데 쓰지 말고 클릭 뒤에 투자", "이 규모에서 문구 차이는 안 보임"),
-      ("제안", "3차: 광고는 그대로, 랜딩 첫 화면만 바꿔 비교", "관심 버튼 클릭률로 판정")]
+      ("제안", "3차: 광고는 그대로, 랜딩에 성분 자세히 / 후기 보기 버튼", "무엇을 먼저 누르는지로 판정")]
 rows = "".join(f'<div style="display:grid;grid-template-columns:160px 1fr 460px;align-items:baseline;padding:22px 0;border-bottom:1px solid {LINE}"><span style="font-size:24px;font-weight:700;color:{ACC if k in ("권고", "제안") else SUB}">{k}</span><span style="font-size:34px;font-weight:800">{t}</span><span style="font-size:28px;color:{SUB};text-align:right">{d}</span></div>' for k, t, d in wr)
 S.append(page(4, "결론과 제안", "",
               f"""<div class="W" style="top:262px">{rows}</div>
