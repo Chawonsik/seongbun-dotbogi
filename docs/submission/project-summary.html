@@ -1,0 +1,113 @@
+<title>성분돋보기 프로젝트 요약서</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;700&display=swap">
+<style>
+/* layout: one A4 sheet reproduced on screen, scaled to fit the viewport, with a fit gauge above it */
+:root {
+  --bg: #ECEDF0; --fg: #111827; --muted: #5B6472; --paper: #FFFFFF; --rule: #111827; --line: #9AA3B2;
+  --accent: #2F5BEA; --ok: #1F7A4D; --warn: #B4251A; --head: #EEF0F4;
+  --sans: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --serif: "Noto Serif KR", "Apple Myungjo", "Batang", serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #16181D; --fg: #111827; --muted: #5B6472; --paper: #FFFFFF; --head: #EEF0F4; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #16181D; --fg: #111827; --muted: #5B6472; --paper: #FFFFFF; --head: #EEF0F4; color-scheme: dark }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.gauge { max-width: 210mm; margin: 0 auto 12px; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; font-size: 13px; color: #C9CED8 }
+:root:not([data-theme="dark"]) .gauge { color: #4B5563 }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gauge { color: #C9CED8 } }
+.gauge b { font-weight: 700 }
+.gauge .ok { color: var(--ok) } .gauge .warn { color: var(--warn) }
+.stage { width: 100%; max-width: 210mm; margin: 0 auto 18px; aspect-ratio: 210 / 297; position: relative }
+.stage[hidden] { display: none }
+.sheet { position: absolute; left: 0; top: 0; width: 210mm; height: 297mm; background: var(--paper); color: var(--fg);
+  padding: 16mm 18mm 14mm; transform-origin: 0 0; box-shadow: 0 1px 2px rgba(0,0,0,.18), 0 12px 32px rgba(0,0,0,.12); overflow: visible }
+.form-title { font-family: var(--serif); font-size: 12.5pt; font-weight: 700; margin: 0 0 4mm }
+.form-title small { font-weight: 500; font-size: 10.5pt; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; margin-left: 2mm }
+table.meta { width: 100%; border-collapse: collapse; border: 1.6pt solid var(--rule); margin: 0 0 4mm; font-size: 10.5pt }
+table.meta th { width: 32mm; background: var(--head); font-family: var(--serif); font-weight: 500; text-align: center; padding: 2mm 3mm; border: 0.6pt solid var(--rule) }
+table.meta td { padding: 2mm 3mm; border: 0.6pt solid var(--rule); font-weight: 500 }
+.box { border: 0.8pt solid var(--rule); padding: 3.5mm 4.5mm 2mm; font-size: 9.6pt; line-height: 1.5 }
+.box:empty { display: none }
+.cont { font-size: 8.5pt; color: var(--muted); margin: 0 0 2mm; font-family: var(--serif) }
+section + section { margin-top: 2.2mm }
+h2 { font-size: 11pt; font-weight: 700; margin: 0 0 1.2mm; letter-spacing: -0.01em }
+.box p { margin: 0; display: grid; grid-template-columns: 4.5mm 1fr; gap: 0 0.5mm; word-break: keep-all; overflow-wrap: anywhere; min-width: 0 }
+.box p.o { font-weight: 500; margin-top: 0.8mm }
+.box p.d { padding-left: 4.5mm; color: #2B3340; font-weight: 400 }
+.box p .mk { text-align: center }
+.src { margin-top: 2.6mm; padding-top: 2mm; border-top: 0.5pt solid var(--line); font-size: 8.8pt; line-height: 1.45; color: #2B3340 }
+.src b { color: var(--fg) }
+@media (max-width: 720px) { .gauge { font-size: 12px } }
+@media print { @page { size: A4; margin: 0 } body { background: #fff; padding: 0 } .gauge { display: none } .stage { max-width: none; aspect-ratio: auto; margin: 0 } .sheet { position: static; transform: none !important; box-shadow: none; break-after: page } .stage:last-of-type .sheet { break-after: auto } }
+</style>
+<div class="gauge"><span>서식 2 모양으로 옮긴 요약서</span><span id="fit">쪽을 나누는 중</span><span id="count"></span></div>
+<div class="stage" id="stage1"><div class="sheet" id="sheet">
+<p class="form-title">[붙임2-1] 서식 2_프로젝트 요약서(AI핵심 및 AI융합 과정)<small>1장 이내로 요약</small></p>
+<table class="meta"><tr><th>제안과제명</th><td>성분돋보기: 화장품 광고 문구에 성분 이름을 쓸까, 소비자 리뷰의 말을 쓸까</td></tr><tr><th>팀명(별명)</th><td>성분돋보기 (차원식, 권지원)</td></tr></table>
+<div class="box" id="box">
+<section id="s1"><h2>1. 프로젝트 개요</h2><p class="o"><span class="mk">○</span><span>화장품 광고 문구에 성분 이름과 리뷰 언어(리뷰에 나오는 사용감 표현) 중 무엇을 써야 반응이 더 오는지 소액 Meta 광고 A/B 테스트로 검증 (7일씩 두 번: 1차 이미지, 2차 문구. 광고비 14만 원)</span></p><p class="o"><span class="mk">○</span><span>클릭에서는 두 문구의 차이가 보이지 않았고 관심은 클릭 뒤 랜딩에서 대부분 끊김. 다음 투자는 문구가 아니라 랜딩</span></p><p class="d"><span class="mk">-</span><span>리포트 seongbun-dotbogi.vercel.app/report, 저장소 github.com/Chawonsik/seongbun-dotbogi</span></p></section><section id="s2"><h2>2. 문제 정의</h2><p class="o"><span class="mk">○</span><span>가정한 사용자: PDRN(연어 DNA 유래 성분) 크림 출시를 앞두고 광고 문구를 정해야 하는 브랜드 마케터</span></p><p class="o"><span class="mk">○</span><span>성분 이름을 앞세운 제품이 많고(화장품 리뷰 앱 화해에서 &quot;PDRN&quot; 검색 결과 1,824개) 브랜드가 달라도 광고 문구는 서로 비슷함</span></p><p class="o"><span class="mk">○</span><span>화해 비즈니스 글(2026년 4월 13일)은 광고 문구도 리뷰 언어로 쓰라고 권하지만 실험 근거는 없음</span></p><p class="o"><span class="mk">○</span><span>가설: 리뷰 언어 문구의 링크 클릭률이 성분 이름 문구보다 높을 것</span></p></section><section id="s3"><h2>3. 해결 방안과 검증 결과</h2><p class="o"><span class="mk">○</span><span>한 번에 하나만 바꾼 2단계 실험. 1차는 이미지만 다르게 해 2차에 쓸 이미지를 고르고 2차는 같은 이미지 위의 문구(&quot;PDRN 연어크림&quot; 대 &quot;바르면 쫀쫀해지고 광이 나는 크림&quot;)만 다르게 함</span></p><p class="o"><span class="mk">○</span><span>1차는 Meta가 노출의 93%를 한쪽에 몰아줌. 2차는 광고마다 광고 세트(예산 단위)를 두고 예산을 고정해 노출을 51.2% 대 48.8%로 맞춤</span></p><p class="o"><span class="mk">○</span><span>광고를 누르면 판매하지 않는다고 밝힌 콘셉트 랜딩으로 이어지고 관심 버튼 클릭을 기록</span></p><p class="o"><span class="mk">○</span><span>결과 1: 링크 클릭률 성분 이름 2.97% 대 리뷰 언어 2.77%, z검정 p = 0.48. 차이가 유의하지 않아 가설은 지지되지 않음</span></p><p class="o"><span class="mk">○</span><span>결과 2: 노출 13,414회 → 링크 클릭 385회 → 랜딩 도착 365대 → 관심 표시 3대. 관심 표시 1대에 광고비 약 23,300원</span></p></section><section id="s4"><h2>4. 실현 가능성</h2><p class="o"><span class="mk">○</span><span>실제 광고 집행으로 끝까지 검증했고 같은 방식으로 다시 할 수 있음. 광고 이름을 그대로 UTM 값으로 써서 Meta 광고 수치와 랜딩 행동을 광고 단위로 연결. 이벤트 8개는 정의 파일 하나로 관리하고 자동 검사</span></p><p class="o"><span class="mk">○</span><span>Meta 광고 관리자와 Amplitude를 MCP로 Claude에 연결해 조회와 분석을 한곳에서 처리. 리포트와 차트는 스크립트로 다시 만들어지고 규칙과 플레이북은 공개</span></p></section><section id="s5"><h2>5. 기대효과 및 활용</h2><p class="o"><span class="mk">○</span><span>리뷰 언어로 바꿀 근거가 없으니 성분 이름 문구로 가도 됨. 0.2%p 차이를 가리려면 광고당 노출 약 10만 회, 약 15주가 필요하고 그 사이 랜딩 도착 기기의 99%가 떠남. 문구보다 랜딩에 먼저 투자</span></p><p class="o"><span class="mk">○</span><span>다음 단계: 광고는 그대로 두고 랜딩에 &quot;성분 자세히&quot;와 &quot;후기 보기&quot; 버튼을 두어 두 언어를 클릭 뒤에서 비교. 관심 표시 1대당 광고비를 기준값으로 효과를 잼</span></p><p class="o"><span class="mk">○</span><span>한계: 광고당 노출 약 6,700회라 작은 차이는 못 가림(차이의 95% 신뢰구간 −0.36 ~ 0.77%p). 클릭 단계까지만 쟀고 가상 제품이며 노출의 약 3분의 2가 20~24세 릴스 이용자임</span></p></section>
+<div class="src"><b>AI 및 외부 소재의 출처:</b> 화해 비즈니스 인사이트 글(2026년 4월 13일)을 인용하고 검색 결과 수는 화해 앱에서 직접 확인함. 광고 이미지는 GPT로, 랜딩 사진 네 장은 Canva 이미지 생성으로 만듦. 코드와 문서 초안은 Claude로 쓰고 사람이 검토함. 광고 게시와 예산 설정은 모두 사람이 함</div>
+</div>
+</div></div>
+<div class="stage" id="stage2" hidden><div class="sheet" id="sheet2"><p class="cont">프로젝트 요약서 (이어서)</p><div class="box" id="box2"></div></div></div>
+<script>
+(function () {
+  var stages = [document.getElementById('stage1'), document.getElementById('stage2')];
+  var sheets = [document.getElementById('sheet'), document.getElementById('sheet2')];
+  var boxes = [document.getElementById('box'), document.getElementById('box2')];
+  var PX = 96 / 25.4, PAD_BOTTOM = 14 * PX;
+  var order = [];  // every section heading and paragraph, in reading order, with its section
+  Array.prototype.forEach.call(boxes[0].querySelectorAll('section, .src'), function (sec) {
+    if (sec.classList.contains('src')) { order.push({ sec: null, el: sec }); return; }
+    Array.prototype.forEach.call(sec.children, function (el) { order.push({ sec: sec, el: el }); });
+  });
+  function overflows(sheet, box) { return box.getBoundingClientRect().bottom > sheet.getBoundingClientRect().bottom - PAD_BOTTOM * scale(sheet); }
+  function scale(sheet) { var r = sheet.getBoundingClientRect(); return r.width / sheet.offsetWidth; }
+  function rebuild() {
+    // put everything back on page 1, then move trailing items to page 2 until page 1 fits
+    var secs = {};
+    order.forEach(function (o) {
+      if (o.sec) { if (!secs[o.sec.id]) { o.sec.innerHTML = ''; secs[o.sec.id] = o.sec; boxes[0].appendChild(o.sec); } o.sec.appendChild(o.el); }
+      else boxes[0].appendChild(o.el);
+    });
+    boxes[1].innerHTML = '';
+    stages[1].hidden = true;
+    var moved = [];
+    while (overflows(sheets[0], boxes[0]) && order.length - moved.length > 0) {
+      var o = order[order.length - 1 - moved.length];
+      moved.unshift(o);
+      o.el.remove();
+      if (o.sec && o.sec.children.length === 0) o.sec.remove();
+    }
+    // a heading left alone at the foot of page 1 goes with its first paragraph
+    var last = order[order.length - 1 - moved.length];
+    if (moved.length && last && last.el.tagName === 'H2') { moved.unshift(last); last.el.remove(); if (last.sec.children.length === 0) last.sec.remove(); }
+    if (moved.length) {
+      stages[1].hidden = false;
+      var cont = {};
+      moved.forEach(function (o) {
+        if (!o.sec) { boxes[1].appendChild(o.el); return; }
+        var id = o.sec.id;
+        if (!cont[id]) { cont[id] = document.createElement('section'); boxes[1].appendChild(cont[id]); }
+        cont[id].appendChild(o.el);
+      });
+    }
+    return moved.length;
+  }
+  function fit() {
+    sheets.forEach(function (sh, i) { sh.style.transform = 'scale(' + (stages[i].clientWidth / sh.offsetWidth) + ')'; });
+    var moved = rebuild();
+    var el = document.getElementById('fit');
+    var chars = 0; boxes.forEach(function (b) { chars += b.textContent.replace(/\s/g, '').length; });
+    document.getElementById('count').textContent = '본문 ' + chars.toLocaleString('ko-KR') + '자(공백 제외)';
+    if (!moved) { el.className = 'ok'; el.textContent = '한 장에 들어감'; return; }
+    var r2 = sheets[1].getBoundingClientRect(), b2 = boxes[1].getBoundingClientRect();
+    var used = (b2.bottom - r2.top) / scale(sheets[1]) / PX;
+    el.className = 'warn'; el.textContent = '두 장. 둘째 장은 ' + Math.round(used) + 'mm까지 씀(297mm 중)';
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  fit(); addEventListener('resize', fit); setTimeout(fit, 1200);
+})();
+</script>
