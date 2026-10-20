@@ -219,7 +219,8 @@ class RenderTest(unittest.TestCase):
             svg = charts[key]
             self.assertEqual(svg.count('class="vz-off"'), expected_bands, key)
             self.assertIn(f'font-size="11">{unit}</text>', svg, key)
-        self.assertIn("음영은 주말과 공휴일(10/3 개천절, 10/5 대체공휴일, 10/9 한글날)", self.html)
+        self.assertIn("음영은 10/3 개천절, 10/5 대체공휴일, 10/9 한글날, 10/3~4 주말", self.html)
+        self.assertIn("음영은 10/9 한글날, 10/10~11 주말", self.html)
 
     def test_four_charts_each_described(self):
         self.assertEqual(self.html.count('<svg class="vz"'), 4)

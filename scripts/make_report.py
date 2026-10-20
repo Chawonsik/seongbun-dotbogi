@@ -182,6 +182,24 @@ def day_labels(days: list[str], year: int) -> tuple[list[str], list[str]]:
     return labels, weekdays
 
 
+def rest_note(days: list[str], year: int, holidays: dict[str, str]) -> str:
+    """Names the holidays and weekend runs that fall inside the charted days."""
+    parts = [f"{d} {holidays[d]}" for d in days if d in holidays]
+    run = []
+    def flush():
+        if run:
+            parts.append(f"{run[0]} 주말" if len(run) == 1 else f"{run[0]}~{run[-1].split('/')[1]} 주말")
+        run.clear()
+    for day in days:
+        month, date = (int(x) for x in day.split("/"))
+        if datetime.date(year, month, date).weekday() >= 5:
+            run.append(day)
+        else:
+            flush()
+    flush()
+    return "음영은 " + ", ".join(parts) if parts else ""
+
+
 def nice_ticks(peak: float) -> list[float]:
     """Tick values from 0 to just above the peak, in 1, 2, 2.5 or 5 steps, about four of them."""
     if peak <= 0:
@@ -415,7 +433,8 @@ def render(data: dict) -> str:
         r2_imp_total=num(r2_total),
         r1_imp_total=num(r1_total),
         r1_period=r1["period"],
-        holiday_note="음영은 주말과 공휴일" + (f"({', '.join(f'{d} {n}' for d, n in data['calendar']['holidays'].items())})" if data.get("calendar", {}).get("holidays") else ""),
+        r1_rest_note=rest_note(r1["days"], int(data["queried_at"][:4]), data.get("calendar", {}).get("holidays", {})),
+        r2_rest_note=rest_note([d["day"] for d in r2["daily"]], int(data["queried_at"][:4]), data.get("calendar", {}).get("holidays", {})),
         r2_period=r2["period"],
         r2_clk_total=num(r2_clicks),
         r2_arrived=num(l2["arrived"]),
