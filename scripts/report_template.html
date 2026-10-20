@@ -232,7 +232,7 @@
           <p class="eyebrow">다음 단계</p>
           <h2 class="h3">${solution_title}</h2>
           <p class="big">${l1_rate} → ${l2_rate}</p>
-          <p class="cap">도착한 기기 중 관심 버튼을 누른 비율. 1차 → 2차. 둘 다 한 자리 수</p>
+          <p class="cap">도착한 기기 중 관심 버튼을 누른 비율. 1차 → 2차. 누른 기기는 둘 다 3대</p>
         </div>
       </div>
     </section>
@@ -259,9 +259,9 @@
       <h2>한 번에 하나만 바꿨다</h2>
       <p>회차마다 광고 둘을 A/B로 비교했다. 대상은 스킨케어에 관심 있는 20~49세 여성이고 회차마다 7일 동안 하루 1만 원씩 내보냈다. 광고당 노출은 약 7천 회다. 지표는 링크 클릭률(광고를 보고 누른 비율)이다.</p>
       <ol class="flow">
-        <li><span class="tag">1차 · 끝남</span><b>그림만 다르게</b>원료 그림과 사용감 그림. 광고 글은 같다.</li>
-        <li><span class="tag">2차 · 끝남</span><b>문구만 다르게</b>같은 그림 위에 성분 이름 문구와 리뷰 언어 문구.</li>
-        <li><span class="tag">3차 · 제안</span><b>랜딩에서 다시 묻기</b>광고는 그대로 두고 랜딩에 "성분 자세히"와 "후기 보기" 버튼을 두어 무엇을 먼저 누르는지 비교한다.</li>
+        <li><span class="tag">1차 끝남</span><b>그림만 다르게</b>원료 그림과 사용감 그림. 광고 글은 같다.</li>
+        <li><span class="tag">2차 끝남</span><b>문구만 다르게</b>같은 그림 위에 성분 이름 문구와 리뷰 언어 문구.</li>
+        <li><span class="tag">3차 제안</span><b>랜딩에서 다시 묻기</b>광고는 그대로 두고 랜딩에 "성분 자세히"와 "후기 보기" 버튼을 두어 무엇을 먼저 누르는지 비교한다.</li>
       </ol>
     </section>
 
@@ -273,7 +273,7 @@
       <div class="chart">
         <h3>1차 광고의 일자별 노출 수</h3>
         <p class="sub">기준: 1차 노출 전체. 원료 그림 ${r1_imp_ing}회, 사용감 그림 ${r1_imp_tex}회. ${r1_period}. ${holiday_note}</p>
-        <p class="legend"><span class="a"><i></i>원료 그림</span><span class="b"><i></i>사용감 그림</span><span class="off"><i></i>주말·공휴일</span></p>
+        <p class="legend"><span class="a"><i></i>원료 그림</span><span class="b"><i></i>사용감 그림</span><span class="off"><i></i>주말과 공휴일</span></p>
         ${chart_r1_daily_impressions}
       </div>
       <div>
@@ -288,7 +288,7 @@
         </figure>
       </div>
       <ul class="facts">
-        <li><span>사실</span><span>링크 클릭률 원료 ${r1_ctr_ing}, 사용감 ${r1_ctr_tex}. 함께 나간 이틀만 보면 ${r1_same_ing}와 ${r1_same_tex}.</span></li>
+        <li><span>사실</span><span>링크 클릭률 원료 ${r1_ctr_ing}, 사용감 ${r1_ctr_tex}. 함께 나간 이틀만 보면 원료 ${r1_same_ing}, 사용감 ${r1_same_tex}.</span></li>
         <li><span>해석</span><span>그림은 결국 Meta가 골랐다. 어느 그림이 나은지는 모른다.</span></li>
       </ul>
       </div>
@@ -320,7 +320,7 @@
       <div class="chart">
         <h3>2차 광고의 일자별 링크 클릭률</h3>
         <p class="sub">기준: 2차 노출 ${r2_imp_total}회. 누적 성분 이름 ${r2_ctr_a}(${r2_frac_a}), 리뷰 언어 ${r2_ctr_b}(${r2_frac_b}). ${r2_period}. ${holiday_note}</p>
-        <p class="legend"><span class="a"><i></i>성분 이름 문구</span><span class="b"><i></i>리뷰 언어 문구</span><span class="off"><i></i>주말·공휴일</span></p>
+        <p class="legend"><span class="a"><i></i>성분 이름 문구</span><span class="b"><i></i>리뷰 언어 문구</span><span class="off"><i></i>주말과 공휴일</span></p>
         ${chart_r2_ctr}
       </div>
       <ul class="facts">
@@ -368,7 +368,7 @@
           <div class="rec">랜딩까지는 ${r2_arrive_rate}가 왔지만<br><b>관심 버튼을 누른 기기는 ${r2_interested}대에 그침</b></div>
         </div>
         <div class="cost">
-          <p class="kicker" style="margin:0">관심 표시 1대에 든 광고비</p>
+          <p class="kicker" style="margin:0">관심 버튼을 누른 기기 1대에 든 광고비</p>
           <div class="big">약 ${cost_round}원</div>
           <p>1차 ${l1_cost}원, 2차 ${l2_cost}원</p>
           <hr>
@@ -376,7 +376,7 @@
           <p class="strong">문구보다 이 비용을 낮추는 쪽이 먼저</p>
         </div>
       </div>
-      <p style="margin-top:14px">두 문구 차이 0.2%p를 확인하려면 광고당 노출 약 10만 회, 15주가 더 필요하다. 그 사이 랜딩에 온 ${r2_arrived}대 중 ${r2_left}대는 그냥 떠난다.</p>
+      <p style="margin-top:14px">두 문구 차이 0.2%p를 확인하려면 광고당 노출 약 10만 회, 15주가 더 필요하다. 그 사이에도 랜딩에 온 기기 100대 중 99대꼴로 떠난다.</p>
       <p style="margin-top:18px"><b>3차 제안:</b> 광고는 그대로 두고 랜딩에 "성분 자세히"와 "후기 보기" 버튼을 두어 들어온 사람이 성분과 후기 중 무엇을 먼저 찾는지 본다. 기준값은 관심 버튼 1차 ${l1_interest}, 2차 ${l2_interest}.</p>
     </section>
 
@@ -385,10 +385,10 @@
       <h2>이 결과로 말할 수 없는 것</h2>
       <ul class="limits">
         <li><b>이 규모에서는 차이가 안 보였다.</b> 두 문구 차이(A − B)의 95% 신뢰구간이 ${r2_ci}였다. 이 정도 노출로는 작은 차이를 잡아내지 못한다.</li>
-        <li><b>이 두 문장 사이에서는 클릭이 갈리지 않았다.</b> 문구는 하나씩만 비교했고 B는 두 줄이라 소재 인상도 다르다.</li>
-        <li><b>클릭 단계까지만 비슷했다.</b> 클릭만 쟀고 화해 글에서 말한 "지갑"은 검증하지 않았다.</li>
+        <li><b>이 두 문구 사이에서는 클릭이 갈리지 않았다.</b> 문구는 하나씩만 비교했고 B는 두 줄이라 소재 인상도 다르다.</li>
+        <li><b>잰 것은 클릭까지다.</b> 클릭 뒤 문구별 차이는 재지 않았고 화해 글에서 말한 "지갑"은 검증하지 않았다.</li>
         <li><b>관심이 적은 원인은 모른다.</b> 랜딩 탓인지 판매하지 않는 가상 제품 탓인지 못 가린다. 3차는 가설이다.</li>
-        <li><b>20대 초반 릴스 이용자의 결과다.</b> 노출의 3분의 2가 20~24세였고 거의 전부 릴스에서 나갔다.</li>
+        <li><b>주로 20대 초반 릴스 이용자의 결과다.</b> 노출의 3분의 2가 20~24세였고 거의 전부 릴스에서 나갔다.</li>
       </ul>
     </section>
 
@@ -406,7 +406,7 @@
         <details>
           <summary>왜 가상 제품인가</summary>
           <div>
-            <p>문구에 대한 반응만 확인하면 됐고 그걸 보는 데 실제 제품까지는 필요 없었다.</p>
+            <p>문구 반응만 확인하면 됐고 그걸 보는 데 실제 제품까지는 필요 없었다.</p>
           </div>
         </details>
         <details>
@@ -446,7 +446,7 @@
         <tr><th>독립변수</th><td>그림 위 문구. A 성분 이름, B 리뷰 언어</td></tr>
         <tr><th>종속변수</th><td>링크 클릭률</td></tr>
         <tr><th>통제변수</th><td>그림, 광고 글, 대상, 세트별 하루 예산, 기간</td></tr>
-        <tr><th>실험군 · 대조군</th><td>B 리뷰 언어 · A 성분 이름</td></tr>
+        <tr><th>실험군과 대조군</th><td>실험군 B 리뷰 언어, 대조군 A 성분 이름</td></tr>
         <tr><th>표본</th><td>광고당 노출 약 7천 회(회차당 7만 원). 한쪽 클릭률이 절반쯤 높을 때(예: 1.0% 대 1.5%) 가려낼 수 있는 규모</td></tr>
       </table>
       <h3 style="margin-top:26px">그 밖의 한계</h3>
@@ -470,7 +470,7 @@
     </section>
   </main>
   <footer>
-    <p>전체 수치와 결정 기록: <a href="https://github.com/Chawonsik/seongbun-dotbogi#readme">GitHub README</a> &nbsp;·&nbsp; &copy; 2026 성분돋보기</p>
+    <p>전체 수치와 결정 기록: <a href="https://github.com/Chawonsik/seongbun-dotbogi#readme">GitHub README</a>. &copy; 2026 성분돋보기</p>
   </footer>
 </div>
 </body>

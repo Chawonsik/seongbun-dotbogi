@@ -137,7 +137,7 @@ class RenderTest(unittest.TestCase):
             f"{mr.pct(a['clicks'], a['impressions'])} 대 {mr.pct(b['clicks'], b['impressions'])}",
             f"{mr.num(DATA['background']['hwahae_pdrn_products'])}개",
             f"{landing['round1']['interest']} / {mr.num(landing['round1']['arrived'])}",
-            mr.pct(*r1["same_days"]["ingredient"]) + "와",
+            "원료 " + mr.pct(*r1["same_days"]["ingredient"]) + ", 사용감 " + mr.pct(*r1["same_days"]["texture"]),
             mr.pct(a["impressions"], a["impressions"] + b["impressions"], 1) + " 대",
         ]
         for text in expected:

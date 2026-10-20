@@ -284,7 +284,7 @@ def step_bars(steps: list[tuple[str, float]], title: str, cls: str = "vz-b") -> 
     for r, (label, value) in enumerate(steps):
         y = r * row_h
         parts.append(_text(PAD, y + 15, label, anchor="start"))
-        parts.append(_text(W - PAD, y + 15, f"{num(value)}대 · {share(value, base)}", "vz-s", "end", 12))
+        parts.append(_text(W - PAD, y + 15, f"{num(value)}대 ({share(value, base)})", "vz-s", "end", 12))
         if value > 0:
             parts.append(_bar_right(PAD, y + 23, value / base * inner, bar_h, cls, f"{label}: {num(value)}대"))
         else:
