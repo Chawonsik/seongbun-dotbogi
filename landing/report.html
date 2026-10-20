@@ -122,14 +122,27 @@
   .limits { margin: 18px 0 0; padding: 0; list-style: none; font-size: 15px; border-top: 1px solid var(--rule); }
   .limits li { padding: 12px 0 12px 22px; border-bottom: 1px solid var(--line); position: relative; }
   .limits li::before { content: ""; position: absolute; left: 2px; top: 1.3em; width: 7px; height: 7px; background: var(--accent); }
-  .funnel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; margin: 22px 0 0; border-top: 1px solid var(--rule); }
-  .funnel div { padding: 14px 0 18px; border-bottom: 1px solid var(--line); }
-  .funnel span { display: block; font-size: 13px; font-weight: 700; color: var(--muted); }
-  .funnel b { display: block; font-size: 28px; white-space: nowrap; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1.3; }
-  .funnel i { display: block; font-style: normal; font-size: 13px; color: var(--muted); }
-  .funnel div:last-child b, .funnel div:last-child i { color: var(--accent); }
-  .rec { margin: 22px 0 22px; background: var(--soft); border-left: 4px solid var(--accent); padding: 16px 20px; font-size: 16px; }
-  .rec b { display: block; font-size: 18px; margin-bottom: 4px; }
+  .kicker { font-size: 13px; font-weight: 700; color: var(--accent); margin: 22px 0 6px; }
+  .funnel { display: flex; align-items: flex-end; justify-content: space-between; gap: 4px; padding: 0 0 14px; border-bottom: 1px solid var(--line); }
+  .funnel .st { text-align: center; min-width: 0; }
+  .funnel .st span { display: block; font-size: 13px; color: var(--muted); }
+  .funnel .st b { display: block; font-size: 30px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1.2; white-space: nowrap; }
+  .funnel .ar { text-align: center; color: var(--muted); font-size: 14px; font-weight: 700; padding-bottom: 6px; white-space: nowrap; }
+  .funnel .ar::before { content: "\2192"; display: block; font-size: 18px; font-weight: 400; }
+  .funnel .st:last-child b, .funnel .ar.last { color: var(--accent); }
+  .after { display: grid; grid-template-columns: 1fr; gap: 18px; margin: 18px 0 0; }
+  .cmp { display: flex; align-items: flex-end; gap: 16px; }
+  .cmp b { display: block; font-size: 34px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .cmp .was b { color: var(--muted); }
+  .cmp small { display: block; font-size: 12px; color: var(--muted); }
+  .cmp .arr { color: var(--muted); font-size: 20px; padding-bottom: 18px; }
+  .rec { margin: 12px 0 0; background: var(--soft); border-left: 4px solid var(--accent); padding: 12px 16px; font-size: 15px; }
+  .rec b { font-weight: 800; }
+  .cost { border: 1px solid var(--line); padding: 16px 18px; }
+  .cost .big { font-size: 30px; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; line-height: 1.2; margin: 2px 0 4px; }
+  .cost p { margin: 0; font-size: 14px; color: var(--muted); }
+  .cost hr { border: 0; border-top: 1px solid var(--line); margin: 10px 0; }
+  .cost .strong { color: var(--ink); font-weight: 700; }
   .src { width: 100%; border-collapse: collapse; margin: 18px 0 0; font-size: 15px; border-top: 1px solid var(--rule); }
   .src th, .src td { text-align: left; vertical-align: top; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--line); }
   .src th { width: 30%; font-weight: 700; }
@@ -144,7 +157,7 @@
     .hero { padding: 44px 24px 8px; }
     h1 { font-size: 42px; }
     h2 { font-size: 28px; }
-    .funnel { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .after { grid-template-columns: 1fr 1fr; gap: 28px; }
   }
   @media (min-width: 860px) {
     .row { grid-template-columns: 3fr 2fr; }
@@ -178,7 +191,7 @@
     .why summary::after { display: none; }
     .limits li { padding: 8px 0 8px 20px; }
     .src th, .src td { padding: 6px 12px 6px 0; }
-    .chart, .ads, .facts li, .cards, .funnel, .rec, .src tr, .flow li, .why details, .limits li { break-inside: avoid; }
+    .chart, .ads, .facts li, .cards, .funnel, .after, .src tr, .flow li, .why details, .limits li { break-inside: avoid; }
     .sec > .eyebrow, .lead, .chart h3 { break-after: avoid; }
     .sec > h2 + p { break-before: avoid; break-after: avoid; }
     .sec-keep { break-inside: avoid; }
@@ -187,7 +200,7 @@
     footer { break-before: avoid; }
     footer { margin-top: 10px; padding: 8px 0 0; break-before: avoid; }
     footer p { margin: 0 0 2px; }
-    .sec.sec-keep, .why, .src.terms { break-inside: avoid; }
+    .sec.sec-keep, .why details, .src.terms { break-inside: avoid; }
     .sec h3 { break-after: avoid; }
   }
 </style>
@@ -228,7 +241,7 @@
       <p class="eyebrow">문제</p>
       <h2>출시 광고에서 어떤 말을 앞세울지 정할 근거가 없다</h2>
       <p>성분 이름을 앞세운 화장품 광고가 많고 브랜드가 달라도 문구는 비슷하다. 화해 비즈니스의 글은 성분 이름 대신 리뷰 언어(소비자 리뷰에 나오는 사용감 표현)를 쓰라고 권하지만 실험 근거는 없다. 그래서 PDRN 크림 출시를 앞둔 마케터 입장에서 두 문구를 광고로 직접 비교했다.</p>
-      <p><b>가설:</b> 리뷰 언어 문구의 링크 클릭률이 성분 이름 문구보다 높을 것이다. 검증 범위는 클릭까지다.</p>
+      <p><b>가설:</b> 리뷰 언어 문구가 성분 이름 문구보다 링크 클릭률이 높을 것. 검증 범위는 클릭까지다.</p>
       <div class="ads">
         <figure>
           <img src="/img/r2-ad-ingredient.webp" alt="크림 사진 아래에 PDRN 연어크림이라고 적힌 광고" width="720" height="720" loading="lazy">
@@ -337,14 +350,33 @@
     <section class="sec">
       <p class="eyebrow">판정과 다음 단계</p>
       <h2>문구는 성분 이름을 유지하고 다음은 랜딩을 시험한다</h2>
-      <p><b>판정: 리뷰 언어 문구는 채택하지 않고 성분 이름 문구를 유지한다.</b> 많이 빠지는 곳은 문구가 아니라 클릭 뒤다.</p>
+      <p><b>판정: 문구는 흔히 쓰는 성분 이름으로 두고 투자는 클릭 뒤 랜딩에 둔다.</b></p>
+      <p class="kicker">2차 광고가 어디까지 이어졌나</p>
       <div class="funnel">
-        <div><span>노출</span><b>13,414</b><i>2차 두 광고 합계</i></div>
-        <div><span>링크 클릭</span><b>385</b><i>노출의 2.9%</i></div>
-        <div><span>랜딩 도착</span><b>365</b><i>클릭의 94.8%</i></div>
-        <div><span>관심 버튼</span><b>3</b><i>도착의 0.8%</i></div>
+        <div class="st"><span>노출</span><b>13,414</b></div>
+        <div class="ar">2.9%</div>
+        <div class="st"><span>링크 클릭</span><b>385</b></div>
+        <div class="ar">94.8%</div>
+        <div class="st"><span>랜딩 도착</span><b>365</b></div>
+        <div class="ar last">0.8%</div>
+        <div class="st"><span>관심 버튼</span><b>3</b></div>
       </div>
-      <div class="rec"><b>관심을 표시한 기기 1대에 광고비 23,262원(2차)</b>1차 23,312원, 2차 23,262원. 문구를 다시 테스트하기보다 이 비용을 낮추는 쪽이 먼저다.</div>
+      <div class="after">
+        <div>
+          <p class="kicker" style="margin-top:0">관심 버튼을 누른 기기</p>
+          <div class="cmp"><div class="was"><b>0.6%</b><small>1차, 471대 중 3대</small></div><div class="arr">&rarr;</div><div><b>0.8%</b><small>2차 랜딩 고친 뒤, 365대 중 3대</small></div></div>
+          <div class="rec">랜딩까지는 94.8%가 왔지만<br><b>관심 버튼을 누른 기기는 3대에 그침</b></div>
+        </div>
+        <div class="cost">
+          <p class="kicker" style="margin:0">관심 표시 1대에 든 광고비</p>
+          <div class="big">약 23,300원</div>
+          <p>1차 23,312원, 2차 23,262원</p>
+          <hr>
+          <p>링크 클릭 1번은 171~193원</p>
+          <p class="strong">문구보다 이 비용을 낮추는 쪽이 먼저</p>
+        </div>
+      </div>
+      <p style="margin-top:14px">두 문구 차이 0.2%p를 가리려면 광고당 노출 약 10만 회, 15주가 더 필요하고 그 사이 랜딩 365대 중 362대가 떠난다.</p>
       <p style="margin-top:18px"><b>3차 제안:</b> 광고는 그대로 두고 랜딩에 "성분 자세히"와 "후기 보기" 버튼을 둔다. 클릭에서 갈리지 않은 두 언어를 클릭 뒤에서 다시 묻는다. 기준값은 관심 버튼 1차 3 / 471, 2차 3 / 365.</p>
     </section>
 
@@ -352,9 +384,11 @@
       <p class="eyebrow">한계</p>
       <h2>이 결과로 말할 수 없는 것</h2>
       <ul class="limits">
-        <li>두 문구의 클릭률이 같다는 뜻은 아니다. 차이의 95% 신뢰구간이 −0.36%p ~ 0.77%p라 리뷰 언어가 조금 더 높을 가능성도 남아 있다. 이 규모로는 작은 차이를 가릴 수 없다.</li>
-        <li>결론은 클릭 단계에 한한다. 화해 글이 말한 구매 단계는 검증하지 않았다.</li>
-        <li>관심 버튼이 적게 눌린 원인이 랜딩인지 판매하지 않는 가상 제품이라서인지는 가리지 못했다. 3차 제안은 해결책이 아니라 시험할 가설이다.</li>
+        <li><b>이 규모에서는 차이가 안 보였다.</b> 두 문구 차이(A − B)의 95% 신뢰구간 −0.36%p ~ 0.77%p. 작은 차이는 못 잡는 규모다.</li>
+        <li><b>이 두 문장은 클릭에서 안 갈렸다.</b> 문구를 하나씩만 비교했고 B는 두 줄이라 소재 인상도 다르다.</li>
+        <li><b>클릭 단계까지만 비슷했다.</b> 잰 것은 클릭이고 화해 글이 말한 "지갑"은 검증하지 않았다.</li>
+        <li><b>관심이 적은 원인은 모른다.</b> 랜딩 탓인지 판매하지 않는 가상 제품 탓인지 못 가린다. 3차는 가설이다.</li>
+        <li><b>20대 초반 릴스 이용자의 결과다.</b> 노출의 3분의 2가 20~24세, 거의 전부 릴스였다.</li>
       </ul>
     </section>
 
@@ -417,8 +451,7 @@
       </table>
       <h3 style="margin-top:26px">그 밖의 한계</h3>
       <ul class="limits">
-        <li>비교한 것은 문구 한 쌍이다. 리뷰 언어 전체가 안 통한다는 결론은 아니다. 두 소재의 매력도는 따로 재지 않았고 B는 그림 위 문구가 두 줄이라 글의 양도 다르다.</li>
-        <li>세트를 나눠도 세트마다 보여 줄 사람은 Meta가 고른다. 노출 대부분이 인스타그램 릴스와 20대 초반에 나가 20~49세 여성 전체의 결과로 볼 수 없다.</li>
+        <li>세트를 나눠도 세트마다 보여 줄 사람은 Meta가 고른다.</li>
         <li>검정은 노출 한 번을 독립된 시행으로 봤다. 같은 사람이 여러 번 본 노출이 섞여 있어 실제로 비교한 사람 수는 노출 수보다 적다.</li>
       </ul>
     </section>
