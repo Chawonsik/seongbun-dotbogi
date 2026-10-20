@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>광고 실험 리포트 | 성분돋보기</title>
-<meta name="description" content="화장품 광고에서 성분 이름과 리뷰 언어 중 무엇이 반응을 더 끄는지 소액 Meta 광고로 비교한 개인 학습 프로젝트의 리포트입니다.">
+<meta name="description" content="화장품 광고에서 성분 이름과 리뷰 언어 중 무엇이 반응을 더 끄는지 소액 Meta 광고로 비교한 실험 리포트">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -132,6 +132,9 @@
   .src th, .src td { text-align: left; vertical-align: top; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--line); }
   .src th { width: 30%; font-weight: 700; }
   .src td { color: var(--muted); }
+  .src.terms { margin-top: 10px; }
+  .sec h3 + .why, .sec h3 + .limits { margin-top: 10px; }
+  .src.terms th { width: 24%; }
   footer { margin-top: 56px; padding: 24px 16px 40px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
   footer p { margin: 0 0 6px; }
   @media (min-width: 720px) {
@@ -151,10 +154,10 @@
   }
   @page { margin: 12mm 13mm; }
   @media print {
-    body { font-size: 13.5px; line-height: 1.6; }
+    body { font-size: 13px; line-height: 1.5; }
     .wrap { max-width: none; }
     .top { padding: 0 0 10px; }
-    .sec { padding: 22px 0 0; }
+    .sec { padding: 16px 0 0; }
     .hero { padding: 10px 0 0; }
     h1 { font-size: 30px; }
     h2 { font-size: 22px; margin: 6px 0 10px; break-after: avoid; }
@@ -168,16 +171,22 @@
     .ads-sm { max-width: 280px; }
     .chart { margin-top: 14px; }
     .flow { gap: 0 20px; }
-    .why summary { padding: 7px 0; font-size: 14px; }
+    .why summary { padding: 6px 0; font-size: 14px; }
     .why details > div { padding-bottom: 8px; font-size: 13px; line-height: 1.5; }
     .why summary::after { display: none; }
     .limits li { padding: 8px 0 8px 20px; }
-    .src th, .src td { padding: 8px 12px 8px 0; }
+    .src th, .src td { padding: 6px 12px 6px 0; }
     .chart, .ads, .facts li, .cards, .funnel, .rec, .src tr, .flow li, .why details, .limits li { break-inside: avoid; }
     .sec > .eyebrow, .lead, .chart h3 { break-after: avoid; }
+    .sec > h2 + p { break-before: avoid; break-after: avoid; }
     .sec-keep { break-inside: avoid; }
-    .vz { max-width: 420px; }
-    footer { margin-top: 24px; padding: 14px 0 0; }
+    .vz { max-width: 380px; }
+    .row { break-inside: avoid; }
+    footer { break-before: avoid; }
+    footer { margin-top: 10px; padding: 8px 0 0; break-before: avoid; }
+    footer p { margin: 0 0 2px; }
+    .sec.sec-keep, .why, .src.terms { break-inside: avoid; }
+    .sec h3 { break-after: avoid; }
   }
 </style>
 </head>
@@ -190,7 +199,7 @@
     <section class="hero">
       <p class="eyebrow">광고 실험 리포트</p>
       <h1>성분 이름과 리뷰 언어 중 <em>무엇을 앞세울까</em></h1>
-      <p class="lead">PDRN 크림 광고 두 개를 같은 규모로 내보내 클릭률을 비교했습니다. 광고에 나온 크림은 판매하지 않는 가상 제품입니다.</p>
+      <p class="lead">PDRN 크림 광고 두 개를 같은 규모로 내보내 링크 클릭률을 비교했다. 광고의 크림은 판매하지 않는 가상 제품이다.</p>
       <div class="cards">
         <div class="card">
           <p class="eyebrow">문제</p>
@@ -205,7 +214,7 @@
           <p class="cap">링크 클릭률. 성분 이름 대 리뷰 언어. 차이는 ${r2_verdict_short}</p>
         </div>
         <div class="card">
-          <p class="eyebrow">해결책</p>
+          <p class="eyebrow">다음 단계</p>
           <h2 class="h3">${solution_title}</h2>
           <p class="big">${l1_rate} → ${l2_rate}</p>
           <p class="cap">도착한 기기 중 관심 버튼을 누른 비율. 1차 → 2차. 둘 다 한 자리 수</p>
@@ -216,8 +225,8 @@
     <section class="sec">
       <p class="eyebrow">문제</p>
       <h2>출시 광고에서 어떤 말을 앞세울지 정할 근거가 없다</h2>
-      <p>성분 이름을 앞세운 화장품 마케팅이 유행이고 브랜드가 달라도 광고 문구는 서로 비슷합니다. 화해 비즈니스의 글은 광고 문구를 성분 이름 대신 리뷰 언어(소비자 리뷰에 나오는 사용감 표현)로 쓰라고 권하지만 그 말이 반응을 더 끈다는 실험 근거는 글에 없습니다. 그래서 PDRN 크림 출시를 앞둔 마케터라고 가정하고 두 문구를 광고로 직접 비교했습니다.</p>
-      <p>가설: 리뷰 언어 문구의 링크 클릭률이 성분 이름 문구보다 높을 것이다. 검증 범위는 광고를 보고 누르는 단계까지입니다.</p>
+      <p>성분 이름을 앞세운 화장품 광고가 많고 브랜드가 달라도 문구는 비슷하다. 화해 비즈니스의 글은 성분 이름 대신 리뷰 언어(소비자 리뷰에 나오는 사용감 표현)를 쓰라고 권하지만 실험 근거는 없다. 그래서 PDRN 크림 출시를 앞둔 마케터 입장에서 두 문구를 광고로 직접 비교했다.</p>
+      <p><b>가설:</b> 리뷰 언어 문구의 링크 클릭률이 성분 이름 문구보다 높을 것이다. 검증 범위는 클릭까지다.</p>
       <div class="ads">
         <figure>
           <img src="/img/r2-ad-ingredient.webp" alt="크림 사진 아래에 PDRN 연어크림이라고 적힌 광고" width="720" height="720" loading="lazy">
@@ -233,74 +242,22 @@
     <section class="sec">
       <p class="eyebrow">실험 흐름</p>
       <h2>한 번에 하나만 바꿨다</h2>
-      <p>대상은 스킨케어에 관심 있는 20~49세 여성입니다. 단계마다 7일 동안 하루 1만 원을 썼습니다. 판단 지표는 광고를 보고 누른 비율인 링크 클릭률입니다.</p>
+      <p>대상은 스킨케어에 관심 있는 20~49세 여성. 회차마다 7일, 하루 1만 원, 광고당 노출 약 7천 회. 지표는 링크 클릭률(광고를 보고 누른 비율)이다.</p>
       <ol class="flow">
-        <li><span class="tag">1차 · 끝남</span><b>그림만 다르게</b>원료가 보이는 그림과 사용감이 보이는 그림. 광고 글은 같게 두었습니다.</li>
-        <li><span class="tag">2차 · 끝남</span><b>문구만 다르게</b>같은 그림 위에 성분 이름 문구와 리뷰 언어 문구를 얹었습니다.</li>
-        <li><span class="tag">3차 · 제안</span><b>랜딩에서 다시 묻기</b>광고는 그대로 두고 랜딩에 "성분 자세히"와 "후기 보기" 버튼을 두어 무엇을 먼저 누르는지 봅니다.</li>
+        <li><span class="tag">1차 · 끝남</span><b>그림만 다르게</b>원료 그림과 사용감 그림. 광고 글은 같다.</li>
+        <li><span class="tag">2차 · 끝남</span><b>문구만 다르게</b>같은 그림 위에 성분 이름 문구와 리뷰 언어 문구.</li>
+        <li><span class="tag">3차 · 제안</span><b>랜딩에서 다시 묻기</b>광고는 그대로 두고 랜딩에 "성분 자세히"와 "후기 보기" 버튼을 두어 무엇을 먼저 누르는지 비교한다.</li>
       </ol>
-      <p style="margin-top:14px">2차의 독립변수는 그림 위 문구, 종속변수는 링크 클릭률입니다. 그림, 광고 글, 대상, 예산, 기간은 통제변수로 같게 두었고 실험군은 리뷰 언어 문구(B), 대조군은 성분 이름 문구(A)입니다.</p>
-    </section>
-
-    <section class="sec">
-      <p class="eyebrow">왜 이렇게 했나</p>
-      <h2>실험을 이렇게 짠 이유</h2>
-      <p>질문을 누르면 답이 펼쳐집니다.</p>
-      <div class="why">
-        <details>
-          <summary>왜 PDRN 크림인가</summary>
-          <div>
-            <p>광고 A/B 테스트는 제품 하나에 문구만 바꿔 비교해야 해서 성분을 하나로 정했습니다. 화해 글이 예로 든 성분이 PDRN입니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>왜 가상 제품인가</summary>
-          <div>
-            <p>1순위가 문구 검증이고 문구에 대한 반응을 보는 데는 제품이 꼭 필요하지 않았습니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>왜 Meta 광고인가</summary>
-          <div>
-            <p>이미지에 문구를 얹는 광고라 그림만 또는 문구만 바꿔 비교할 수 있습니다. 대상을 정해 소액으로 내보낼 수 있고 광고마다 노출과 클릭이 따로 나옵니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>왜 20~49세 여성인가</summary>
-          <div>
-            <p>성별과 연령이 섞이면 결과의 차이가 문구 때문인지 대상 때문인지 가리기 어려워서 대상을 좁혔습니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>왜 링크 클릭률을 보나</summary>
-          <div>
-            <p>보고 싶은 것은 구매 전환이지만 출시 전이라 잴 수 없습니다. 어떤 문구가 더 선택되는지를 광고를 보고 누른 비율로 봤습니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>왜 7일씩이고 총 14만 원인가</summary>
-          <div>
-            <p>7일은 평일과 주말을 모두 담는 최소 기간입니다. 회차마다 7만 원이면 광고당 약 7천 회 노출로 한 광고가 절반쯤 더 클릭받는 차이(예: 1.0% 대 1.5%)를 볼 수 있는 규모입니다. 더 작은 차이까지 보려면 예산이 두 배 넘게 듭니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>왜 2차에서 광고 세트를 나눴나</summary>
-          <div>
-            <p>1차는 세트 하나에 광고 둘을 넣었고 Meta가 노출의 ${r1_share_tex}를 한쪽에 몰아줬습니다. 2차는 광고마다 세트를 따로 두고 예산을 고정해 ${r2_share_a} 대 ${r2_share_b}로 나갔습니다.</p>
-          </div>
-        </details>
-      </div>
-      <p style="margin-top:14px"><a href="https://github.com/Chawonsik/seongbun-dotbogi/blob/main/docs/decisions.md">결정과 이유 전체 보기</a></p>
     </section>
 
     <section class="sec sec-keep">
       <p class="eyebrow">1차 결과</p>
       <h2>Meta가 노출을 한쪽 광고에 몰아줬다</h2>
-      <p>광고 세트 하나에 광고 두 개를 넣었더니 노출의 ${r1_share_tex}가 사용감 그림으로 갔습니다. 원료 그림은 나흘째부터 거의 나가지 않았습니다.</p>
+      <p>세트 하나에 광고 둘을 넣자 노출의 ${r1_share_tex}가 사용감 그림으로 갔다.</p>
       <div class="row">
       <div class="chart">
         <h3>1차 광고의 일자별 노출 수</h3>
-        <p class="sub">원료 그림 ${r1_imp_ing}회. 사용감 그림 ${r1_imp_tex}회</p>
+        <p class="sub">기준: 1차 노출 전체. 원료 그림 ${r1_imp_ing}회, 사용감 그림 ${r1_imp_tex}회. ${r1_period}</p>
         <p class="legend"><span class="a"><i></i>원료 그림</span><span class="b"><i></i>사용감 그림</span></p>
         ${chart_r1_daily_impressions}
       </div>
@@ -316,8 +273,8 @@
         </figure>
       </div>
       <ul class="facts">
-        <li><span>사실</span><span>전체 링크 클릭률은 원료 그림 ${r1_ctr_ing}이고 사용감 그림 ${r1_ctr_tex}입니다. 두 광고가 함께 나간 이틀만 보면 ${r1_same_ing}와 ${r1_same_tex}입니다.</span></li>
-        <li><span>해석</span><span>배분을 Meta에 맡긴 구조라 사실상 Meta가 그림을 골랐습니다. 두 그림의 차이는 확정하지 못했습니다.</span></li>
+        <li><span>사실</span><span>링크 클릭률 원료 ${r1_ctr_ing}, 사용감 ${r1_ctr_tex}. 함께 나간 이틀만 보면 ${r1_same_ing}와 ${r1_same_tex}.</span></li>
+        <li><span>해석</span><span>사실상 Meta가 그림을 골랐다. 두 그림의 차이는 확정하지 못했다.</span></li>
       </ul>
       </div>
       </div>
@@ -326,11 +283,11 @@
     <section class="sec sec-keep">
       <p class="eyebrow">2차 결과</p>
       <h2>광고 세트를 나누자 노출이 반반이 됐다</h2>
-      <p>2차는 광고마다 세트를 따로 만들고 세트마다 하루 5,000원을 고정했습니다. 노출은 ${r2_share_a} 대 ${r2_share_b}로 나갔습니다.</p>
+      <p>광고마다 세트를 따로 두고 하루 5,000원씩 고정하자 노출이 ${r2_share_a} 대 ${r2_share_b}로 나갔다.</p>
       <div class="row">
       <div class="chart">
         <h3>광고별 노출 비중</h3>
-        <p class="sub">1차는 한쪽에 몰렸고 2차는 거의 같습니다</p>
+        <p class="sub">기준: 회차별 노출 전체. 1차 ${r1_imp_total}회, 2차 ${r2_imp_total}회</p>
         ${chart_impression_share}
       </div>
       <div class="ads ads-sm">
@@ -347,13 +304,13 @@
       <div class="row">
       <div class="chart">
         <h3>2차 광고의 일자별 링크 클릭률</h3>
-        <p class="sub">누적은 성분 이름 문구 ${r2_ctr_a}(${r2_frac_a}), 리뷰 언어 문구 ${r2_ctr_b}(${r2_frac_b}). 첫날은 18시부터, 마지막 날은 18시까지</p>
+        <p class="sub">기준: 2차 노출 ${r2_imp_total}회. 누적 성분 이름 ${r2_ctr_a}(${r2_frac_a}), 리뷰 언어 ${r2_ctr_b}(${r2_frac_b}). ${r2_period}</p>
         <p class="legend"><span class="a"><i></i>성분 이름 문구</span><span class="b"><i></i>리뷰 언어 문구</span></p>
         ${chart_r2_ctr}
       </div>
       <ul class="facts">
-        <li><span>사실</span><span>7일 누적 링크 클릭률은 성분 이름 문구 ${r2_ctr_a}이고 리뷰 언어 문구 ${r2_ctr_b}로 ${r2_gap} 차이입니다. 두 비율을 z검정으로 비교하면 ${r2_test}이고 차이의 95% 신뢰구간 ${r2_ci}입니다.</span></li>
-        <li><span>해석</span><span>화해 글의 권고대로 리뷰 언어 문구가 더 클릭되는 모습은 보이지 않습니다. 두 비율의 차이는 ${r2_verdict}. 구간이 0을 지나므로 성분 이름이 낫다고도 말하지 않습니다.</span></li>
+        <li><span>사실</span><span>링크 클릭률 성분 이름 ${r2_ctr_a}, 리뷰 언어 ${r2_ctr_b}. 차이 ${r2_gap}, z검정 ${r2_test}, 95% 신뢰구간 ${r2_ci}.</span></li>
+        <li><span>해석</span><span>리뷰 언어 문구가 더 클릭되지는 않았다. 차이는 ${r2_verdict}. 신뢰구간이 0을 지나서 성분 이름이 낫다고도 할 수 없다.</span></li>
       </ul>
       </div>
     </section>
@@ -361,60 +318,106 @@
     <section class="sec sec-keep">
       <p class="eyebrow">랜딩 결과</p>
       <h2>버튼은 보이지만 눌리지 않는다</h2>
-      <p>광고를 누르고 들어온 기기 가운데 관심 버튼을 누른 기기는 1차 ${l1_rate}(${l1_interest})이고 2차 ${l2_rate}(${l2_interest})입니다. 비율은 올랐지만 둘 다 한 자리 수입니다.</p>
+      <p>광고를 누르고 들어온 기기 중 관심 버튼을 누른 기기는 1차 ${l1_rate}(${l1_interest}), 2차 ${l2_rate}(${l2_interest}).</p>
       <div class="row">
       <div class="chart">
         <h3>도착한 기기가 어디까지 갔나</h3>
-        <p class="sub">${section_period}에 사용감 그림 광고로 도착한 ${section_base}대</p>
+        <p class="sub">기준: ${section_period}에 사용감 그림 광고로 도착한 기기 ${section_base}대</p>
         ${chart_landing_steps}
       </div>
       <ul class="facts">
-        <li><span>사실</span><span>도착한 기기의 ${seen_share}가 버튼을 화면에서 봤고 ${info_share}가 제품 소개까지 내려갔습니다. 2차에서 랜딩 첫 화면과 버튼을 고친 뒤에도 관심 버튼을 누른 기기는 한 자리 수입니다(${l2_interest}).</span></li>
-        <li><span>해석</span><span>버튼을 못 봐서 안 누르는 것이 아닙니다. 왜 떠나는지는 이 데이터로 알 수 없습니다.</span></li>
+        <li><span>사실</span><span>도착한 기기의 ${seen_share}가 버튼을 봤고 ${info_share}가 제품 소개까지 내려갔다. 2차에서 첫 화면과 버튼을 고친 뒤에도 ${l2_interest}.</span></li>
+        <li><span>해석</span><span>버튼을 못 봐서 안 누르는 것은 아니다. 왜 떠나는지는 알 수 없다.</span></li>
       </ul>
       </div>
     </section>
 
     <section class="sec">
-      <p class="eyebrow">해결책</p>
-      <h2>고친 것 두 가지와 다음에 시험할 것 하나</h2>
-      <p>문구만 바꿔서는 클릭이 크게 달라지지 않았습니다. 2차 광고가 어디까지 이어졌는지 보면 많이 빠지는 곳은 클릭 뒤입니다.</p>
+      <p class="eyebrow">판정과 다음 단계</p>
+      <h2>문구는 성분 이름을 유지하고 다음은 랜딩을 시험한다</h2>
+      <p><b>판정: 리뷰 언어 문구는 채택하지 않고 성분 이름 문구를 유지한다.</b> 많이 빠지는 곳은 문구가 아니라 클릭 뒤다.</p>
       <div class="funnel">
         <div><span>노출</span><b>${r2_imp_total}</b><i>2차 두 광고 합계</i></div>
         <div><span>링크 클릭</span><b>${r2_clk_total}</b><i>노출의 ${r2_click_rate}</i></div>
         <div><span>랜딩 도착</span><b>${r2_arrived}</b><i>클릭의 ${r2_arrive_rate}</i></div>
         <div><span>관심 버튼</span><b>${r2_interested}</b><i>도착의 ${l2_rate}</i></div>
       </div>
-      <div class="rec"><b>관심을 표시한 기기 1대에 광고비 ${l2_cost}원(2차)</b>1차 ${l1_cost}원, 2차 ${l2_cost}원. 이 규모에서 문구 차이는 보이지 않았으니 문구를 더 고르기보다 이 비용을 낮추는 쪽이 먼저입니다.</div>
-      <div class="cards">
-        <div class="card">
-          <p class="eyebrow">2차에 적용</p>
-          <h3>비교할 광고마다 세트를 따로 만든다</h3>
-          <p>세트마다 예산을 같게 고정합니다. 노출 비중이 ${r1_share_ing} 대 ${r1_share_tex}에서 ${r2_share_a} 대 ${r2_share_b}가 됐습니다.</p>
-        </div>
-        <div class="card">
-          <p class="eyebrow">2차에 적용</p>
-          <h3>랜딩 첫 화면을 광고 문구와 맞춘다</h3>
-          <p>버튼도 "더 보고 싶어요"와 "관심 없어요" 둘로 나눴습니다. 버튼을 누른 기기는 ${l2_interest}입니다.</p>
-        </div>
-        <div class="card">
-          <p class="eyebrow">3차 제안</p>
-          <h3>광고는 그대로 두고 랜딩에서 다시 묻는다</h3>
-          <p>클릭 단계에서 갈리지 않은 두 언어를 클릭 뒤에서 다시 묻습니다. 랜딩에 "성분 자세히"와 "후기 보기" 버튼을 두고 무엇을 먼저 누르는지 봅니다. 기준값은 1차 ${l1_interest}, 2차 ${l2_interest}입니다.</p>
-        </div>
-      </div>
+      <div class="rec"><b>관심을 표시한 기기 1대에 광고비 ${l2_cost}원(2차)</b>1차 ${l1_cost}원, 2차 ${l2_cost}원. 문구를 다시 테스트하기보다 이 비용을 낮추는 쪽이 먼저다.</div>
+      <p style="margin-top:18px"><b>3차 제안:</b> 광고는 그대로 두고 랜딩에 "성분 자세히"와 "후기 보기" 버튼을 둔다. 클릭에서 갈리지 않은 두 언어를 클릭 뒤에서 다시 묻는다. 기준값은 관심 버튼 1차 ${l1_interest}, 2차 ${l2_interest}.</p>
     </section>
 
     <section class="sec">
       <p class="eyebrow">한계</p>
       <h2>이 결과로 말할 수 없는 것</h2>
       <ul class="limits">
-        <li>두 문구의 클릭률이 같다고 말하지 않습니다. 차이의 95% 신뢰구간이 ${r2_ci}라 리뷰 언어가 조금 더 높을 가능성도 남습니다. 이 규모는 작은 차이를 가릴 만큼 크지 않았습니다.</li>
-        <li>리뷰 언어 전체가 안 통한다고 말하지 않습니다. 비교한 것은 문구 한 쌍이고 두 소재의 매력도는 따로 재지 않았습니다. B는 그림 위 문구가 두 줄이라 글의 양도 다릅니다.</li>
-        <li>결론은 클릭 단계에 한합니다. 화해 글이 말한 구매 단계까지 같다고 넓혀 말하지 않습니다.</li>
-        <li>관심 버튼이 적게 눌린 원인이 랜딩인지, 판매하지 않는 가상 제품이라서인지 가리지 못합니다. 그래서 3차 제안은 해결책이 아니라 시험할 가설입니다.</li>
-        <li>세트를 나눠도 Meta가 세트마다 보여 줄 사람을 고릅니다. 노출의 대부분이 인스타그램 릴스와 20대 초반에 나갔고 20~49세 여성 전체의 결과로 보지 않습니다.</li>
-        <li>검정은 노출 한 번을 서로 독립된 시행으로 봤습니다. 같은 사람이 여러 번 본 노출이 섞여 있어 실제로 비교한 사람 수는 노출 수보다 적습니다.</li>
+        <li>두 문구의 클릭률이 같다는 뜻은 아니다. 차이의 95% 신뢰구간이 ${r2_ci}라 리뷰 언어가 조금 더 높을 가능성도 남아 있다. 이 규모로는 작은 차이를 가릴 수 없다.</li>
+        <li>결론은 클릭 단계에 한한다. 화해 글이 말한 구매 단계는 검증하지 않았다.</li>
+        <li>관심 버튼이 적게 눌린 원인이 랜딩인지 판매하지 않는 가상 제품이라서인지는 가리지 못했다. 3차 제안은 해결책이 아니라 시험할 가설이다.</li>
+      </ul>
+    </section>
+
+    <section class="sec">
+      <p class="eyebrow">부록</p>
+      <h2>설계 근거와 나머지 한계</h2>
+      <h3>왜 이렇게 했나</h3>
+      <div class="why">
+        <details>
+          <summary>왜 PDRN 크림인가</summary>
+          <div>
+            <p>광고 A/B 테스트는 제품 하나에 문구만 바꿔 비교해야 해서 성분을 하나로 정했다. 화해 글이 예로 든 성분이 PDRN이다.</p>
+          </div>
+        </details>
+        <details>
+          <summary>왜 가상 제품인가</summary>
+          <div>
+            <p>1순위가 문구 검증이고 문구 반응을 보는 데 제품이 꼭 필요하지는 않았다.</p>
+          </div>
+        </details>
+        <details>
+          <summary>왜 Meta 광고인가</summary>
+          <div>
+            <p>이미지에 문구를 얹는 광고라 그림만 또는 문구만 바꿔 비교할 수 있다. 대상을 정해 소액으로 내보낼 수 있고 광고마다 노출과 클릭이 따로 나온다.</p>
+          </div>
+        </details>
+        <details>
+          <summary>왜 20~49세 여성인가</summary>
+          <div>
+            <p>성별과 연령이 섞이면 결과 차이가 문구 때문인지 대상 때문인지 가리기 어렵다.</p>
+          </div>
+        </details>
+        <details>
+          <summary>왜 링크 클릭률을 보나</summary>
+          <div>
+            <p>보고 싶은 것은 구매 전환이지만 출시 전이라 잴 수 없다. 어떤 문구가 더 선택되는지를 광고를 보고 누른 비율로 본다.</p>
+          </div>
+        </details>
+        <details>
+          <summary>왜 7일씩이고 총 14만 원인가</summary>
+          <div>
+            <p>7일은 평일과 주말을 모두 담는 최소 기간이다. 회차마다 7만 원이면 광고당 약 7천 회 노출로 한 광고가 절반쯤 더 클릭받는 차이(예: 1.0% 대 1.5%)를 볼 수 있는 규모다. 더 작은 차이까지 보려면 예산이 두 배 넘게 든다.</p>
+          </div>
+        </details>
+        <details>
+          <summary>왜 2차에서 광고 세트를 나눴나</summary>
+          <div>
+            <p>1차는 세트 하나에 광고 둘을 넣었고 Meta가 노출의 ${r1_share_tex}를 한쪽에 몰아줬다. 2차는 광고마다 세트를 따로 두고 예산을 고정해 ${r2_share_a} 대 ${r2_share_b}로 나갔다.</p>
+          </div>
+        </details>
+      </div>
+      <p style="margin-top:14px"><a href="https://github.com/Chawonsik/seongbun-dotbogi/blob/main/docs/decisions.md">결정과 이유 전체 보기</a></p>
+      <h3 style="margin-top:26px">2차를 실험 용어로 쓰면</h3>
+            <table class="src terms">
+        <tr><th>독립변수</th><td>그림 위 문구. A 성분 이름, B 리뷰 언어</td></tr>
+        <tr><th>종속변수</th><td>링크 클릭률</td></tr>
+        <tr><th>통제변수</th><td>그림, 광고 글, 대상, 세트별 하루 예산, 기간</td></tr>
+        <tr><th>실험군 · 대조군</th><td>B 리뷰 언어 · A 성분 이름</td></tr>
+        <tr><th>표본</th><td>광고당 노출 약 7천 회(회차당 7만 원). 한 광고가 절반쯤 더 클릭받는 차이(예: 1.0% 대 1.5%)를 가릴 규모</td></tr>
+      </table>
+      <h3 style="margin-top:26px">그 밖의 한계</h3>
+      <ul class="limits">
+        <li>비교한 것은 문구 한 쌍이다. 리뷰 언어 전체가 안 통한다는 결론은 아니다. 두 소재의 매력도는 따로 재지 않았고 B는 그림 위 문구가 두 줄이라 글의 양도 다르다.</li>
+        <li>세트를 나눠도 세트마다 보여 줄 사람은 Meta가 고른다. 노출 대부분이 인스타그램 릴스와 20대 초반에 나가 20~49세 여성 전체의 결과로 볼 수 없다.</li>
+        <li>검정은 노출 한 번을 독립된 시행으로 봤다. 같은 사람이 여러 번 본 노출이 섞여 있어 실제로 비교한 사람 수는 노출 수보다 적다.</li>
       </ul>
     </section>
 
@@ -422,19 +425,17 @@
       <p class="eyebrow">출처와 AI 사용</p>
       <h2>외부 자료와 AI를 쓴 곳</h2>
       <table class="src">
-        <tr><th>화해 비즈니스 인사이트 글</th><td>문제 정의의 출발점. 짧은 인용과 요지만 쓰고 원문 주소를 밝힙니다. <a href="https://business.hwahae.co.kr/insight/beauty-ingredient-marketing-guide/">business.hwahae.co.kr</a> (2026년 4월 13일)</td></tr>
+        <tr><th>화해 비즈니스 인사이트 글</th><td>이 글의 권고를 검증 대상으로 삼음. 짧게 인용하고 원문 주소를 밝힘. 원문 <a href="https://business.hwahae.co.kr/insight/beauty-ingredient-marketing-guide/">business.hwahae.co.kr</a> (2026년 4월 13일)</td></tr>
         <tr><th>화해 검색 결과 수</th><td>화해 앱에서 "PDRN"을 검색한 결과 수(${pdrn_products}개, 10/12 확인)</td></tr>
-        <tr><th>광고 이미지</th><td>GPT로 직접 생성했습니다. 실제 제품이나 다른 브랜드의 이미지는 쓰지 않았습니다</td></tr>
-        <tr><th>랜딩의 작은 사진 네 장</th><td>Canva 이미지 생성으로 만들었습니다</td></tr>
-        <tr><th>코드, 차트, 문서</th><td>Claude로 초안을 쓰고 사람이 검토했습니다. 광고 게시와 예산 등 광고 관리자의 조작은 모두 사람이 했고 AI에는 조회만 맡겼습니다</td></tr>
-        <tr><th>광고와 행동 데이터</th><td>Meta 광고 관리자와 랜딩의 행동 기록(README 2절)에서 직접 조회했습니다. 2차 수치는 광고가 끝난 뒤인 ${queried_at}에 조회했습니다</td></tr>
+        <tr><th>광고 이미지</th><td>GPT로 생성. 실제 제품이나 다른 브랜드의 이미지는 쓰지 않음</td></tr>
+        <tr><th>랜딩의 작은 사진 네 장</th><td>Canva 이미지 생성으로 만듦</td></tr>
+        <tr><th>코드, 차트, 문서</th><td>Claude로 초안을 쓰고 사람이 검토. 광고 게시와 예산 설정은 모두 사람이 했고 AI에는 조회만 맡김</td></tr>
+        <tr><th>광고와 행동 데이터</th><td>Meta 광고 관리자와 랜딩 행동 기록에서 조회</td></tr>
       </table>
     </section>
   </main>
   <footer>
-    <p>수치와 정의, 전처리, 결정 이유, AI 사용 내역은 <a href="https://github.com/Chawonsik/seongbun-dotbogi#readme">GitHub 저장소의 README</a>에 있습니다.</p>
-    <p>이 페이지에는 방문 분석 도구를 넣지 않았습니다.</p>
-    <p>&copy; 2026 성분돋보기</p>
+    <p>자세한 수치와 전처리 과정, 결정 기록은 <a href="https://github.com/Chawonsik/seongbun-dotbogi#readme">GitHub 저장소 README</a>에 정리해 두었다. &copy; 2026 성분돋보기</p>
   </footer>
 </div>
 </body>

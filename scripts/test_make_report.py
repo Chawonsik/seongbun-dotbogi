@@ -151,12 +151,12 @@ class RenderTest(unittest.TestCase):
 
     def test_significance_sentence_follows_p(self):
         data = copy.deepcopy(DATA)
-        self.assertIn("5% 기준에서 통계적으로 유의하지 않습니다", mr.render(data))
+        self.assertIn("5% 기준에서 통계적으로 유의하지 않다", mr.render(data))
         data["round2"]["a"]["clicks"] += 200
         data["round2"]["daily"][0]["a"][0] += 200
         html = mr.render(data)
-        self.assertNotIn("5% 기준에서 통계적으로 유의하지 않습니다", html)
-        self.assertIn("5% 기준에서 통계적으로 유의합니다", html)
+        self.assertNotIn("5% 기준에서 통계적으로 유의하지 않다", html)
+        self.assertIn("5% 기준에서 통계적으로 유의하다", html)
 
     def test_gap_matches_the_printed_rates(self):
         data = copy.deepcopy(DATA)
