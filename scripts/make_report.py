@@ -8,6 +8,7 @@ refreshing the report means editing that file and running this script again.
 """
 from __future__ import annotations
 
+import datetime
 import json
 import math
 import pathlib
@@ -34,6 +35,7 @@ STANDALONE_STYLE = """<style>
 .vz text{font-family:"Noto Sans KR","Apple SD Gothic Neo",sans-serif}
 .vz-t{fill:#3B2A25}.vz-s{fill:#7D6761}.vz-g{stroke:#E6D2C6}
 .vz-a{fill:#2a78d6}.vz-b{fill:#eb6834}.vz-la{stroke:#2a78d6}.vz-lb{stroke:#eb6834}.vz-ring{stroke:#FFF8F3}
+.vz-off{fill:#F3EAE3}
 </style><rect width="100%" height="100%" rx="10" fill="#FFF8F3"/>"""
 
 
@@ -157,6 +159,27 @@ def _place_bar_labels(group: list[tuple[float, float, str]], bar_w: float) -> li
     return [(x, y, label) for x, y, label in placed]
 
 
+def off_days(days: list[str], year: int, holidays: dict[str, str]) -> set[int]:
+    """Indices of days that are a weekend or a listed holiday. days are "M/D" strings."""
+    off = set()
+    for i, day in enumerate(days):
+        month, date = (int(part) for part in day.split("/"))
+        if day in holidays or datetime.date(year, month, date).weekday() >= 5:
+            off.add(i)
+    return off
+
+
+def nice_ticks(peak: float) -> list[float]:
+    """Tick values from 0 to just above the peak, in 1, 2, 2.5 or 5 steps, about four of them."""
+    if peak <= 0:
+        return [0.0, 1.0]
+    raw = peak / 3
+    magnitude = 10 ** math.floor(math.log10(raw))
+    step = min((m * magnitude for m in (1, 2, 2.5, 5, 10)), key=lambda c: abs(c - raw))
+    count = math.ceil(peak / step - 1e-9)
+    return [step * i for i in range(count + 1)]
+
+
 def line_chart(
     categories: list[str],
     series: list[Series],
@@ -164,20 +187,34 @@ def line_chart(
     callouts: dict[tuple[int, int], tuple],
     height: float = 250,
     gutter: float = 0,
+    tick_format=None,
+    off: set[int] = frozenset(),
 ) -> str:
     """Lines over time. callouts maps (series index, point index) to (label, dy) or (label, dy, dx).
 
     dy is the label offset from the point: negative sits above it, positive below.
     dx > 0 puts the label to the right of the point, starting there; gutter keeps room for it.
+    tick_format turns a y value into its axis label; off marks the x positions shaded as rest days.
     """
-    top, base, left, right = 30.0, height - 30, PAD + 8, W - PAD - 8 - gutter
+    tick_format = tick_format or (lambda v: num(int(v)))
+    top, base, left, right = 30.0, height - 30, PAD + 44, W - PAD - 8 - gutter
     peak = max(max(values) for _, _, values, _ in series) or 1
+    ticks = nice_ticks(peak)
+    scale_top = ticks[-1]
     step = (right - left) / (len(categories) - 1)
 
     def point(i: int, value: float) -> tuple[float, float]:
-        return left + step * i, base - value / peak * (base - top)
+        return left + step * i, base - value / scale_top * (base - top)
 
-    parts = [f'<line class="vz-g" x1="{PAD}" x2="{W - PAD}" y1="{base}" y2="{base}"/>']
+    parts = []
+    for i in sorted(off):
+        x0 = max(left + step * i - step / 2, left - 10)
+        x1 = min(left + step * i + step / 2, right + 10)
+        parts.append(f'<rect class="vz-off" x="{x0:.1f}" y="{top - 8:.1f}" width="{x1 - x0:.1f}" height="{base - top + 8:.1f}"/>')
+    for value in ticks:
+        y = point(0, value)[1]
+        parts.append(f'<line class="vz-g" x1="{left - 6}" x2="{W - PAD}" y1="{y:.1f}" y2="{y:.1f}"/>')
+        parts.append(_text(left - 10, y + 4, tick_format(value), "vz-s", anchor="end", size=11))
     parts += [_text(left + step * i, base + 19, c, "vz-s") for i, c in enumerate(categories)]
     for s, (name, cls, values, labels) in enumerate(series):
         line_cls = "vz-la" if cls == "vz-a" else "vz-lb"
@@ -240,6 +277,8 @@ def step_bars(steps: list[tuple[str, float]], title: str, cls: str = "vz-b") -> 
 def charts(data: dict) -> dict[str, str]:
     r1, r2, landing = data["round1"], data["round2"], data["landing"]
     ing, tex, a, b = r1["ingredient"], r1["texture"], r2["a"], r2["b"]
+    year = int(data["queried_at"][:4])
+    holidays = data.get("calendar", {}).get("holidays", {})
     peak_day = max(range(len(r1["days"])), key=lambda i: tex["daily_impressions"][i])
     first_zero = next(i for i, v in enumerate(ing["daily_impressions"]) if v == 0)
     ing_peak = max(range(len(r1["days"])), key=lambda i: ing["daily_impressions"][i])
@@ -262,6 +301,7 @@ def charts(data: dict) -> dict[str, str]:
                 (0, first_zero): ("0", -11),
                 (1, peak_day): (num(tex["daily_impressions"][peak_day]), -11),
             },
+            off=off_days(r1["days"], year, holidays),
         ),
         "impression-share": share_bars(
             [
@@ -284,6 +324,8 @@ def charts(data: dict) -> dict[str, str]:
                 (1, last): (pct(*days[-1]["b"]), -2 if rate(*days[-1]["b"]) > rate(*days[-1]["a"]) else 12, 9),
             },
             gutter=36,
+            tick_format=lambda v: f"{v:g}%",
+            off=off_days([d["day"] for d in days], year, holidays),
         ),
         "landing-steps": step_bars(
             [(s["label"], s["devices"]) for s in landing["sections"]["steps"]],
@@ -346,6 +388,7 @@ def render(data: dict) -> str:
         r2_imp_total=num(r2_total),
         r1_imp_total=num(r1_total),
         r1_period=r1["period"],
+        holiday_note="음영은 주말과 공휴일" + (f"({', '.join(f'{d} {n}' for d, n in data['calendar']['holidays'].items())})" if data.get("calendar", {}).get("holidays") else ""),
         r2_period=r2["period"],
         r2_clk_total=num(r2_clicks),
         r2_arrived=num(l2["arrived"]),

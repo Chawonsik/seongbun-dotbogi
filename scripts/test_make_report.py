@@ -66,6 +66,18 @@ class DiffIntervalTest(unittest.TestCase):
         self.assertEqual(mr.diff_interval(0, 0, 3, 100), (0.0, 0.0))
 
 
+class AxisTest(unittest.TestCase):
+    def test_ticks_cover_the_peak_in_round_steps(self):
+        self.assertEqual(mr.nice_ticks(2506), [0, 1000, 2000, 3000])
+        self.assertEqual(mr.nice_ticks(3.99), [0, 1, 2, 3, 4])
+        self.assertEqual(mr.nice_ticks(0), [0.0, 1.0])
+
+    def test_off_days_are_weekends_and_listed_holidays(self):
+        days = ["10/2", "10/3", "10/4", "10/5", "10/6", "10/9"]
+        self.assertEqual(mr.off_days(days, 2026, {"10/5": "대체공휴일", "10/9": "한글날"}), {1, 2, 3, 5})
+        self.assertEqual(mr.off_days(["10/6"], 2026, {}), set())
+
+
 class GroupedBarsTest(unittest.TestCase):
     def setUp(self):
         self.svg = mr.grouped_bars(
@@ -195,6 +207,14 @@ class RenderTest(unittest.TestCase):
 
     def test_no_em_dash(self):
         self.assertNotIn("\u2014", self.html)
+
+    def test_line_charts_have_a_scale_and_rest_day_bands(self):
+        charts = mr.charts(DATA)
+        for key, expected_bands, unit in (("r1-daily-impressions", 4, "3,000"), ("r2-ctr", 3, "4%")):
+            svg = charts[key]
+            self.assertEqual(svg.count('class="vz-off"'), expected_bands, key)
+            self.assertIn(f'font-size="11">{unit}</text>', svg, key)
+        self.assertIn("음영은 주말과 공휴일(10/3 개천절, 10/5 대체공휴일, 10/9 한글날)", self.html)
 
     def test_four_charts_each_described(self):
         self.assertEqual(self.html.count('<svg class="vz"'), 4)
