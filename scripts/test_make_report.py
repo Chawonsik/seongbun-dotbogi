@@ -72,6 +72,11 @@ class AxisTest(unittest.TestCase):
         self.assertEqual(mr.nice_ticks(3.99), [0, 1, 2, 3, 4])
         self.assertEqual(mr.nice_ticks(0), [0.0, 1.0])
 
+    def test_day_labels_show_the_month_once_and_the_weekday(self):
+        labels, weekdays = mr.day_labels(["10/30", "10/31", "11/1"], 2026)
+        self.assertEqual(labels, ["10/30", "31", "11/1"])
+        self.assertEqual(weekdays, ["금", "토", "일"])
+
     def test_off_days_are_weekends_and_listed_holidays(self):
         days = ["10/2", "10/3", "10/4", "10/5", "10/6", "10/9"]
         self.assertEqual(mr.off_days(days, 2026, {"10/5": "대체공휴일", "10/9": "한글날"}), {1, 2, 3, 5})

@@ -169,6 +169,19 @@ def off_days(days: list[str], year: int, holidays: dict[str, str]) -> set[int]:
     return off
 
 
+def day_labels(days: list[str], year: int) -> tuple[list[str], list[str]]:
+    """Axis labels for "M/D" days: the full date where the month first appears, the day alone after
+    that, plus a row of weekday letters."""
+    names = "월화수목금토일"
+    labels, weekdays, last_month = [], [], None
+    for day in days:
+        month, date = (int(part) for part in day.split("/"))
+        labels.append(day if month != last_month else str(date))
+        weekdays.append(names[datetime.date(year, month, date).weekday()])
+        last_month = month
+    return labels, weekdays
+
+
 def nice_ticks(peak: float) -> list[float]:
     """Tick values from 0 to just above the peak, in 1, 2, 2.5 or 5 steps, about four of them."""
     if peak <= 0:
@@ -189,15 +202,19 @@ def line_chart(
     gutter: float = 0,
     tick_format=None,
     off: set[int] = frozenset(),
+    x_labels: list[str] | None = None,
+    x_sub: list[str] | None = None,
 ) -> str:
     """Lines over time. callouts maps (series index, point index) to (label, dy) or (label, dy, dx).
 
     dy is the label offset from the point: negative sits above it, positive below.
     dx > 0 puts the label to the right of the point, starting there; gutter keeps room for it.
     tick_format turns a y value into its axis label; off marks the x positions shaded as rest days.
+    x_labels replaces the category text on the axis and x_sub adds a second row under it.
     """
     tick_format = tick_format or (lambda v: num(int(v)))
-    top, base, left, right = 30.0, height - 30, PAD + 44, W - PAD - 8 - gutter
+    x_labels = x_labels or categories
+    top, base, left, right = 30.0, height - (44 if x_sub else 30), PAD + 44, W - PAD - 8 - gutter
     peak = max(max(values) for _, _, values, _ in series) or 1
     ticks = nice_ticks(peak)
     scale_top = ticks[-1]
@@ -215,7 +232,9 @@ def line_chart(
         y = point(0, value)[1]
         parts.append(f'<line class="vz-g" x1="{left - 6}" x2="{W - PAD}" y1="{y:.1f}" y2="{y:.1f}"/>')
         parts.append(_text(left - 10, y + 4, tick_format(value), "vz-s", anchor="end", size=11))
-    parts += [_text(left + step * i, base + 19, c, "vz-s") for i, c in enumerate(categories)]
+    parts += [_text(left + step * i, base + 19, c, "vz-s") for i, c in enumerate(x_labels)]
+    if x_sub:
+        parts += [_text(left + step * i, base + 33, c, "vz-s", size=11) for i, c in enumerate(x_sub)]
     for s, (name, cls, values, labels) in enumerate(series):
         line_cls = "vz-la" if cls == "vz-a" else "vz-lb"
         path = " ".join(f"{'M' if i == 0 else 'L'}{point(i, v)[0]:.1f},{point(i, v)[1]:.1f}" for i, v in enumerate(values))
@@ -287,6 +306,8 @@ def charts(data: dict) -> dict[str, str]:
         if summed != [total["clicks"], total["impressions"]]:
             raise ValueError(f"round2.daily {key} sums to {summed}, but the totals say {[total['clicks'], total['impressions']]}")
     days, last = r2["daily"], len(r2["daily"]) - 1
+    r1_labels, r1_weekdays = day_labels(r1["days"], year)
+    r2_labels, r2_weekdays = day_labels([d["day"] for d in days], year)
     return {
         "r1-daily-impressions": line_chart(
             r1["days"],
@@ -302,6 +323,9 @@ def charts(data: dict) -> dict[str, str]:
                 (1, peak_day): (num(tex["daily_impressions"][peak_day]), -11),
             },
             off=off_days(r1["days"], year, holidays),
+            x_labels=r1_labels,
+            x_sub=r1_weekdays,
+            height=264,
         ),
         "impression-share": share_bars(
             [
@@ -326,6 +350,9 @@ def charts(data: dict) -> dict[str, str]:
             gutter=36,
             tick_format=lambda v: f"{v:g}%",
             off=off_days([d["day"] for d in days], year, holidays),
+            x_labels=r2_labels,
+            x_sub=r2_weekdays,
+            height=264,
         ),
         "landing-steps": step_bars(
             [(s["label"], s["devices"]) for s in landing["sections"]["steps"]],
