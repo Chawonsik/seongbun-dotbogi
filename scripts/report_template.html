@@ -107,6 +107,8 @@
   .vz-la { stroke: var(--series-a); }
   .vz-lb { stroke: var(--series-b); }
   .vz-ring { stroke: var(--bg); }
+  .vz-off { fill: var(--soft); }
+  .legend .off i { width: 14px; height: 12px; background: var(--soft); border: 1px solid var(--line); vertical-align: -1px; }
 
   .why { margin: 18px 0 0; border-top: 1px solid var(--rule); }
   .why details { border-bottom: 1px solid var(--line); }
@@ -257,8 +259,8 @@
       <div class="row">
       <div class="chart">
         <h3>1차 광고의 일자별 노출 수</h3>
-        <p class="sub">기준: 1차 노출 전체. 원료 그림 ${r1_imp_ing}회, 사용감 그림 ${r1_imp_tex}회. ${r1_period}</p>
-        <p class="legend"><span class="a"><i></i>원료 그림</span><span class="b"><i></i>사용감 그림</span></p>
+        <p class="sub">기준: 1차 노출 전체. 원료 그림 ${r1_imp_ing}회, 사용감 그림 ${r1_imp_tex}회. ${r1_period}. ${holiday_note}</p>
+        <p class="legend"><span class="a"><i></i>원료 그림</span><span class="b"><i></i>사용감 그림</span><span class="off"><i></i>주말·공휴일</span></p>
         ${chart_r1_daily_impressions}
       </div>
       <div>
@@ -304,8 +306,8 @@
       <div class="row">
       <div class="chart">
         <h3>2차 광고의 일자별 링크 클릭률</h3>
-        <p class="sub">기준: 2차 노출 ${r2_imp_total}회. 누적 성분 이름 ${r2_ctr_a}(${r2_frac_a}), 리뷰 언어 ${r2_ctr_b}(${r2_frac_b}). ${r2_period}</p>
-        <p class="legend"><span class="a"><i></i>성분 이름 문구</span><span class="b"><i></i>리뷰 언어 문구</span></p>
+        <p class="sub">기준: 2차 노출 ${r2_imp_total}회. 누적 성분 이름 ${r2_ctr_a}(${r2_frac_a}), 리뷰 언어 ${r2_ctr_b}(${r2_frac_b}). ${r2_period}. ${holiday_note}</p>
+        <p class="legend"><span class="a"><i></i>성분 이름 문구</span><span class="b"><i></i>리뷰 언어 문구</span><span class="off"><i></i>주말·공휴일</span></p>
         ${chart_r2_ctr}
       </div>
       <ul class="facts">
