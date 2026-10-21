@@ -1,4 +1,5 @@
 import copy
+import math
 import json
 import pathlib
 import re
@@ -197,6 +198,14 @@ class RenderTest(unittest.TestCase):
     def test_sources_and_ai_use_are_disclosed(self):
         for needle in ("출처와 AI 사용", "business.hwahae.co.kr", "GPT", "Claude"):
             self.assertIn(needle, self.html)
+
+    def test_verdict_compares_interval_with_gap_worth_acting_on(self):
+        a, b = DATA["round2"]["a"], DATA["round2"]["b"]
+        low, high = mr.diff_interval(a["clicks"], a["impressions"], b["clicks"], b["impressions"])
+        cap = math.ceil(max(abs(low), abs(high)) * 10) / 10
+        worth = 0.5 * min(mr.rate(a["clicks"], a["impressions"]), mr.rate(b["clicks"], b["impressions"]))
+        self.assertIn(f"커도 {cap:.1f}%p 안쪽", self.html)
+        self.assertIn(f"(약 {worth:.1f}%p)", self.html)
 
     def test_text_from_data_is_escaped(self):
         data = copy.deepcopy(DATA)
