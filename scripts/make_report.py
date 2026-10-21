@@ -430,6 +430,10 @@ def render(data: dict) -> str:
         r2_gap=f"{abs(round(rate(a['clicks'], a['impressions']), 2) - round(rate(b['clicks'], b['impressions']), 2)):.2f}%p",
         r2_test=f"z = {z:.2f}, p = {p:.2f}" if p >= 0.01 else f"z = {z:.2f}, p < 0.01",
         r2_ci=f"{ci_low:.2f}%p ~ {ci_high:.2f}%p".replace("-", "\u2212"),
+        # the widest gap the interval allows, rounded up, against the gap worth changing the copy for:
+        # one ad clicked about 1.5 times as often as the other (the size the budget was set for)
+        r2_gap_cap=f"{math.ceil(max(abs(ci_low), abs(ci_high)) * 10) / 10:.1f}%p",
+        r2_gap_worth=f"{0.5 * min(rate(a['clicks'], a['impressions']), rate(b['clicks'], b['impressions'])):.1f}%p",
         r2_imp_total=num(r2_total),
         r1_imp_total=num(r1_total),
         r1_period=r1["period"],
