@@ -1,4 +1,4 @@
-"""Build docs/slides/formal/deck.html: the formal 14-slide deck with topic titles."""
+"""Build docs/slides/formal/deck.html: the formal 15-slide deck with topic titles."""
 import json
 import pathlib
 import sys
@@ -6,7 +6,7 @@ import sys
 ROOT = pathlib.Path(sys.argv[1])
 DATA = json.loads((ROOT / "docs/report/data.json").read_text(encoding="utf-8"))
 OUT = ROOT / "docs/slides/formal/deck.html"
-TOTAL = 14
+TOTAL = 15
 INK, SUB, LINE, ACC, SOFT, SOFTBG = "#111827", "#6b7280", "#e5e7eb", "#2F5BEA", "#9db4f5", "#eef3fe"
 SECTIONS = {1: "문제 정의", 2: "실험 설계", 3: "결과 분석", 4: "결론과 제안"}
 
@@ -396,30 +396,42 @@ S.append(page(3, "클릭 뒤", "2차 광고가 어디까지 이어졌나",
 <div class="R box" style="top:540px;padding:26px 30px"><b style="font-size:34px">관심 표시 1대에 광고비 약 23,300원</b><br>1차 23,312원, 2차 23,262원<br>문구보다 이 비용을 낮추는 쪽이 먼저</div>""",
               "출처: 클릭은 Meta 광고 관리자, 도착과 버튼은 Amplitude(10/17 조회). 광고 링크로 온 기기만. 2차 랜딩은 첫 화면 문구와 버튼을 고친 것"))
 
-# 13 limits
-lim = [("차이가 없다", "신뢰구간 −0.36 ~ 0.77%p. 리뷰 언어가 0.36%p 더 높을 가능성도 남음. 작은 차이를 잡을 규모가 아니었음"),
-       ("리뷰 언어는 안 통한다", "문구를 하나씩만 비교. B는 두 줄이라 소재 인상도 다름. 이 두 문장에 대한 결과"),
-       ("구매도 같다", "잰 것은 클릭. 화해 글이 말한 \"지갑\"은 검증하지 않음"),
-       ("랜딩이 문제다", "관심 3대가 랜딩 탓인지 판매하지 않는 가상 제품 탓인지 못 가림. 3차는 그래서 해결책이 아니라 가설임"),
-       ("20~49세 여성 전체", "노출의 3분의 2가 20~24세, 거의 전부 릴스")]
-trs = "".join(f'<tr><td class="lb" style="width:380px;font-size:34px;color:{SUB}">"{g}"</td><td>{x}</td></tr>' for g, x in lim)
-S.append(page(4, "한계", "이 결과로 말할 수 없는 것",
-              f'<div class="W" style="top:262px"><table class="txt" style="--p:26px">{trs}</table></div>',
-              "신뢰구간은 두 비율 차이의 95% 구간(A − B). 전체 목록: README 5절"))
-
-# 14 conclusion and proposal
+# 13 conclusion and proposal
 wr = [("결과", "리뷰 언어가 더 클릭된다는 근거 없음", "2.97% 대 2.77%, p = 0.48"),
       ("결과", "병목은 클릭 뒤. 랜딩을 고쳐도 관심 버튼은 한 자리 수", "365대 중 3대 · 1대에 약 23,300원"),
       ("권고", "문구를 더 고르는 데 쓰지 말고 클릭 뒤에 투자", "이 규모에서 문구 차이는 안 보임"),
       ("제안", "3차: 광고는 그대로, 랜딩에 성분 자세히 / 후기 보기 버튼", "무엇을 먼저 누르는지로 판정")]
-rows = "".join(f'<div style="display:grid;grid-template-columns:160px 1fr 460px;align-items:baseline;padding:22px 0;border-bottom:1px solid {LINE}"><span style="font-size:24px;font-weight:700;color:{ACC if k in ("권고", "제안") else SUB}">{k}</span><span style="font-size:34px;font-weight:800">{t}</span><span style="font-size:28px;color:{SUB};text-align:right">{d}</span></div>' for k, t, d in wr)
+rows = "".join(f'<div style="display:grid;grid-template-columns:160px 1fr 460px;align-items:baseline;padding:52px 0;border-bottom:1px solid {LINE}"><span style="font-size:24px;font-weight:700;color:{ACC if k in ("권고", "제안") else SUB}">{k}</span><span style="font-size:34px;font-weight:800">{t}</span><span style="font-size:28px;color:{SUB};text-align:right">{d}</span></div>' for k, t, d in wr)
 S.append(page(4, "결론과 제안", "",
               f"""<div class="W" style="top:262px">{rows}</div>
-<div class="W" style="top:840px;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid {INK};padding-top:24px">
-<div style="font-size:50px;font-weight:800">감사합니다</div>
-<table class="txt" style="width:auto;--p:8px"><tr><td class="lb" style="border:none">리포트</td><td style="border:none">seongbun-dotbogi.vercel.app/report</td></tr>
-<tr><td class="lb" style="border:none">저장소</td><td style="border:none">github.com/Chawonsik/seongbun-dotbogi</td></tr></table></div>""",
+""",
               "2차는 연장하지 않고 정한 예산 안에서 끝냄. 출처: Meta 광고 관리자, Amplitude(10/17 조회)"))
+
+# 14 limits
+lim = [("두 문구의 클릭률은 차이가 없다", "이 규모에서는 차이가 안 보였다", "신뢰구간 −0.36 ~ 0.77%p. 작은 차이를 잡을 규모가 아니었음"),
+       ("리뷰 언어 문구는 광고에 안 통한다", "이 두 문장은 클릭에서 안 갈렸다", "문구를 하나씩만 비교. B는 두 줄이라 소재 인상도 다름"),
+       ("구매 단계에서도 두 문구는 같다", "클릭 단계까지만 비슷했다", "잰 것은 클릭. 화해 글이 말한 \"지갑\"은 검증하지 않음"),
+       ("관심이 적은 것은 랜딩 탓이다", "원인은 모른다. 3차는 가설", "관심 3대가 랜딩 탓인지 판매하지 않는 가상 제품 탓인지 못 가림"),
+       ("20~49세 여성 전체의 결과다", "20대 초반 릴스 이용자의 결과", "노출의 3분의 2가 20~24세, 거의 전부 릴스")]
+rows = "".join(f"""<div style="display:grid;grid-template-columns:760px 70px 1fr;align-items:start;padding:18px 0;border-bottom:1px solid {LINE}">
+<span style="font-size:34px;font-weight:700;color:{SUB};line-height:1.3"><span style="display:inline-block;width:44px">✕</span>{a}</span>
+<span class="arrow" style="font-size:34px;line-height:1.3">→</span>
+<div><div style="font-size:28px;font-weight:700;line-height:1.5">{c}</div>
+<div style="font-size:24px;color:{SUB};margin-top:6px"><span class="acc" style="display:inline-block;width:30px">✓</span>{b}</div></div></div>""" for a, b, c in lim)
+S.append(page(4, "한계", "이 결과를 이렇게 읽으면 안 됨",
+              f'<div class="W" style="top:262px">{rows}</div>',
+              "신뢰구간은 두 비율 차이의 95% 구간(A − B). 전체 목록: README 5절"))
+
+# 15 closing
+S.append(f"""<section class="slide">
+<div class="a" style="left:112px;top:300px;width:80px;height:6px;background:{ACC}"></div>
+<div class="a big" style="left:112px;top:340px">감사합니다</div>
+<div class="a" style="left:112px;top:520px;width:1100px"><table class="txt" style="--p:16px">
+<tr><td class="lb" style="width:180px">리포트</td><td>seongbun-dotbogi.vercel.app/report</td></tr>
+<tr><td class="lb">저장소</td><td>github.com/Chawonsik/seongbun-dotbogi</td></tr></table></div>
+<div class="a" style="left:112px;right:112px;bottom:96px;border-top:1px solid {INK};padding-top:18px;display:flex;justify-content:space-between;font-size:28px">
+<b>성분돋보기 · 차원식 · 권지원</b><span style="color:{SUB}">2026년 10월</span></div>
+</section>""")
 
 assert len(S) == TOTAL, len(S)
 html = f"""<!doctype html>
